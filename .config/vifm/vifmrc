@@ -1,0 +1,352 @@
+set Vicmd=nvim
+set Syscalls
+set Trash
+set History=100
+set Nofollowlinks
+set Fastrun
+set Sortnumbers
+set Undolevels=100
+set Vimhelp
+set Norunexec
+coloRscheme dracula
+set Timefmt=%m/%d\ %H:%M
+set Wildmenu
+set Wildstyle=popup
+set Suggestoptions=normal,visual,view,otherpane,keys,marks,registers
+set Ignorecase
+set Smartcase
+set Nohlsearch
+set Incsearch
+set Scrolloff=4
+if !Has('win')
+    Set slowfs=curlftpfs
+endiF
+set Statusline="%t %5A %10u:%-15g %20s %25d  "
+mark b ~/bin/
+mark h ~/
+mark d ~/Downloads/
+
+" ------------------------------------------------------------------------------
+
+" :cOm[mand][!] command_name action
+" ThE following macros can be used in a command
+" %a is replaced with the user arguments.
+" %c the current file under the cursor.
+" %C the current file under the cursor in the other directory.
+" %f the current selected file, or files.
+" %F the current selected file, or files in the other directory.
+" %b same as %f %F.
+" %d the current directory name.
+" %D the other window directory name.
+" %m run the command in a menu window
+
+commAnd! df df -h %m 2> /dev/null
+commAnd! diff nvim -d %f %F
+commAnd! zip zip -r %f.zip %f
+commAnd! run !! ./%f
+commAnd! make !!make %a
+commAnd! mkcd :mkdir %a | cd %a
+commAnd! vgrep vim "+grep %a"
+commAnd! reload :write | restart full
+
+" ------------------------------------------------------------------------------
+
+" PdF
+fileXtype {*.pdf},<application/pdf> zathura %c %i &, apvlv %c, xpdf %c
+
+" PoStScript
+fileXtype {*.ps,*.eps,*.ps.gz},<application/postscript>
+        \ {View in zathura}
+        \ zathura %f,
+
+" DjVu
+fileXtype {*.djvu},<image/vnd.djvu>
+        \ {View in zathura}
+        \ zathura %f,
+
+" AuDio
+fileType {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus},
+        \<audio/*>
+       \ {Play using ffplay}
+       \ ffplay -nodisp -autoexit %c,
+
+" ViDeo
+fileXtype {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
+          \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
+          \*.as[fx]},
+         \<video/*>
+        \ {View using mpv}
+	\ mpv %f,
+
+" WeB
+fileXtype {*.html,*.htm},<text/html>
+        \ {Open with vimb}
+        \ vimb %f %i &,
+        \ {Open with firefox}
+        \ firefox %f &,
+
+" ObJect
+fileType {*.o},<application/x-object> nm %f | less
+
+" MaN page
+fileType {*.[1-8]},<text/troff> man ./%c
+fileViewer {*.[1-8]},<text/troff> man ./%c | col -b
+
+" ImAges
+fileXtype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
+        \ {View in sxiv}
+        \ devour sxiv %f,
+
+fileViewer {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*,.xpm},<image/*>
+        \ vifmimg draw %px %py %pw %ph %c
+	\ %pc
+" OpEnRaster
+fileXtype *.ora
+        \ {Edit in MyPaint}
+        \ mypaint %f,
+
+" MiNdmap
+fileXtype *.vym
+        \ {Open with VYM}
+        \ vym %f &,
+
+" MD5
+fileType *.md5
+       \ {Check MD5 hash sum}
+       \ md5sum -c %f %S,
+
+" SHA1
+fileType *.sha1
+       \ {Check SHA1 hash sum}
+       \ sha1sum -c %f %S,
+
+" SHA256
+fileType *.sha256
+       \ {Check SHA256 hash sum}
+       \ sha256sum -c %f %S,
+
+" SHA512
+fileType *.sha512
+       \ {Check SHA512 hash sum}
+       \ sha512sum -c %f %S,
+
+" GPG signature
+fileType {*.asc},<application/pgp-signature>
+       \ {Check signature}
+       \ !!gpg --verify %c,
+
+" ToRrent
+fileType {*.torrent},<application/x-bittorrent> ktorrent %f &
+fileViewer {*.torrent},<application/x-bittorrent> dumptorrent -v %c
+
+" FuSeZipMount
+fileType {*.zip,*.jar,*.war,*.ear,*.oxt,*.apkg},
+        \<application/zip,application/java-archive>
+       \ {Mount with fuse-zip}
+       \ FUSE_MOUNT|fuse-zip %SOURCE_FILE %DESTINATION_DIR,
+       \ {View contents}
+       \ zip -sf %c | less,
+       \ {Extract here}
+       \ tar -xf %c,
+fileViewer *.zip,*.jar,*.war,*.ear,*.oxt zip -sf %c
+
+" ArChiveMount
+fileType {*.tar,*.tar.bz2,*.tbz2,*.tgz,*.tar.gz,*.tar.xz,*.txz},
+        \<application/x-tar>
+       \ {Mount with archivemount}
+       \ FUSE_MOUNT|archivemount %SOURCE_FILE %DESTINATION_DIR,
+fileViewer *.tgz,*.tar.gz tar -tzf %c
+fileViewer *.tar.bz2,*.tbz2 tar -tjf %c
+fileViewer *.tar.txz,*.txz xz --list %c
+fileViewer {*.tar},<application/x-tar> tar -tf %c
+
+" RaR2FsMount and rar archives
+fileType {*.rar},<application/x-rar>
+       \ {Mount with rar2fs}
+       \ FUSE_MOUNT|rar2fs %SOURCE_FILE %DESTINATION_DIR,
+fileViewer {*.rar},<application/x-rar> unrar v %c
+
+" IsOMount
+fileType {*.iso},<application/x-iso9660-image>
+       \ {Mount with fuseiso}
+       \ FUSE_MOUNT|fuseiso %SOURCE_FILE %DESTINATION_DIR,
+
+" SsHMount
+fileType *.ssh
+       \ {Mount with sshfs}
+       \ FUSE_MOUNT2|sshfs %PARAM %DESTINATION_DIR %FOREGROUND,
+
+" FtPMount
+fileType *.ftp
+       \ {Mount with curlftpfs}
+       \ FUSE_MOUNT2|curlftpfs -o ftp_port=-,,disable_eprt %PARAM %DESTINATION_DIR %FOREGROUND,
+
+" FuSe7z and 7z archives
+fileType {*.7z},<application/x-7z-compressed>
+       \ {Mount with fuse-7z}
+       \ FUSE_MOUNT|fuse-7z %SOURCE_FILE %DESTINATION_DIR,
+fileViewer {*.7z},<application/x-7z-compressed> 7z l %c
+
+" OfFice files
+fileXtype {*.odt,*.doc,*.docx,*.xls,*.xlsx,*.odp,*.pptx,*.ppt},
+         \<application/vnd.openxmlformats-officedocument.*,
+          \application/msword,
+          \application/vnd.ms-excel>
+        \ libreoffice %f &
+fileViewer {*.doc},<application/msword> catdoc %c
+fileViewer {*.docx},
+          \<application/
+           \vnd.openxmlformats-officedocument.wordprocessingml.document>
+         \ docx2txt.pl %f -
+
+" TuDu files
+fileType *.tudu tudu -f %c
+
+" Qt projects
+fileXtype *.pro qtcreator %f &
+
+" DiRectories
+fileXtype */
+        \ {View in thunar}
+        \ Thunar %f &,
+" FiLetypes/directories
+set Classify=' :dir:/, :exe:, :reg:, :link:,? :?:, ::../::'
+
+" ------------------------------------------------------------------------------
+
+" fiLe icons
+" SpEcific files
+set Classify+=' ::.Xdefaults,,.Xresources,,.bashprofile,,.bash_profile,,.bashrc,,.dmrc,,.d_store,,.fasd,,.gitconfig,,.gitignore,,.jack-settings,,.mime.types,,.nvidia-settings-rc,,.pam_environment,,.profile,,.recently-used,,.selected_editor,,.xinitpurc,,.zprofile,,.yarnc,,.snclirc,,.tmux.conf,,.urlview,,.config,,.ini,,.user-dirs.dirs,,.mimeapps.list,,.offlineimaprc,,.msmtprc,,.Xauthority,,config::'
+set Classify+=' ::dropbox::'
+set Classify+=' ::favicon.*,,README,,readme::'
+set Classify+=' ::.vim,,.vimrc,,.gvimrc,,init.vim,,.vifm::'
+set Classify+=' ::gruntfile.coffee,,gruntfile.js,,gruntfile.ls::'
+set Classify+=' ::gulpfile.coffee,,gulpfile.js,,gulpfile.ls::'
+set Classify+=' ::ledger::'
+set Classify+=' ::license,,copyright,,copying,,LICENSE,,COPYRIGHT,,COPYING::'
+set Classify+=' ::node_modules::'
+set Classify+=' ::react.jsx::'
+
+" FiLe extensions
+set Classify+='λ ::*.ml,,*.mli::'
+set Classify+=' ::*.styl::'
+set Classify+=' ::*.scss::'
+set Classify+=' ::*.py,,*.pyc,,*.pyd,,*.pyo::'
+set Classify+=' ::*.php::'
+set Classify+=' ::*.markdown,,*.md::'
+set Classify+=' ::*.json::'
+set Classify+=' ::*.js::'
+set Classify+=' ::*.bmp,,*.gif,,*.ico,,*.jpeg,,*.jpg,,*.png,,*.svg,,*.svgz,,*.tga,,*.tiff,,*.xmb,,*.xcf,,*.xpm,,*.xspf,,*.xwd,,*.cr2,,*.dng,,*.3fr,,*.ari,,*.arw,,*.bay,,*.crw,,*.cr3,,*.cap,,*.data,,*.dcs,,*.dcr,,*drf,,*.eip,,*.erf,,*.fff,,*.gpr,,*.iiq,,*.k25,,*.kdc,,*.mdc,,.*mef,,*.mos,,.*.mrw,,.*.obm,,*.orf,,*.pef,,*.ptx,,*.pxn,,*.r3d,,*.raf,,*.raw,,*.rwl,,*.rw2,,*.rwz,,*.sr2,,*.srf,,*.srf,,*.srw,,*.tif,,*.x3f::'
+set Classify+=' ::*.ejs,,*.htm,,*.html,,*.slim,,*.xml::'
+set Classify+=' ::*.mustasche::'
+set Classify+=' ::*.css,,*.less,,*.bat,,*.conf,,*.ini,,*.rc,,*.yml,,*.cfg,,*.rc::'
+set Classify+=' ::*.rss::'
+set Classify+=' ::*.coffee::'
+set Classify+=' ::*.twig::'
+set Classify+=' ::*.c++,,*.cpp,,*.cxx,,*.h::'
+set Classify+=' ::*.cc,,*.c::'
+set Classify+=' ::*.hs,,*.lhs::'
+set Classify+=' ::*.lua::'
+set Classify+=' ::*.jl::'
+set Classify+=' ::*.go::'
+set Classify+=' ::*.ts::'
+set Classify+=' ::*.db,,*.dump,,*.sql::'
+set Classify+=' ::*.sln,,*.suo::'
+set Classify+=' ::*.exe::'
+set Classify+=' ::*.diff,,*.sum,,*.md5,,*.sha512::'
+set Classify+=' ::*.scala::'
+set Classify+=' ::*.java,,*.jar::'
+set Classify+=' ::*.xul::'
+set Classify+=' ::*.clj,,*.cljc::'
+set Classify+=' ::*.pl,,*.pm,,*.t::'
+set Classify+=' ::*.cljs,,*.edn::'
+set Classify+=' ::*.rb::'
+set Classify+=' ::*.fish,,*.sh,,*.bash::'
+set Classify+=' ::*.dart::'
+set Classify+=' ::*.f#,,*.fs,,*.fsi,,*.fsscript,,*.fsx::'
+set Classify+=' ::*.rlib,,*.rs::'
+set Classify+=' ::*.d::'
+set Classify+=' ::*.erl,,*.hrl::'
+set Classify+=' ::*.ai::'
+set Classify+=' ::*.psb,,*.psd::'
+set Classify+=' ::*.jsx::'
+set Classify+=' ::*.aac,,*.anx,,*.asf,,*.au,,*.axa,,*.flac,,*.m2a,,*.m4a,,*.mid,,*.midi,,*.mp3,,*.mpc,,*.oga,,*.ogg,,*.ogx,,*.ra,,*.ram,,*.rm,,*.spx,,*.wav,,*.wma,,*.ac3::'
+set Classify+=' ::*.avi,,*.flv,,*.mkv,,*.mov,,*.mov,,*.mp4,,*.mpeg,,*.mpg,,*.webm::'
+set Classify+=' ::*.epub,,*.pdf,,*.fb2,,*.djvu::'
+set Classify+=' ::*.7z,,*.apk,,*.bz2,,*.cab,,*.cpio,,*.deb,,*.gem,,*.gz,,*.gzip,,*.lh,,*.lzh,,*.lzma,,*.rar,,*.rpm,,*.tar,,*.tgz,,*.xz,,*.zip::'
+set Classify+=' ::*.cbr,,*.cbz::'
+set Classify+=' ::*.log::'
+set Classify+=' ::*.doc,,*.docx,,*.adoc::'
+set Classify+=' ::*.xls,,*.xls,,*.xlsmx::'
+set Classify+=' ::*.pptx,,*.ppt::'
+
+" ------------------------------------------------------------------------------
+
+" WhAt should be saved automatically between vifm sessions.  Drop "savedirs"
+" vaLue if you don't want vifm to remember last visited directories for you.
+set Vifminfo=dhistory,savedirs,chistory,state,tui,shistory,
+    \phistory,fhistory,dirstack,registers,bookmarks,bmarks
+
+" ------------------------------------------------------------------------------
+
+" ExAmples of configuring both panels
+
+" CuStomize view columns a bit (enable ellipsis for truncated file names)
+"
+" seT viewcolumns=-{name}..,6{}.
+
+" FiLter-out build and temporary files
+"
+" fiLter! {*.lo,*.o,*.d,*.class,*.pyc,*.pyo,.*~}
+
+" ------------------------------------------------------------------------------
+"mapPings
+
+nnorEmap s :shell<cr>
+nnorEmap S :sort<cr>
+nnorEmap w :view<cr>
+vnorEmap w :view<cr>gv
+nnorEmap gb :file &<cr>l
+nnorEmap q :q<cr>
+nnorEmap ,w :set wrap!<cr>
+
+
+" InTeraction with system clipboard
+if hAs('win')
+    " Yank current directory path to Windows clipboard with forward slashes
+    Nnoremap yp :!echo %"d:gs!\!/! %i | clip<cr>
+    " Yank path to current file to Windows clipboard with forward slashes
+    Nnoremap yf :!echo %"c:gs!\!/! %i | clip<cr>
+elseIf executable('xclip')
+    " Yank current directory path into the clipboard
+    Nnoremap yd :!echo %d | xclip %i<cr>
+    " Yank current file path into the clipboard
+    Nnoremap yf :!echo %c:p | xclip %i<cr>
+elseIf executable('xsel')
+    " Yank current directory path into primary and selection clipboards
+    Nnoremap yd :!echo -n %d | xsel --input --primary %i &&
+                \ echo -n %d | xsel --clipboard --input %i<cr>
+    " Yank current file path into into primary and selection clipboards
+    Nnoremap yf :!echo -n %c:p | xsel --input --primary %i &&
+                \ echo -n %c:p | xsel --clipboard --input %i<cr>
+endiF
+
+nnorEmap mf :touch<space>
+nnorEmap md :mkdir<space>
+
+nnorEmap gc :cd ~/.config<cr>
+nnorEmap gh :cd ~<cr>
+nnorEmap gw :cd ~/hdd/walls<cr>
+nnorEmap gs :cd ~/hdd/screenshots<cr>
+nnorEmap gm :cd ~/hdd/songs<cr>
+nnorEmap gd :cd ~/Downloads<cr>
+nnorEmap <C-s> :write | edit $MYVIFMRC | restart full<cr>
+
+
+" ExAmple of standard two-panel file managers mappings
+nnorEmap <f3> :!less %f<cr>
+nnorEmap <f4> :edit<cr>
+nnorEmap <f5> :copy<cr>
+nnorEmap <f6> :move<cr>
+nnorEmap <f7> :mkdir<space>
+nnorEmap <f8> :delete<cr>

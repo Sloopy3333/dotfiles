@@ -1,0 +1,82 @@
+#!/bin/sh
+#TODO not realy sure i want to write this since most mail i get are html format
+# this is quick and dirty script to setup mutt you can add multiple accounts
+# dependencies
+# mbsync
+
+scriptdir=/home/$USER/scripts
+[ -z $XDG_CONFIG_HOME ] && XDG_CONFIG_HOME=/home/$USER/.config
+[ -z $XDG_DATA_HOME ] && XDG_DATA_HOME=/home/$USER/.local/share
+[ ! -d $XDG_CONFIG_HOME/isync ] && mkdir $XDG_CONFIG_HOME/isync && touch $XDG_CONFIG_HOME/isync/mbsyncrc
+[ ! -f $XDG_CONFIG_HOME/isync/mbsyncrc ] && touch $XDG_CONFIG_HOME/isync/mbsyncrc
+
+gpgid="$($pass_dir/.gpg-id)"
+[ -z $pass_dir ] && echo "please create a password-store before continuing 
+visit https://www.passwordstore.org/ for moredetail"
+
+get_info()
+{
+mailid="$(echo "" | dmenu -p "mail id:")"
+[ !-z grep -q $mailid $XDG_CONFIG_HOME/isync/mbsyncrc ] && echo "$mailid alredy exists" && exit
+inpass="$(echo "Yes/nNo" | dmenu -p "password for $mailid alredy in password store ?")"
+if [ $inpass = "Yes" ]; then
+    password=passmenu
+password="$(echo "" | dmenu -p "password:")"
+mailid="$(echo "" | dmenu -p "imap server:")"
+mailid="$(echo "" | dmenu -p "imap port:")"
+mailid="$(echo "" | dmenu -p "smtp server:")"
+mailid="$(echo "" | dmenu -p "smtp port:")"
+mailid="$(echo "" | dmenu -p "name")"
+read -p "enter mail id: " mailid
+[ !-z grep -q $mailid $XDG_CONFIG_HOME/isync/mbsyncrc ] && echo "$mailid alredy exists" && exit
+read -p "password for $mailid alredy in password-store [y/n]: " passin
+if [ $passin = "y"]; then
+    pass=passmenu
+read -p "password: " pass
+read -p "imap server: " imapserver
+read -p "imap port(default 993): " imapport
+read -p "smtp server: " smtpserver
+read -p "smtp port(default 587): " smtpport
+read -p "acount name: " name
+
+[ -z $imapport ] && imapport=993
+[ -z $smtpportport ] && smtpport=587
+[ ! -d $XDG_DATA_HOME/mail/$mailid-$name ] && mkdir $XDG_DATA_HOME/mail/$mailid-$name && mkdir $XDG_DATA_HOME/mail/$mailid-$name/Sent && mkdir $XDG_DATA_HOME/mail/$mailid-$name/Drafts
+touch /tmp/$mailid && echo $pass > /tmp/$mailid
+gpg -r sudo@firemail.cc -e /tmp/$mailid && mv /tmp/$mailid.gpg $XDG_CONFIG_HOME/mutt/pass && shred /tmp/$mailid
+}
+
+write_isyncrc()
+{
+echo "# $mailid $name
+IMAPStore $name-remote
+Host $imapserver
+Port $imapport
+User $mailid
+PassCmd \"gpg -d $XDG_CONFIG_HOME/mutt/pass/$mailid.gpg\"
+AuthMechs LOGIN
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+MaildirStore $name-local
+
+Subfolders Verbatim
+Path $XDG_DATA_HOME/mail/$mailid-$name/
+Inbox $XDG_DATA_HOME/mail/$mailid-$name/INBOX
+Flatten .
+
+Channel $name
+Expunge Both
+Master :$name-remote:
+Slave :$name-local:
+Patterns * ![Gmail]*
+Create Both
+Expunge Both
+SyncState *
+MaxMessages 0
+ExpireUnread no
+"  >> $XDG_CONFIG_HOME/isync/mbsyncrc
+}
+
+write_isyncrc
+

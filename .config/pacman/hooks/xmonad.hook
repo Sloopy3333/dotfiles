@@ -1,0 +1,12 @@
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = xmonad
+Target = xmonad-contrib
+Target = haskell-*
+
+[Action]
+Description = Recompiling xmonad after update
+When = PostTransaction
+Exec = /usr/bin/sudo -u sam /usr/bin/xmonad --recompile

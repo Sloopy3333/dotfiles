@@ -1,0 +1,130 @@
+# general settings
+set shell zsh
+set shellopts '-eu'
+set ifs "\n"
+set scrolloff 10
+set hidden true
+set drawbox true
+set globsearch true
+set ignorecase true
+set incsearch true
+set smartcase true
+set filesep " "
+set icons true
+
+# define a custom 'open' command
+cmd open ${{
+    case $(file --mime-type $f -b) in
+        text/*) emacs --file $fx;;
+        image/*) devour sxiv $fx;;
+        video/*) devour mpv $fx;;
+        *) for f in $fx; do setsid $OPENER $f > /dev/null 2> /dev/null & done;;
+    esac
+}}
+
+# rename
+cmd rename %[ -e $1 ] && printf "file exists" || mv $fx $1
+
+# sudo rename
+cmd surename ${{[ -e $1 ] && printf "file exists" || sudo mv $fx $1}}
+
+# mkdir
+cmd mkdir %[ -e $1 ] && printf "directory exists" || mkdir -p $1
+
+# sudo mkdir
+cmd sumkdir ${{[ -e $1 ] && printf "directory exists" || sudo mkdir -p $1}}
+
+# touch
+cmd touch %[ -e $1 ] && printf "file exists" || touch $1
+
+# sudo touch
+cmd sutouch ${{[ -e $1 ] && printf "file exists" || sudo touch $1}}
+
+# sudo remove
+cmd suremove ${{printf "remove $fx \n" && sudo rm -rf $fx}}
+
+# chmod
+cmd chmod % chmod +x $fx && lf -remote 'send reload'
+
+# sudo chmod
+cmd suchmod % sudo chmod +x $fx && lf -remote 'send reload'
+
+# extract
+cmd extract ${{
+    set -f
+    case $f in
+        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf $f;;
+        *.tar.gz|*.tgz) tar xzvf $f;;
+        *.tar.xz|*.txz) tar xJvf $f;;
+        *.zip) unzip $f;;
+        *.rar) unrar x $f;;
+        *.7z) 7z x $f;;
+    esac
+}}
+
+# compress current file or selected files with tar and gunzip
+cmd tar ${{
+    set -f
+    mkdir $1
+    cp -r $fx $1
+    tar czf $1.tar.gz $1
+    rm -rf $1
+}}
+
+# compress current file or selected files with zip
+cmd zip ${{
+    set -f
+    mkdir $1
+    cp -r $fx $1
+    zip -r $1.zip $1
+    rm -rf $1
+}}
+
+# Bindings
+# Remove some defaults
+map m
+map o
+map n
+map "'"
+map '"'
+map d
+map c
+map e
+map f
+map x
+map s
+map v
+
+# rename
+map cw push :rename<space>
+map CW push :surename<space>
+# mkdir
+map md push :mkdir<space>
+map MD push :sumkdir<space>
+# touch
+map mf push :touch<space>
+map MF push :sutouch<space>
+# remove
+map dd delete
+map DD push :suremove<space>
+# chmod
+map xx push :chmod<enter>
+map XX push :suchmod<enter>
+# archive
+map ex push :extract<space>
+map ct push :tar<space>
+map cz push :zip<space>
+# cut yank paste clear
+map cc cut
+map yy copy
+map pp paste
+map cl clear
+map v toggle
+# quick cd
+map gh cd ~
+map gc cd ~/.config
+map gs cd ~/scripts
+map gd cd ~/Downloads
+map gm cd ~/hdd/screenshots
+map gw cd ~/hdd/walls
+map gp cd ~/hdd/projects

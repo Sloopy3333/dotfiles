@@ -1,0 +1,29 @@
+#!/bin/sh
+# simple tool to set wallpaper
+# dependencies
+#	sxixv
+#	xwallpaper
+
+# checks if directory exists 
+[ ! -d /home/$USER/.config/walli ] && mkdir /home/$USER/.config/walli
+
+# checks if wallpaper file exists 
+[ ! -f /home/$USER/.config/walli/wallpaper ] && touch /home/$USER/.config/walli/wallpaper
+
+# to add multiple directories add dir path as space seperated list eg WALL_DIR=("path1" "path2")
+WALL_DIR=~/external/hdd2/walls
+OPT="${2:---stretch}"
+case $1 in 
+     # restore previous wallpaper
+    -r)
+	cat $HOME/.config/walli/wallpaper | xargs xwallpaper --stretch 
+	;;
+     # set new wallpaper 
+    *)
+	SELECTED=$(devour sxiv -o -q -r -t $WALL_DIR)
+	[ "$SELECTED" = "" ] && exit
+	echo $SELECTED > ~/.config/walli/wallpaper
+	xwallpaper $OPT $SELECTED
+	;;
+esac
+

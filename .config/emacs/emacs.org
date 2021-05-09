@@ -1,0 +1,589 @@
+#+title: Emacs config
+#+STARTUP: content
+#+PROPERTY: header-args:emacs-lisp :tangle /home/sam/.config/emacs/init.el
+* Increase gc memory
+#+begin_src emacs-lisp :tangle /home/sam/.config/emacs/early-init.el
+(defvar last-file-name-handler-alist file-name-handler-alist)
+(setq gc-cons-threshold (* 200 1024 1024)
+      gc-cons-percentage 0.6)
+#+end_src
+
+* General settings
+** Basic settings
+#+begin_src emacs-lisp :tangle /home/sam/.config/emacs/early-init.el
+;; Disable toolbar
+(tool-bar-mode -1) 
+;; Disable scrollbar
+(scroll-bar-mode -1)                             
+;; Disable tooltip
+(tooltip-mode -1)                                
+;; Disable menubar
+(menu-bar-mode -1)                               
+;; Disable line wrap
+(global-visual-line-mode 0)                      
+;; Column numbers mode
+(column-number-mode)                             
+;; Enable recent file mode
+(recentf-mode 1)                                 
+;; Enable relative line number mode
+(global-display-line-numbers-mode `relative)     
+;; Alias yes/no to y/n
+(defalias 'yes-or-no-p 'y-or-n-p)               
+
+(setq ;; Disable startup screen 
+      inhibit-startup-screen t                   
+      ;;Disable backupfile
+      make-backup-files nil                      
+      ;;Disable error bell
+      ring-bell-function 'ignore                 
+      ;; Disable scratch buffer on startup
+      initial-major-mode 'fundamental-mode       
+      ;; Dont resize window implicitly
+      frame-inhibit-implied-resize t             
+      ;; Show matching parenthesis
+      show-paren-mode +1                         
+      ;; Tab completion
+      tab-always-indent 'complete                
+      ;; Disable vc
+      vc-handled-backends nil
+      ;; Set warning messages to emergency
+      warning-minimum-level :emergency)          
+
+;;some settings for straight and use-package
+ (setq
+   ;;use develop branch
+   straight-repository-branch "develop"
+   ;; check package modificaton whe they are edited only
+   straight-check-for-modifications '(check-on-save find-when-checking)
+   ;; dont load packages before reading init file
+   package-enable-at-startup nil
+   autoload-compute-prefix nil
+   ;; tell straight to use use-package 
+   straight-use-package-by-default t
+   ;;if set to t  use-package will be more verbose and write packages loading information in message buffer useful when debuging startup time
+   use-package-verbose t              
+   ;;if set to t use package will add -hook by default to :hook eg: :hook (c-mode) will be interpreted as c-mode-hook this
+   use-package-hook-name-sufix nil)     
+
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                treemacs-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+#+end_src
+** Set paths
+#+begin_src emacs-lisp :tangle /home/sam/.config/emacs/early-init.el
+;;Emacs user directory
+(setq user-emacs-directory "~/.local/share/emacs")
+
+;; Custom.el path
+(setq custom-file "~/.config/emacs/custom.el") 
+(load custom-file)
+#+end_src
+** Fonts
+#+begin_src emacs-lisp
+;; Set font considering if running daemon or not
+(defun sam/set-font ()
+(set-face-attribute 'default nil
+		    :font "Hack Nerd Font 11"
+		    :weight 'regular)
+(set-face-attribute 'variable-pitch nil
+		    :font "Hack Nerd Font 12"
+		    :weight 'regular)
+(set-face-attribute 'fixed-pitch nil
+		    :font "Hack Nerd Font 12"
+		    :weight 'regular)
+  )
+
+;; if in daemon mode 
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+	      (lambda (frame)
+		(with-selected-frame frame
+		  (sam/set-font))))
+  ;; else
+  (sam/set-font))
+#+end_src
+** Benchmark
+#+begin_src emacs-lisp
+;; Print time took to load emacs in messages buffer
+(defun sam/display-startup-time ()
+  (message "Emacs loaded in %s with %d garbage collections."
+           (format "%.2f seconds"
+                   (float-time
+                     (time-subtract after-init-time before-init-time)))
+           gcs-done))
+
+(add-hook 'emacs-startup-hook #'sam/display-startup-time)
+#+end_src
+* Package management
+** Straight
+#+begin_src emacs-lisp
+;;bootstrap straight
+(defvar bootstrap-version)
+(let ((bootstrap-file
+  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+  (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+(with-current-buffer
+    (url-retrieve-synchronously
+     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+     'silent 'inhibit-cookies)
+  (goto-char (point-max))
+  (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+#+end_src
+** Use-package
+#+begin_src emacs-lisp
+;; install use-package
+(straight-use-package 'use-package)
+#+end_src
+** No littering
+#+begin_src emacs-lisp
+;; Need to set user-emacs-directory before this
+;; Keep emacs directory clean 
+(use-package no-littering)
+#+end_src
+** UI and Themes
+*** Doom theme
+#+begin_src emacs-lisp
+;; A collection of doom themes
+(use-package doom-themes
+  :defer 0
+  :init (load-theme 'doom-dracula t)
+        (setq doom-themes-enable-bold t
+              doom-themes-enable-italic t))
+#+end_src
+
+*** Doom modline
+#+begin_src emacs-lisp
+;; Minimal modeline from doom
+(use-package doom-modeline
+  :defer 0
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)
+           (setq doom-modeline-icon t)))
+;; this is requried to display icons in modline while running emacsclient
+(defun enable-doom-modeline-icons (_frame)
+  (setq doom-modeline-icon t))
+(add-hook 'after-make-frame-functions 
+          #'enable-doom-modeline-icons)
+#+end_src
+
+*** All the icons
+#+begin_src emacs-lisp
+;; Icons to display in modline
+(use-package all-the-icons
+  :defer 0
+  :demand t)
+#+end_src
+** Minibuffer
+*** Selectrum
+#+begin_src emacs-lisp
+;; Minibuffer completion package
+(use-package selectrum
+  :defer 0
+  :config
+  (setq
+   ;;use fix height no matter how many candidates
+   selectrun-fix-vertical-window-height t                                                          
+   ;;max number of items can be displayed
+   selectrum-num-candidates-displayed 20                                                          
+   ;;case insensitive
+   completion-ignore-case t                                                                      
+   ;;extend selection background to screen width
+   selectrum-extend-current-candidate-highlight 't                                                
+   ;; show incices
+   selectrum-show-indices 't)
+  :custom-face
+  ;;current selected item face
+  (selectrum-current-candidate ((t (:foreground "#50fa7b" :background "#44475a" :weight bold))))    
+  ;;matched item face
+  (selectrum-prescient-primary-highlight ((t (:foreground "#ffb86c"))))                            
+  (selectrum-prescient-secondary-highlight ((t (:foreground "#ffb86c"))))
+  :init
+  ;;turn on selectrum
+  (selectrum-mode +1))                                                                              
+#+end_src
+
+*** Prescient 
+#+begin_src emacs-lisp
+;; Comanion for selectrum remembers the most used options and sorts accordingly
+(use-package selectrum-prescient
+  :after selectrum
+  :config
+  ;;turn on prescient mode
+  (selectrum-prescient-mode +1)         
+  ;;prescient mode will persist between session
+  (prescient-persist-mode +1))         
+#+end_src
+
+*** Consult
+#+begin_src emacs-lisp
+;; Provide varios useful commands for selectrum
+(use-package consult
+  :after 
+  selectrum
+  :init
+  (setq register-preview-delay 0
+        register-preview-function #'consult-register-format)
+  (advice-add #'register-preview :override #'consult-register-window)
+  :custom
+  (consult-narrow-key "<")
+  )
+#+end_src
+
+*** Marginalia 
+#+begin_src emacs-lisp
+;; Show annotations about the commands min selectrum
+(use-package marginalia
+  :after selectrum
+  :init
+  (marginalia-mode)
+  :custom
+  ;;show info about the item
+  (marginalia-annotators '(marginalia-annotators-heavy t)))        
+#+end_src
+
+*** Helpful
+#+begin_src emacs-lisp
+;; More helpful help 
+(use-package helpful
+  :commands (helpful-callable helpful-function helpful-macro helpful-variable helpful-command helpful-key))
+#+end_src
+** Keybindings
+*** Evil
+#+begin_src emacs-lisp
+;; Vim keybinding for emacs
+(use-package evil
+  :defer 0
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  :config
+  (evil-mode 1)
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
+#+end_src
+
+*** Hydra
+#+begin_src emacs-lisp
+;; A modal package prevents repeated key press
+(use-package hydra
+  :after evil)
+
+(defhydra hydra-text-scale (:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("q" nil "finished" :exit t))
+
+(defhydra hydra-window-size (:timeout 4)
+  "adjust window size"
+  ("j" evil-window-increase-height "in")
+  ("k" evil-window-decrease-height "out")
+  ("l" evil-window-increase-width "in")
+  ("h" evil-window-decrease-width "out")
+  ("q" nil "finished" :exit t))
+#+end_src
+
+*** Which key
+#+begin_src emacs-lisp
+;; Shows all keymaps
+(use-package which-key
+  :after evil
+  :diminish which-key-mode
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 1))
+#+end_src
+
+*** General
+#+begin_src emacs-lisp
+;; A easy way to map your keybinding
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(use-package general
+  :after evil
+  :config
+  (general-create-definer sam/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+  (sam/leader-keys
+    "."   '(find-file :which-key "find file")
+    "RET" '(consult-bookmark :which-key "Open Bookmarks")
+    "/"   '(project-search :which-key "Search in project")
+    ":"   '(eval-expression :which-key "evaluate expression")
+
+    ;; Buffers
+    "b"   '(:ignore b :which-key "buffers")
+    "bb"  '(consult-buffer :which-key "buffer menu")
+    "b]"  '(switch-to-next-buffer :which-key "switch to next buffer")
+    "b["  '(switch-to-prev-buffer :which-key "switch to previous buffer")
+    "bn"  '(switch-to-next-buffer :which-key "switch to next buffer")
+    "bp"  '(switch-to-prev-buffer :which-key "switch to previous buffer")
+    "bd"  '(evil-delete-buffer :which-key "kill present buffer")
+    "bk"  '(kill-buffer :which-key "select a buffer to kill")
+    "bc"  '(clone-indirect-buffer-other-window :which-key "Clone buffer to new window")
+    "bl"  '(consult-line :which-key "search lines in buffer")
+    "bo"  '(evil-buffer-new :which-key "new empty buffer")
+    "bf"  '(consult-buffer-other-frame :which-key "open a buffer in other frame")
+    "bw"  '(consult-buffer-other-window :which-key "open a buffer in other windowframe")
+
+    ;;Bookmarks
+    "m"   '(:ignore m :which-key "Bookmarks")
+    "ml"  '(consult-buffer :which-key "list bookmarks")
+    "ms"  '(bookmark-set :which-key "add bookmark")
+    "mr"  '(bookmark-rename :which-key "rename bookmark")
+    "md"  '(bookmark-delete :which-key "delete bookmark")
+
+    ;;Code
+    "c"   '(:ignore c :which-key "Code")
+    "ca"  '(eglot-code-actions :which-key "code actions")
+
+    ;;Magit
+    "g"   '(:ignore g :which-key "Magit")
+    "gs"  '(magit-status :which-key "magit status")
+
+    ;;Project
+    "p"   '(:ignore m :which-key "Project")
+    "pf"  '(consult-project-imenu :which-key "list functions in project")
+
+    ;; Org
+    "o"   '(:ignore o :which-key "org")
+    "ol"   '(consult-imenu :which-key "go to heading")'
+    "ot"   '(org-babel-tangle :which-key "go to heading")'
+
+    ;; Files
+    "f"   '(:ignore f :which-key "files")
+    "ff"  '(dired-jump :which-key "dired")
+    "fr"  '(consult-recent-file :which-key "dired")
+
+    ;; Help
+    "h"   '(:ignore h :which-key "help")
+    "he"  '(lambda () (interactive) (find-file (expand-file-name "~/.config/emacs/emacs.org")) :which-key "open emacs config")
+    "hr"  '(lambda () (interactive) (load-file (expand-file-name "~/.config/emacs/init.el")) :which-key "reload emacs config")
+    "hf"  '(helpful-function :which-key "function help")'
+    "hv"  '(helpful-variable :which-key "variable help")'
+    "hk"  '(helpful-key :which-key "key help")'
+    "hm"  '(helpful-macro :which-key "macro help")'
+    "hc"  '(helpful-command :which-key "command help")'
+    "hs"  '(helpful-symbol :which-key "symbol help")'
+    "ha"  '(helpful-at-point :which-key "at point help")'
+
+    ;; Toggles
+    "t"   '(:ignore t :which-key "toggles")
+    "tt"  '(consult-theme :which-key "choose theme")
+    "ts"  '(hydra-text-scale/body :which-key "scale text")
+
+    ;; Window
+    "w"   '(:ignore w :which-key "window")
+    "wh"  '(evil-window-split :which-key "horizontal split")
+    "wv"  '(evil-window-vsplit :which-key "vertical split")
+    "wd"  '(evil-window-delete :which-key "delete window")
+    "wn"  '(evil-window-next :which-key "focus next window")
+    "wp"  '(evil-window-prev :which-key "focus previous window")
+    "wj"  '(evil-window-down :which-key "focus down window")
+    "wk"  '(evil-window-up :which-key "focus up window")
+    "wl"  '(evil-window-right :which-key "focus right window")
+    "wh"  '(evil-window-left :which-key "left window")
+    "ws"  '(hydra-window-size/body :which-key "adjust window size")
+  )
+)
+#+end_src
+** Org mode
+*** Org
+#+begin_src emacs-lisp
+;; Org mode
+(defun sam/org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+(dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "Hack Nerd Font" :weight 'bold :height (cdr face)))
+
+;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+  (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+(use-package org
+  :commands (org-capture org-agenda)
+  :config
+  (setq org-ellipsis " ➜"
+   org-agenda-start-with-log-mode t
+   org-log-done 'time
+   org-log-into-drawer t
+   org-src-preserve-indentation t
+   org-edit-src-content-indentation '0
+   org-startup-indented t)
+   (sam/org-font-setup))
+
+;; Org babel
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((emacs-lisp . t)
+	    (haskell . t)
+        (python . t)))
+
+  (push '("conf-unix" . conf-unix) org-src-lang-modes))
+
+(with-eval-after-load 'org
+  (require 'org-tempo)
+
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (add-to-list 'org-structure-template-alist '("hs" . "src haskell")))
+
+#+end_src
+
+*** Org bullets
+#+begin_src emacs-lisp
+;; Add nice bullets to org headings
+(use-package org-bullets
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+#+end_src
+** Code Completion
+*** Eglot 
+#+begin_src emacs-lisp
+;; Lsp with suport for various languages
+ (use-package eglot
+   :after (:any python-mode haskell-mode sh-mode c-mode)
+   )
+#+end_src 
+
+#+RESULTS:
+*** Company mode
+#+begin_src emacs-lisp
+;; A autocompletion package
+(use-package company
+  :init
+  (add-hook 'after-init-hook 'global-company-mode)
+  :bind (:map company-active-map
+    ("<tab>" . company-complete-selection)
+    ("C-j" . company-select-next)
+    ("C-k" . company-select-previous))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+#+end_src
+*** Languages
+**** Python
+#+begin_src emacs-lisp
+;; Python mode
+(use-package python-mode
+  :commands (python-mode)
+  :config (add-hook 'python-mode-hook 'eglot-ensure))
+#+end_src
+**** Haskell
+#+begin_src emacs-lisp
+;; Haskell mode
+(use-package haskell-mode
+  :commands (haskell-mode)
+  :config (add-hook 'haskell-mode-hook 'eglot-ensure))
+#+end_src
+**** Shell
+#+begin_src emacs-lisp
+;; Sell mode
+(use-package sh-script
+  :commands (sh-mode)
+  :config (add-hook 'sh-mode-hook 'eglot-ensure))
+#+end_src
+**** Clang
+#+begin_src emacs-lisp
+;; CLand mode
+(use-package cc-mode
+  :commands (c-mode)
+  :config (add-hook 'c-mode-hook 'eglot-ensure))
+#+end_src
+** Magit
+#+begin_src emacs-lisp
+;; A git client for emacs
+(use-package magit
+  :commands magit-status
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
+
+** Dired
+#+begin_src emacs-lisp
+;; Emacs file manager
+;; TODO need configure evil keys
+;;(use-package dired
+;;  :straight nil
+;;  :commands (dired dired-jump)
+;;  :custom ((dired-listing-switches "-agho --group-directories-first")))
+;;
+;;(use-package dired-single
+;;  :after dired
+;;  :commands (dired dired-jump))
+;;
+;;(use-package all-the-icons-dired
+;;  :after dired
+;;  :hook (dired-mode . all-the-icons-dired-mode))
+;;
+;;(use-package dired-open
+;;  :after dired
+;;  :commands (dired dired-jump)
+;;  :config
+;;  ;; Doesn't work as expected!
+;;  ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
+;;  (setq dired-open-extensions '(("png" . "feh")
+;;                                ("mkv" . "mpv"))))
+;;
+;;(use-package dired-hide-dotfiles
+;;  :after dired
+;;  :hook (dired-mode . dired-hide-dotfiles-mode)
+;;  :config
+;;  (evil-collection-define-key 'normal 'dired-mode-map
+;;    "." 'dired-hide-dotfiles-mode))
+#+end_src
+
+** Elfeed
+#+begin_src emacs-lisp
+;; A rss client for emacs
+;; TODO need to add my urls
+(use-package elfeed
+  :commands (:any elfeed elfeed-update)
+  :config
+  (setq elfeed-feeds
+      '(("http://nullprogram.com/feed/" blog emacs)
+        "http://www.50ply.com/atom.xml"  ; no autotagging
+        ("http://nedroid.com/feed/" webcomic))
+      'elfeed-db-directory "~/.local/share/emacs"))
+
+#+end_src
+* Reset gc memory
+reset the garbage collector memory back to normal
+#+begin_src emacs-lisp
+(setq gc-cons-threshold (* 16 1024 1024)
+      gc-cons-percentage 0.1)
+#+end_src

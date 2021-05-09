@@ -1,0 +1,14 @@
+#!/bin/sh
+
+name="$(echo "" | dmenu -p "script name:" -l 0)"
+[ -z $name ] && exit
+shell="$(echo "/bin/sh\n/bin/dash\n/bin/bash" | dmenu -p "select a shell:")"
+[ -z $shell ] && exit
+if [ ! -z "$name" ]; then
+    scriptdir="$HOME/scripts"
+    touch $scriptdir/$name
+    chmod +x "$scriptdir/$name"
+    echo "#!$shell" >> "$scriptdir/$name"
+    nvim "$scriptdir/$name"
+fi
+

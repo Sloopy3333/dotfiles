@@ -1,0 +1,54 @@
+#!/bin/bash
+
+declare -A config
+config[alacritty]="$HOME/.config/alacritty/alacritty.yml"
+config[amfora]="$HOME/.config/amfora/config.toml"
+config[bashtop]="$HOME/.config/bashtop/bashtop.cfg"
+config[cava]="$HOME/.config/cava/config"
+config[doom config]="$HOME/.config/doom/config.el"
+config[doom init]="$HOME/.config/doom/init.el"
+config[dunst]="$HOME/.config/dunst/dunstrc"
+config[gtk2]="$HOME/.config/gtk-2.0/.gtkrc-2.0"
+config[gtk2]="$HOME/.config/gtk-3.0/settings.ini"
+config[htop]="$HOME/.config/htop/htoprc"
+config[lf]="$HOME/.config/lf/lfrc"
+config[lsd]="$HOME/.config/lsd/config.yaml"
+config[mpd]="$HOME/.config/mpd/mpd.conf"
+config[nmpcpp-config]="$HOME/.config/ncmpcpp/config"
+config[nmpcpp-bindings]="$HOME/.config/ncmpcpp/bindings"
+config[neofetch]="$HOME/.config/neofetch/config.conf"
+config[newsboat-config]="$HOME/.config/newsboat/config"
+config[newsboat-url]="$HOME/.config/newsboat/config"
+config[nvim]="$HOME/.config/nvim/init.vim"
+config[paru]="$HOME/.config/paru/paru.conf"
+config[pcmanfm]="$HOME/.config/pcmanfm/default/pcmanfm.conf"
+config[picom]="$HOME/.config/picom/picom.conf"
+config[qtile]="$HOME/.config/qtile/config.py"
+config[qutebrowser]="$HOME/.config/qutebrowser/config.py"
+config[rofi]="$HOME/.config/rofi/config.rasi"
+config[vifm]="$HOME/.config/vifm/vifmrc"
+config[vimb]="$HOME/.config/vimb/config"
+config[Xinitrc]="$HOME/.config/X11/Xinitrc"
+config[Xresources]="$HOME/.config/X11/Xresources"
+config[Xmodmap]="$HOME/.config/X11/Xmodmap"
+config[xmobar]="$HOME/.config/xmobar/xmobar.config"
+config[xmonad]="$HOME/.config/xmonad/xmonad.hs"
+config[zathura]="$HOME/.config/zathura/zathurarc"
+config[zshrc]="$HOME/.config/zsh/.zshrc"
+config[zprofile]="$HOME/.config/zsh/.zprofile"
+config[zsh-alias]="$HOME/.config/zsh/alias.zsh"
+config[zsh-completion]="$HOME/.config/zsh/completion.zsh"
+config[zsh-exports]="$HOME/.config/zsh/exports.zsh"
+config[zsh-man_color]="$HOME/.config/zsh/man_color.zsh"
+config[zsh-prompt]="$HOME/.config/zsh/prompt.zsh"
+config[zsh-vi-mode]="$HOME/.config/zsh/vi-mode.zsh"
+
+selected=$(printf "%s\n" "${!config[@]}" | sort | dmenu -p 'Choose config to edit')
+
+if [ !-z $selected ]; then
+    path=$(echo "${config["${selected}"]}") || exit
+    emacs $path
+else
+    exit
+fi
+

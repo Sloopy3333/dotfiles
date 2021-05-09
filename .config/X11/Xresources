@@ -1,0 +1,80 @@
+*.foreground: #f8f8f2
+*.background: #282a36
+*.color0:     #000000
+*.color8:     #4d4d4d
+*.color1:     #ff5555
+*.color9:     #ff6e67
+*.color2:     #50fa7b
+*.color10:    #5af78e
+*.color3:     #f1fa8c
+*.color11:    #f4f99d
+*.color4:     #bd93f9
+*.color12:    #caa9fa
+*.color5:     #ff79c6
+*.color13:    #ff92d0
+*.color6:     #8be9fd
+*.color14:    #9aedfe
+*.color7:     #bfbfbf
+*.color15:    #e6e6e6
+
+xterm.termname: xterm-256color
+
+xft.dpi: 96 
+xft.antialias: true 
+xft.hinting: true 
+xft.rgba: rgb 
+xft.autohint: true 
+xft.hintstyle: hintfull 
+xft.lcdfilter: lcdfilter
+
+xterm.*.renderfont: true
+xterm.*.facename: xft:hack nerd font mono:size=12:regular:antialias=true
+xterm.*.utf-8: 2
+xterm.*.locale: true
+xterm.*.metasendsescape: true
+xterm.*.savelines: 4096
+xterm.*.geometry: 80x32
+xterm.*.internalborder: 10
+xterm*savelines: 9000
+
+! double-click to select whole urls :d 
+xterm*charclass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48 
+
+
+! copy paste
+!xterm.vt100.selecttoclipboard: true
+xterm*vt100.translations: #override \
+    ctrl shift <key>c: copy-selection(clipboard) \n\
+    ctrl shift <key>v: insert-selection(clipboard)
+    alt <key>o: exec-formatted("firefox '%t'", primary) select-start() select-end()
+
+urxvt*imlocale: en_us.utf-8
+urxvt*termname: rxvt-unicode-256color
+urxvt*buffered: false
+urxvt.intensitystyles: false
+urxvt.font: xft:hack nerd font:style=bold:size=12
+
+urxvt.savelines: 2000
+urxvt.scrollbar: false
+
+!! extensions
+urxvt.perl-ext-common: default,matcher,resize-font,url-select,keyboard-select,clipboard
+!! url-select
+urxvt.keysym.m-u: perl:url-select:select_next
+urxvt.url-select.launcher: urxvt -e lynx -cfg=~/.lynx.cfg -lss=~/.lynx.lss
+urxvt.url-select.underline: true
+!! keyboard-select:
+urxvt.keysym.m-escape: perl:keyboard-select:activate
+!! resize-font
+urxvt.keysym.c-k:   font-size:increase
+urxvt.keysym.c-j:   font-size:decrease
+!! matcher
+urxvt.url-launcher:	urxvt -e lynx -cfg=~/.lynx.cfg -lss=~/.lynx.lss
+urxvt.matcher.button: 1
+!!clipboard
+urxvt.keysym.m-c: perl:clipboard:copy
+urxvt.keysym.m-v: perl:clipboard:paste
+urxvt*depth: 32
+
+!!emacs
+"emacs.font: hack nerd font-12"

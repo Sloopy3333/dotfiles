@@ -1,0 +1,42 @@
+# diRectories 
+ncmpCpp_directory = ~/.config/ncmpcpp
+lyriCs_directory = ~/.local/share/mpd/lyrics
+
+# mpD 
+mpd_Host = "localhost"
+mpd_Port = "6600"
+mpd_Music_dir = "~/hdd/songs/"
+mpd_Connection_timeout = "5"
+
+# viSualizer
+visuAlizer_fifo_path = "/tmp/mpd.fifo"
+visuAlizer_output_name = "my_fifo"
+visuAlizer_in_stereo = "yes"
+visuAlizer_type = "spectrum"
+visuAlizer_fps = 60
+visuAlizer_autoscale = no
+visuAlizer_look = ●▮
+visuAlizer_color = blue, cyan, green, yellow, magenta, red
+
+# deAly
+playList_disable_highlight_delay = 0
+messAge_delay_time = 5
+
+# soNg format
+song_list_format = {%a - }{%t}|{$8%f$9}$R{$3%l$9}
+song_status_format = {{%a{ "%b"{ (%y)}} - }{%t}}|{%f}
+song_library_format = {%n - }{%t}|{%f}
+alteRnative_header_first_line_format = $b$1$aqqu$/a$9 {%t}|{%f} $1$atqq$/a$9$/b
+alteRnative_header_second_line_format = {{$4$b%a$/b$9}{ - $7%b$9}{ ($4%y$9)}}|{%D}
+currEnt_item_prefix = $(yellow)$r
+currEnt_item_suffix = $/r$(end)
+currEnt_item_inactive_column_prefix = $(white)$r
+currEnt_item_inactive_column_suffix = $/r$(end)
+now_Playing_prefix = $b
+now_Playing_suffix = $/b
+browSer_playlist_prefix = "$2playlist$9 "
+seleCted_item_prefix = $6
+seleCted_item_suffix = $9
+modiFied_item_prefix = $3> $9
+song_columns_list_format = (20)[]{a} (6f)[green]{NE} (50)[white]{t|f:Title} (20)[cyan]{b} (7f)[magenta]{l}
+enabLe_window_title = no

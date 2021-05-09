@@ -1,0 +1,10 @@
+#!/bin/sh
+
+status="$(amixer sget Master | grep -o -m 1 "\[[a-z]*\]" |  tr -d '%[]')"
+vol="$(amixer sget Master | grep -o -m 1 '[[:digit:]]*%' | tr -d '%')"
+if [ $status = off ]; then
+    myvol="ﱝ" 
+else    
+    myvol=" $vol"
+fi
+echo $myvol
