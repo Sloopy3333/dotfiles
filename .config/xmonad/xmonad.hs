@@ -76,8 +76,8 @@ myTerminalAlt :: String
 myTerminalAlt = "alacritty"
 
 myFilemanager :: String
---myFilemanager = myTerminal ++ " -e lf"
-myFilemanager = "emacsclient -c -a '' --eval '(dired nil)'"
+myFilemanager = myTerminal ++ " -e lf"
+--myFilemanager = "emacsclient -c -a '' --eval '(dired nil)'"
 
 myFilemanagerAlt :: String
 myFilemanagerAlt = "pcmanfm"
@@ -102,6 +102,7 @@ myRssreader = "emacsclient -c -a '' --eval '(elfeed)'"
 myIDE :: String
 --myIDE = myTerminal ++ " -e nvim"
 myIDE = "emacsclient -c -a emacs"
+--myIDE = "~/Downloads/emacs/src/emacs"
 
 myFont :: String
 myFont = "xft:Hack Nerd Font:regular:size=12:antialias=true:hinting=true"

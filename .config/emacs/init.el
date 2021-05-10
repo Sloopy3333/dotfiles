@@ -1,3 +1,48 @@
+;; -*- lexical-binding: t; -*-
+
+(global-hl-line-mode 1)                                            ;; Enable line highlighting
+(setq-default display-line-numbers 'relative)                      ;; Enable relative line number mode
+(setq read-process-output-max (* 1024 1024))                       ;; Increase the amount of data which Emacs reads from the process.
+(setq-default bidi-display-reordering 'left-to-right               ;; Disable right-to-left since i dont use it
+              bidi-paragraph-direction 'left-to-right)
+(setq auto-hscroll-mode 'current-line)                             ;; Horizontally scroll only the current line
+(setq fast-but-imprecise-scrolling t)                              ;; More performant rapid scrolling over unfontified regions.
+(setq ffap-machine-p-known 'reject)                                ;; Don't ping things that look like domain names.
+(setq inhibit-startup-screen t)                                    ;; Disable startup screen
+(setq ring-bell-function 'ignore)                                  ;; Disable error bell
+(setq initial-scratch-message "")                                  ;; Disable scratch buffer on startup
+(setq initial-major-mode 'fundamental-mode)                        ;; Disable scratch mode on startup
+(setq mode-line-format nil)                                        ;; Dont show default modeline until my modeline is loaded
+(setq warning-minimum-level :emergency)                            ;; Set warning messages to emergency
+(setq highlight-nonselected-windows nil)                           ;; don't highlight non selected windows
+(setq frame-inhibit-implied-resize t)                              ;; Dont resize window implicitly
+(setq create-lockfiles nil)                                        ;; Disable lockfiles
+(setq make-backup-files nil)                                       ;; Disable backup files
+(setq auto-save-default nil)                                       ;; Disable autosave
+(setq make-backup-files nil)                                       ;; Disable backup
+(setq tab-width 4)                                                 ;; Set tab width to 4
+(setq indent-tabs-mode nil)                                        ;; Use space only
+(setq tab-always-indent 'complete)                                 ;; Tab completion
+(setq x-select-enable-clipboard t)                                 ;; Use system secondary clipboard
+(setq x-select-enable-primary t)                                   ;; Use system primary clipboard
+(setq cursor-in-non-selected-window nil)                           ;; Hide cursor in non-focused window
+(setq help-window-select t)                                        ;; Focus help window when opened
+(setq blink-cursor-mode nil)                                       ;; Disable cursot blinking
+(setq global-visual-line-mode t)                                   ;; Disable line wrap
+(setq column-number-mode t)                                        ;; Show column numbers mode
+(setq delete-selection-mode t)                                     ;; Typing will overwrite the selected text
+(setq global-auto-revert-mode t)                                   ;; Reload file as they change on disk
+(defalias 'yes-or-no-p 'y-or-n-p)                                  ;; Alias yes/no to y/n
+(dolist                                                            ;; Disable number line in certiain mode
+  (mode '(org-mode-hook
+          term-mode-hook
+          shell-mode-hook
+          treemacs-mode-hook
+          eshell-mode-hook))
+          (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+
+;; Set fonts
 (defun sam/set-font ()
 (set-face-attribute 'default nil
         	    :font "Hack Nerd Font 12"
@@ -8,7 +53,6 @@
 (set-face-attribute 'fixed-pitch nil
         	    :font "Hack Nerd Font 12"
         	    :weight 'regular))
- 
 ;; if in daemon mode 
 (if (daemonp)
     (add-hook 'after-make-frame-functions
@@ -16,6 +60,14 @@
         	(with-selected-frame frame
         	  (sam/set-font))))
     (sam/set-font))
+
+;; a special comment highlight for elisp so i can easily scan through diffrent parts of my config eg : ;;;; HEADING
+;;https://emacs.stackexchange.com/questions/28232/syntax-highlighting-for-comments-starting-with-specific-sequence-of-characters
+;;https://www.gnu.org/software/emacs/manual/html_node/elisp/Search_002dbased-Fontification.html
+(defface heading-comment '((t (:foreground "#57c7ff" :background "#282a36" :weight bold))) "blue")
+(font-lock-add-keywords
+ 'emacs-lisp-mode '((";;;;.*" 0 'heading-comment t)))
+ 
 
 ;; Print time took to load emacs in messages buffer
 (defun sam/display-startup-time ()
@@ -27,18 +79,8 @@
  
 (add-hook 'emacs-startup-hook #'sam/display-startup-time)
 
-;; Switch to scratch buffer
-(defun sam/switch-to-scratch-buffer ()
-  "Switch to scratch buffer"
-  (interactive)
-  (switch-to-buffer "*scratch*"))
- 
-;; Switch to messages buffer
-(defun sam/switch-to-messages-buffer ()
-  "Switch to messages buffer"
-  (interactive)
-  (switch-to-buffer "*Messages*"))
 
+;;;; STRAIGHT
 ;;bootstrap straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -53,20 +95,28 @@
   (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
 
+
+;;;; USE-PACKAGE
 ;; install use-package
 (straight-use-package 'use-package)
 (setq use-package-compute-statistics t)
 
+
+;;;; NO-LITTERING
 ;; Need to set user-emacs-directory before this
 ;; Keep emacs directory clean 
 (use-package no-littering)
 
+
+;;;; GCMH
 (use-package gcmh
   :config
-  (setq gcmh-idle-delay 10 ; garbage collect after 10s of idle time
-        gcmh-high-cons-threshold 16777216) ; 16mb
-  )
+  (setq gcmh-idle-delay 10 
+        gcmh-high-cons-threshold 16777216)
+  (gchm-mode +1))
 
+
+;;;; DOOM THEMES
 ;; A collection of doom themes
 (use-package doom-themes
   :defer 0
@@ -80,6 +130,8 @@
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
+
+;;;; DOOM MODLINE
 ;; Minimal modeline from doom
 (use-package doom-modeline
   :defer 0
@@ -92,38 +144,46 @@
 (add-hook 'after-make-frame-functions 
           #'enable-doom-modeline-icons)
 
+
+;;;; ALL THE ICONS
 ;; Icons to display in modline
 (use-package all-the-icons
   :defer 0)
 
-;;Minibuffer completion package
-;;(use-package selectrum
-;;  :defer 0
-;;  :bind (:map selectrum-minibuffer-map
-;;              ("C-j" . 'selectrum-next-candidate )
-;;              ("C-k" . 'selectrum-previous-candidate )
-;;              ("C-d" . 'selectrum-next-page )
-;;              ("C-u" . 'selectrum-previous-page ))
-;;  :config
-;;  (selectrum-mode +1)                                                                             
-;;  (setq
-;;   ;;use fix height no matter how many candidates
-;;   selectrun-fix-vertical-window-height t                                                          
-;;   ;;max number of items can be displayed
-;;   selectrum-num-candidates-displayed 20                                                          
-;;   ;;case insensitive search
-;;   completion-ignore-case t                                                                      
-;;   ;;extend selection background to screen width
-;;   selectrum-extend-current-candidate-highlight 't                                                
-;;   ;;show indices
-;;   selectrum-show-indices 't)
-;;  :custom-face
-;;  ;;current selected item face
-;;  (selectrum-current-candidate ((t (:foreground "#50fa7b" :background "#44475a" :weight bold))))    
-;;  ;;matched item face
-;;  (selectrum-prescient-primary-highlight ((t (:foreground "#ffb86c"))))                            
-;;  (selectrum-prescient-secondary-highlight ((t (:foreground "#ffb86c")))))
 
+;;;; SELECTRUM
+;; Minibuffer completion package
+(use-package selectrum
+  :disabled t
+  :defer 0
+  :bind (:map selectrum-minibuffer-map
+              ("C-j" . 'selectrum-next-candidate )
+              ("C-k" . 'selectrum-previous-candidate )
+              ("C-d" . 'selectrum-next-page )
+              ("C-u" . 'selectrum-previous-page ))
+  :config
+  (selectrum-mode +1)                                                                             
+  (setq
+   ;;use fix height no matter how many candidates
+   selectrun-fix-vertical-window-height t                                                          
+   ;;max number of items can be displayed
+   selectrum-num-candidates-displayed 20                                                          
+   ;;case insensitive search
+   completion-ignore-case t                                                                      
+   ;;extend selection background to screen width
+   selectrum-extend-current-candidate-highlight 't                                                
+   ;;show indices
+   selectrum-show-indices 't)
+  :custom-face
+  ;;current selected item face
+  (selectrum-current-candidate ((t (:foreground "#50fa7b" :background "#44475a" :weight bold))))    
+  ;;matched item face
+  (selectrum-prescient-primary-highlight ((t (:foreground "#ffb86c"))))                            
+  (selectrum-prescient-secondary-highlight ((t (:foreground "#ffb86c")))))
+
+
+;;;; VERTICO
+;; Minibuffer completion package
 (use-package vertico
   :defer 0
   :bind (:map vertico-map
@@ -137,6 +197,9 @@
   (setq vertico-cycle t
 	vertico-count 20))
 
+
+;;;; ORDERLESS
+;; Minibuffer sorting package
 (use-package orderless
   :after (:any selectrum icomplete-vertical vertico)
   :config
@@ -144,31 +207,39 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
+
+;;;; SAVEHIST
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :after (:any selectrum icomplete-vertical vertico)
   :config
   (savehist-mode))
 
-;;Comanion for selectrum remembers the most used options and sorts accordingly
-;;(use-package selectrum-prescient
-;;  :after selectrum
-;;  :config
-;;  ;;turn on prescient mode
-;;  (selectrum-prescient-mode +1)         
-;;  ;;prescient mode will persist between session
-;;  (prescient-persist-mode +1))
 
+;;;; PRESCIENT
+;;Comanion for selectrum remembers the most used options and sorts accordingly
+(use-package selectrum-prescient
+  :disabled t
+  :after selectrum
+  :config
+  ;;turn on prescient mode
+  (selectrum-prescient-mode +1)         
+  ;;prescient mode will persist between session
+  (prescient-persist-mode +1))
+
+
+;;;; CONSULT
 ;; Provide varios useful commands for selectrum
 (use-package consult
   :after (:any selectrum icomplete-vertical vertico)
-  selectrum
   :config
-  (setq register-preview-delay 0
-        register-preview-function #'consult-register-format)
+  ;;(setq register-preview-delay 0
+  ;;      register-preview-function #'consult-register-format)
   (advice-add #'register-preview :override #'consult-register-window)
   (consult-narrow-key "<"))
 
+
+;;;; MARGINALIA
 ;; Show annotations about the commands min selectrum
 (use-package marginalia
   :after (:any selectrum icomplete-vertical vertico)
@@ -177,10 +248,14 @@
   ;;show info about the item
   (setq marginalia-annotators '(marginalia-annotators-heavy t)))
 
+
+;;;; HELPFUL
 ;; More helpful help 
 (use-package helpful
   :commands (helpful-callable helpful-function helpful-macro helpful-variable helpful-command helpful-key))
 
+
+;;;; EVIl
 ;; Vim keybinding for emacs
 (use-package evil
   :defer 0
@@ -195,11 +270,15 @@
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
 
+
+;;;; EVIL-COLLECTION
 (use-package evil-collection
   :after evil
   :config
   (evil-collection-init))
 
+
+;;;; HYDRA
 ;; A modal package prevents repeated key press
 (use-package hydra
   :after evil)
@@ -218,6 +297,8 @@
   ("h" evil-window-decrease-width "out")
   ("q" nil "finished" :exit t))
 
+
+;;;; WHICH-KEY
 ;; Shows all keymaps
 (use-package which-key
   :after evil
@@ -225,6 +306,20 @@
   :config
   (which-key-mode)
   (setq which-key-idle-delay 1))
+
+
+;;;; GENERAL
+;; Switch to scratch buffer
+(defun sam/switch-to-scratch-buffer ()
+  "Switch to scratch buffer"
+  (interactive)
+  (switch-to-buffer "*scratch*"))
+ 
+;; Switch to messages buffer
+(defun sam/switch-to-messages-buffer ()
+  "Switch to messages buffer"
+  (interactive)
+  (switch-to-buffer "*Messages*"))
 
 ;; A easy way to map your keybinding
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -298,7 +393,7 @@
 
     ;; Help
     "h"   '(:ignore h :which-key "help")
-    "he"  '(lambda () (interactive) (find-file (expand-file-name "~/dot/dotfiles.org")) :which-key "open emacs config")
+    "he"  '(lambda () (interactive) (find-file (expand-file-name "~/.config/emacs/init.el")) :which-key "open emacs config")
     "hr"  '(lambda () (interactive) (load-file (expand-file-name "~/.config/emacs/init.el")) :which-key "reload emacs config")
     "hf"  '(helpful-function :which-key "function help")'
     "hv"  '(helpful-variable :which-key "variable help")'
@@ -327,9 +422,10 @@
     "wh"  '(evil-window-left :which-key "left window")
     "ws"  '(hydra-window-size/body :which-key "adjust window size")
   )
-)
+  )
 
-;; Org mode
+
+;;;; Org mode
 (defun sam/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -368,10 +464,7 @@
    (setq org-ellipsis " ➜"
    org-src-preserve-indentation t
    org-edit-src-content-indentation '0
-   org-startup-indented t)
-   :hook
-   ;; auto tangle on save
-   (org-mode . (lambda () (add-hook 'after-save-hook 'org-babel-tangle :append :local))))
+   org-startup-indented t))
 
 (with-eval-after-load 'org
   (org-babel-do-load-languages
@@ -392,22 +485,27 @@
   (add-to-list 'org-structure-template-alist '("un" . "src conf-unix"))
   (add-to-list 'org-structure-template-alist '("c" . "src C")))
 
+
+;;;; ORG-BULLET
 ;; Add nice bullets to org headings
  (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-;; Lsp with suport for various languages
- (use-package eglot
-   :after (:any python-mode haskell-mode sh-mode c-mode)
-   )
 
+;;;; EGLOT
+;; Lsp with suport for various languages
+(use-package eglot
+  :after (:any python-mode haskell-mode sh-mode c-mode)
+  )
+
+
+;;;; COMPANY
 ;; A autocompletion package
 (use-package company
-  :defer 0
-  ;;:hook
-  ;;('after-init . 'global-company-mode)
+  :hook
+  ('emacs-startup-hook . 'global-company-mode)
   :config
   (setq global-company-mode 't)
   :bind (:map company-active-map
@@ -418,114 +516,115 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.0))
 
-;;(use-package corfu
-;;  :init
-;;  (corfu-global-mode)
-;;  :bind (:map corfu-map
-;;         ("TAB" . corfu-next)
-;;         ("S-TAB" . corfu-previous))
-;;  :config
-;;  (setq corfu-cycle t)
-;;)
-;;
-;;;; Dabbrev works with Corfu
-;;(use-package dabbrev
-;;  ;; Swap M-/ and C-M-/
-;;  :bind (("M-/" . dabbrev-completion)
-;;         ("C-M-/" . dabbrev-expand)))
 
+;;;; CORFU
+(use-package corfu
+  :disabled t
+  :init
+  (corfu-global-mode)
+  :bind (:map corfu-map
+         ("TAB" . corfu-next)
+         ("S-TAB" . corfu-previous))
+  :config
+  (setq corfu-cycle t)
+  )
+
+
+;;;; DABBREV
+;; Dabbrev works with Corfu
+(use-package dabbrev
+  :disabled t
+  ;; Swap M-/ and C-M-/
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand)))
+
+
+;;;; ELECTRIC
 (use-package elec-pair
   :config
-  (electric-pair-mode 1)
-  (electric-indent-mode 1))
+  (electric-pair-mode 1))
 
-;; Python mode
+
+;;;; PAREN
+(use-package paren
+  :straight nil
+  :config
+  ;; Show matching parenthesis
+  (show-paren-mode 1)
+  (setq
+  show-paren-highlight-openparen t      ;; Turns on openparen highlighting when matching forward.
+  show-paren-when-point-inside-paren t  ;; Show parens when point is just inside one.
+  show-paren-when-point-periphery t     ;; Show parens when point is in the line's periphery.
+  show-paren-style 'parenthesis))       ;; Paren mode style parenthesis, expression, mixed
+
+;;;; Python mode
 (use-package python-mode
   :commands (python-mode)
   :config (add-hook 'python-mode-hook 'eglot-ensure))
 
-;; Haskell mode
+
+;;;; Haskell mode
 (use-package haskell-mode
   :commands (haskell-mode)
   :config (add-hook 'haskell-mode-hook 'eglot-ensure))
 
-;; Sell mode
+
+;;;; Sell mode
 (use-package sh-script
   :commands (sh-mode))
-  ;;:config (add-hook 'sh-mode-hook 'eglot-ensure))
 
-;; CLand mode
+
+;;;; CLang mode
 (use-package cc-mode
   :commands (c-mode)
   :config (add-hook 'c-mode-hook 'eglot-ensure))
 
-;; CLand mode
-(use-package lua-mode
-  :commands (lua-mode)
-  :config (add-hook lua-mode-hook 'eglot-ensure))
 
-;; Wrapper for handling git bare repos 
+;;;; Lua mode
+(use-package lua-mode
+  :commands (lua-mode))
+
 ;; A git client for emacs
 (use-package magit
   :commands (:any sam/magit-status sam/magit-status-dotfiles)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   )
+(use-package forge
+  :after magit)
 
+;; Wrapper for handling git bare repos 
 ;;https://emacs.stackexchange.com/questions/30602/use-nonstandard-git-directory-with-magit
-;; set git-dir and work-tree
-;; function to start magit on git bare repo
+(defvar dotfiles-git-dir (concat "--git-dir=" (expand-file-name "~/.dotfiles")))
+(defvar dotfiles-work-tree (concat "--work-tree=" (expand-file-name "~")))
 (defun sam/magit-status-dotfiles ()
+  "use `magit-status` on git bare repo set `dotfiles-git-dir` and `dotfiles-work-tree`"
   (interactive)
   (require 'magit-git)
-  (defvar dotfiles-git-dir (concat "--git-dir=" (expand-file-name "~/.dotfiles")))
-  (defvar dotfiles-work-tree (concat "--work-tree=" (expand-file-name "~")))
   (add-to-list 'magit-git-global-arguments dotfiles-git-dir) 
   (add-to-list 'magit-git-global-arguments dotfiles-work-tree)
   (call-interactively 'magit-status))
-;;
-;;;; remove the git-dir and work-tree variables
+
+;; remove the git-dir and work-tree variables
 (defun sam/magit-status ()
+  "magit-status wrapper to escape `sam/magit-status-dotfiles`"
   (interactive)
   (require 'magit-git)
   (setq magit-git-global-arguments (remove dotfiles-git-dir magit-git-global-arguments))
   (setq magit-git-global-arguments (remove dotfiles-work-tree magit-git-global-arguments))
   (call-interactively 'magit-status))
 
+
+;;;; DIRED
 ;; Emacs file manager
 ;;TODO need configure evil keys
-;;(use-package dired
-;;  :straight nil
-;;  :commands (dired dired-jump)
-;;  :custom ((dired-listing-switches "-agho --group-directories-first")))
-;;
-;;(use-package dired+
-;;  :after dired)
-;;
-;;(use-package dired-single
-;;  :after dired
-;;  :commands (dired dired-jump))
-;;
-;;(use-package all-the-icons-dired
-;;  :after dired
-;;  :hook (dired-mode . 'all-the-icons-dired-mode))
-;;
-;;(use-package dired-open
-;;  :after dired
-;;  :commands (dired dired-jump)
-;;  :config
-;;  ;; Doesn't work as expected!
-;;  ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
-;;  (setq dired-open-extensions '(("png" . "feh")
-;;                                ("mkv" . "mpv"))))
-;;
-;;(use-package dired-hide-dotfiles
-;;  :after dired
-;;  :hook (dired-mode . 'dired-hide-dotfiles-mode)
-;;  :config
-;;  (evil-collection-define-key 'normal 'dired-mode-map
-;;    "." 'dired-hide-dotfiles-mode))
+(use-package dired
+  :straight nil
+  :commands (dired dired-jump)
+  :custom ((dired-listing-switches "-agho --group-directories-first")))
 
+
+;;;; ELFEED
 ;; A rss client for emacs
 ;; TODO need to add my urls
 (use-package elfeed
@@ -533,46 +632,32 @@
   :config
   (setq elfeed-feeds
       '(("http://nullprogram.com/feed/" blog emacs)
-        "http://www.50ply.com/atom.xml"  ; no autotagging
+        "http://www.50ply.com/atom.xml"  
         ("http://nedroid.com/feed/" webcomic))))
 
+
+;;;; MU4E
 (use-package mu4e
   :defer 5
   :commands mu4e
   :config
   (setq
-   ;; use buffer selectrum
-   mu4e-completing-read-function 'completing-read
-   ;; use full screen view
-   mu4e-split-view 'single-window 
-   ;; kill message after exit
-   message-kill-buffer-on-exit t
-   ;; always pick first context
-   mu4e-context-policy 'pick-first
-   ;; don't ask to quit
-   mu4e-confirm-quit nil
-   ;; this is needed if using mbsync
-   mu4e-change-filenames-when-moving t
-   ;; update in seconds
-   mu4e-update-interval (* 60  60)
-   ;; update command
-   mu4e-get-mail-command "mbsync -c /home/sam/.config/isync/mbsyncrc -a"
-   ;; maildir location
-   mu4e-maildir "~/.local/share/mail"
-   ;;Whether to compose messages to be sent as format=flowed.
-   mu4e-compose-format-flowed t
-   ;; use smtpmail-send-it to send mail
-   message-send-mail-function 'smtpmail-send-it
-   ;; command used to view html emails
-   mu4e-html2text-command "w3m -T text/html"
-   ;;Whether to base the body display on the html-version.
-   mu4e-view-prefer-html t
-   ;; use gnu article mode for view
-   mu4e-view-use-gnus 't
-   ;; show images in email
-   mu4e-view-show-images 't)
-  ;; define field width
-  (mu4e-headers-fields
+   mu4e-completing-read-function 'completing-read                        ;; use buffer minibuffer
+   mu4e-split-view 'single-window ;; use full screen view
+   message-kill-buffer-on-exit t ;; kill message after exit
+   mu4e-context-policy 'pick-first ;; always pick first context
+   mu4e-confirm-quit nil ;; don't ask to quit
+   mu4e-change-filenames-when-moving t ;; this is needed if using mbsync
+   mu4e-update-interval (* 60  60) ;; update in seconds
+   mu4e-get-mail-command "mbsync -c /home/sam/.config/isync/mbsyncrc -a" ;; update command
+   mu4e-maildir "~/.local/share/mail" ;; maildir location
+   mu4e-compose-format-flowed t ;;Whether to compose messages to be sent as format=flowed.
+   message-send-mail-function 'smtpmail-send-it ;; use smtpmail-send-it to send mail
+   mu4e-html2text-command "w3m -T text/html" ;; command used to view html emails
+   mu4e-view-prefer-html t ;;Whether to base the body display on the html-version.
+   mu4e-view-use-gnus 't ;; use gnu article mode for view
+   mu4e-view-show-images 't) ;; show images in email
+  (mu4e-headers-fields                                                      ;; define field width
       '((:date          .  10)
 	      (:flags         .   4)
 	      (:from-or-to    .  30)
@@ -693,6 +778,3 @@
 		  ))
   ))
   )
-
-(setq gc-cons-threshold (* 16 1024 1024)
-      gc-cons-percentage 0.1)

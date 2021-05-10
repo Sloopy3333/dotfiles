@@ -102,3 +102,5 @@ Projects
 .authinfo
 .gitconfig
 dot
+/.config/emacs/eln-cache/
+/.config/emacs/places
