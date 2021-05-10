@@ -113,7 +113,7 @@
   :config
   (setq gcmh-idle-delay 10 
         gcmh-high-cons-threshold 16777216)
-  (gchm-mode +1))
+  (gcmh-mode +1))
 
 
 ;;;; DOOM THEMES
@@ -235,8 +235,7 @@
   :config
   ;;(setq register-preview-delay 0
   ;;      register-preview-function #'consult-register-format)
-  (advice-add #'register-preview :override #'consult-register-window)
-  (consult-narrow-key "<"))
+  (advice-add #'register-preview :override #'consult-register-window))
 
 
 ;;;; MARGINALIA
@@ -662,8 +661,7 @@
 	      (:flags         .   4)
 	      (:from-or-to    .  30)
 	      (:mailing-list  .  30)
-	      (:subject       .  nil))
-        mu4e-headers-from-or-to-prefix nil)
+	      (:subject       .  nil)))
 
   (setq mu4e-contexts
           (list
