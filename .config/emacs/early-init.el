@@ -44,5 +44,6 @@
  use-package-verbose nil)
 (fset #'package--ensure-init-file #'ignore)
  
-(setq custom-file "~/.config/emacs/custom.el")
 (setq user-emacs-directory "~/.local/share/emacs")
+(setq custom-file "~/.config/emacs/custom.el")
+(load custom-file)

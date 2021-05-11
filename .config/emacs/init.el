@@ -23,8 +23,8 @@
 (setq tab-width 4)                                                 ;; Set tab width to 4
 (setq indent-tabs-mode nil)                                        ;; Use space only
 (setq tab-always-indent 'complete)                                 ;; Tab completion
-(setq x-select-enable-clipboard t)                                 ;; Use system secondary clipboard
-(setq x-select-enable-primary t)                                   ;; Use system primary clipboard
+(setq select-enable-clipboard t)                                 ;; Use system secondary clipboard
+(setq select-enable-primary t)                                   ;; Use system primary clipboard
 (setq cursor-in-non-selected-window nil)                           ;; Hide cursor in non-focused window
 (setq help-window-select t)                                        ;; Focus help window when opened
 (setq blink-cursor-mode nil)                                       ;; Disable cursot blinking
@@ -41,7 +41,7 @@
           eshell-mode-hook))
           (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-
+;;;; FONTS
 ;; Set fonts
 (defun sam/set-font ()
 (set-face-attribute 'default nil
@@ -110,6 +110,7 @@
 
 ;;;; GCMH
 (use-package gcmh
+  :defines gcmh-idle-delay gcmh-high-cons-treshold
   :config
   (setq gcmh-idle-delay 10 
         gcmh-high-cons-threshold 16777216)
@@ -129,7 +130,6 @@
   (doom-themes-visual-bell-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
-
 
 ;;;; DOOM MODLINE
 ;; Minimal modeline from doom
@@ -187,10 +187,10 @@
 (use-package vertico
   :defer 0
   :bind (:map vertico-map
-	  ("C-j" . vertico-next)
-	  ("C-k" . vertico-previous)
-	  ("C-u" . vertico-scroll-down)
-	  ("C-d" . vertico-scroll-up)
+	  ("C-j" . 'vertico-next)
+	  ("C-k" . 'vertico-previous)
+	  ("C-u" . 'vertico-scroll-down)
+	  ("C-d" . 'vertico-scroll-up)
 	  )
   :config
   (vertico-mode)
@@ -488,7 +488,7 @@
 ;;;; ORG-BULLET
 ;; Add nice bullets to org headings
  (use-package org-bullets
-  :hook (org-mode . org-bullets-mode)
+  :hook (org-mode . 'org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
@@ -522,8 +522,8 @@
   :init
   (corfu-global-mode)
   :bind (:map corfu-map
-         ("TAB" . corfu-next)
-         ("S-TAB" . corfu-previous))
+         ("TAB" . 'corfu-next)
+         ("S-TAB" . 'corfu-previous))
   :config
   (setq corfu-cycle t)
   )
@@ -534,8 +534,8 @@
 (use-package dabbrev
   :disabled t
   ;; Swap M-/ and C-M-/
-  :bind (("M-/" . dabbrev-completion)
-         ("C-M-/" . dabbrev-expand)))
+  :bind (("M-/" . 'dabbrev-completion)
+         ("C-M-/" . 'dabbrev-expand)))
 
 
 ;;;; ELECTRIC
@@ -583,6 +583,28 @@
 (use-package lua-mode
   :commands (lua-mode))
 
+;;;; MAGIT
+;; Wrapper for handling git bare repos 
+;;https://emacs.stackexchange.com/questions/30602/use-nonstandard-git-directory-with-magit
+(defvar dotfiles-git-dir (concat "--git-dir=" (expand-file-name "~/.dotfiles")))
+(defvar dotfiles-work-tree (concat "--work-tree=" (expand-file-name "~")))
+(defun sam/magit-status-dotfiles ()
+  "use magit-status on git bare repo set dotfiles-git-dir and dotfiles-work-tree"
+  (interactive)
+  (require 'magit-git)
+  (add-to-list 'magit-git-global-arguments dotfiles-git-dir) 
+  (add-to-list 'magit-git-global-arguments dotfiles-work-tree)
+  (call-interactively 'magit-status))
+
+;; remove the git-dir and work-tree variables
+(defun sam/magit-status ()
+  "magit-status wrapper to escape sam/magit-status-dotfiles"
+  (interactive)
+  (require 'magit-git)
+  (setq magit-git-global-arguments (remove dotfiles-git-dir magit-git-global-arguments))
+  (setq magit-git-global-arguments (remove dotfiles-work-tree magit-git-global-arguments))
+  (call-interactively 'magit-status))
+
 ;; A git client for emacs
 (use-package magit
   :commands (:any sam/magit-status sam/magit-status-dotfiles)
@@ -592,26 +614,6 @@
 (use-package forge
   :after magit)
 
-;; Wrapper for handling git bare repos 
-;;https://emacs.stackexchange.com/questions/30602/use-nonstandard-git-directory-with-magit
-(defvar dotfiles-git-dir (concat "--git-dir=" (expand-file-name "~/.dotfiles")))
-(defvar dotfiles-work-tree (concat "--work-tree=" (expand-file-name "~")))
-(defun sam/magit-status-dotfiles ()
-  "use `magit-status` on git bare repo set `dotfiles-git-dir` and `dotfiles-work-tree`"
-  (interactive)
-  (require 'magit-git)
-  (add-to-list 'magit-git-global-arguments dotfiles-git-dir) 
-  (add-to-list 'magit-git-global-arguments dotfiles-work-tree)
-  (call-interactively 'magit-status))
-
-;; remove the git-dir and work-tree variables
-(defun sam/magit-status ()
-  "magit-status wrapper to escape `sam/magit-status-dotfiles`"
-  (interactive)
-  (require 'magit-git)
-  (setq magit-git-global-arguments (remove dotfiles-git-dir magit-git-global-arguments))
-  (setq magit-git-global-arguments (remove dotfiles-work-tree magit-git-global-arguments))
-  (call-interactively 'magit-status))
 
 
 ;;;; DIRED
@@ -630,9 +632,7 @@
   :commands (:any elfeed elfeed-update)
   :config
   (setq elfeed-feeds
-      '(("http://nullprogram.com/feed/" blog emacs)
-        "http://www.50ply.com/atom.xml"  
-        ("http://nedroid.com/feed/" webcomic))))
+        '(("https://archlinux.org/feeds/news"))))
 
 
 ;;;; MU4E
@@ -642,26 +642,27 @@
   :config
   (setq
    mu4e-completing-read-function 'completing-read                        ;; use buffer minibuffer
-   mu4e-split-view 'single-window ;; use full screen view
-   message-kill-buffer-on-exit t ;; kill message after exit
-   mu4e-context-policy 'pick-first ;; always pick first context
-   mu4e-confirm-quit nil ;; don't ask to quit
-   mu4e-change-filenames-when-moving t ;; this is needed if using mbsync
-   mu4e-update-interval (* 60  60) ;; update in seconds
+   mu4e-split-view 'vertical                                             ;; use vertical split
+   message-kill-buffer-on-exit t                                         ;; kill message after exit
+   mu4e-context-policy 'pick-first                                       ;; always pick first context
+   mu4e-confirm-quit nil                                                 ;; don't ask to quit
+   mu4e-change-filenames-when-moving t                                   ;; this is needed if using mbsync
+   mu4e-update-interval (* 60  60)                                       ;; update in seconds
    mu4e-get-mail-command "mbsync -c /home/sam/.config/isync/mbsyncrc -a" ;; update command
-   mu4e-maildir "~/.local/share/mail" ;; maildir location
-   mu4e-compose-format-flowed t ;;Whether to compose messages to be sent as format=flowed.
-   message-send-mail-function 'smtpmail-send-it ;; use smtpmail-send-it to send mail
-   mu4e-html2text-command "w3m -T text/html" ;; command used to view html emails
-   mu4e-view-prefer-html t ;;Whether to base the body display on the html-version.
-   mu4e-view-use-gnus 't ;; use gnu article mode for view
-   mu4e-view-show-images 't) ;; show images in email
-  (mu4e-headers-fields                                                      ;; define field width
-      '((:date          .  10)
-	      (:flags         .   4)
-	      (:from-or-to    .  30)
-	      (:mailing-list  .  30)
-	      (:subject       .  nil)))
+   mu4e-root-maildir "~/.local/share/mail"                                    ;; maildir location
+   mu4e-compose-format-flowed t                                          ;; whether to compose messages to be sent as format=flowed.
+   message-send-mail-function 'smtpmail-send-it                          ;; use smtpmail-send-it to send mail
+   mu4e-html2text-command "w3m -T text/html"                             ;; command used to view html emails
+   mu4e-view-prefer-html t                                               ;; whether to base the body display on the html-version.
+   mu4e-view-use-gnus 't                                                 ;; use gnu article mode for view
+   mu4e-view-show-images 't)                                             ;; show images in email
+  (setq mu4e-headers-fields
+        '(
+          (:human-date    . 12)    ;; alternatively, use :human-date
+          (:flags         . 6)
+          (:from-or-to    . 21)
+          (:subject       . 46)
+          ))
 
   (setq mu4e-contexts
           (list
@@ -776,3 +777,7 @@
 		  ))
   ))
   )
+(use-package mu4e-dashboard
+  :straight '(mu4e-dashboard :type git :host github :repo "rougier/mu4e-dashboard")
+  :after mu4e)
+

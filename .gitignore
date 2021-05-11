@@ -104,3 +104,6 @@ Projects
 dot
 /.config/emacs/eln-cache/
 /.config/emacs/places
+/.config/doom/
+/.config/emacs.doom/
+/.config/pipewire
