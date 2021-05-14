@@ -23,8 +23,8 @@
 (setq tab-width 4)                                                 ;; Set tab width to 4
 (setq indent-tabs-mode nil)                                        ;; Use space only
 (setq tab-always-indent 'complete)                                 ;; Tab completion
-(setq select-enable-clipboard t)                                 ;; Use system secondary clipboard
-(setq select-enable-primary t)                                   ;; Use system primary clipboard
+(setq select-enable-clipboard t)                                   ;; Use system secondary clipboard
+(setq select-enable-primary t)                                     ;; Use system primary clipboard
 (setq cursor-in-non-selected-window nil)                           ;; Hide cursor in non-focused window
 (setq help-window-select t)                                        ;; Focus help window when opened
 (setq blink-cursor-mode nil)                                       ;; Disable cursot blinking
@@ -41,20 +41,31 @@
           eshell-mode-hook))
           (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
+
+;; minibuffer completion style
+;; for avaliabel styles see completion-styles-alist
+(setq completion-styles '(initials partial-completion flex))
+(setq completion-cycle-treshold 10)
+
+
 ;;;; FONTS
 ;; Set fonts
 (defun sam/set-font ()
-(set-face-attribute 'default nil
-        	    :font "Hack Nerd Font 12"
-        	    :weight 'regular)
-(set-face-attribute 'variable-pitch nil
-        	    :font "Hack Nerd Font 12"
-        	    :weight 'regular)
-(set-face-attribute 'fixed-pitch nil
-        	    :font "Hack Nerd Font 12"
-        	    :weight 'regular))
+  (set-face-attribute 'default nil
+    :font "Hack Nerd Font 12"
+    :weight 'regular)
+  (set-face-attribute 'variable-pitch nil
+    :font "Hack Nerd Font 12"
+    :weight 'regular)
+  (set-face-attribute 'fixed-pitch nil
+    :font "Hack Nerd Font 12"
+    :weight 'regular)
+  (set-face-attribute 'font-lock-comment-face nil
+    :slant 'italic)
+  (set-face-attribute 'font-lock-keyword-face nil
+    :slant 'italic))
 ;; if in daemon mode 
-(if (daemonp)
+  (if (daemonp)
     (add-hook 'after-make-frame-functions
               (lambda (frame)
         	(with-selected-frame frame
@@ -110,7 +121,7 @@
 
 ;;;; GCMH
 (use-package gcmh
-  :defines gcmh-idle-delay gcmh-high-cons-treshold
+  :after no-littering
   :config
   (setq gcmh-idle-delay 10 
         gcmh-high-cons-threshold 16777216)
@@ -130,6 +141,9 @@
   (doom-themes-visual-bell-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
+
+(use-package solarized-theme
+  :defer 0)
 
 ;;;; DOOM MODLINE
 ;; Minimal modeline from doom
@@ -185,7 +199,6 @@
 ;;;; VERTICO
 ;; Minibuffer completion package
 (use-package vertico
-  :defer 0
   :bind (:map vertico-map
 	  ("C-j" . 'vertico-next)
 	  ("C-k" . 'vertico-previous)
@@ -198,9 +211,11 @@
 	vertico-count 20))
 
 
+
 ;;;; ORDERLESS
 ;; Minibuffer sorting package
 (use-package orderless
+  :disabled t
   :after (:any selectrum icomplete-vertical vertico)
   :config
   (setq completion-styles '(orderless)
@@ -252,6 +267,12 @@
 ;; More helpful help 
 (use-package helpful
   :commands (helpful-callable helpful-function helpful-macro helpful-variable helpful-command helpful-key))
+
+
+;;;; PROJECT
+;; builtin project manager
+(use-package project
+  :commands (:any project-switch-project))
 
 
 ;;;; EVIl
@@ -338,87 +359,87 @@
 
     ;; Buffers
     "b"   '(:ignore b :which-key "buffers")
-    "bb"  '(consult-buffer :which-key "buffer menu")
-    "b]"  '(switch-to-next-buffer :which-key "switch to next buffer")
     "b["  '(switch-to-prev-buffer :which-key "switch to previous buffer")
+    "b]"  '(switch-to-next-buffer :which-key "switch to next buffer")
+    "bb"  '(ido-switch-buffer :which-key "buffer menu")
+    "bc"  '(clone-indirect-buffer-other-window :which-key "Clone buffer to new window")
+    "bd"  '(evil-delete-buffer :which-key "kill present buffer")
+    "bf"  '(consult-buffer-other-frame :which-key "open a buffer in other frame")
+    "bk"  '(kill-buffer :which-key "select a buffer to kill")
+    "bl"  '(consult-buffer :which-key "search lines in buffer")
+    "bm"  '(sam/switch-to-messages-buffer :which-key "switch to messages buffer")
     "bn"  '(switch-to-next-buffer :which-key "switch to next buffer")
+    "bo"  '(evil-buffer-new :which-key "new empty buffer")
     "bp"  '(switch-to-prev-buffer :which-key "switch to previous buffer")
     "bs"  '(sam/switch-to-scratch-buffer :which-key "switch to scratch buffer")
-    "bm"  '(sam/switch-to-messages-buffer :which-key "switch to messages buffer")
-    "bd"  '(evil-delete-buffer :which-key "kill present buffer")
-    "bk"  '(kill-buffer :which-key "select a buffer to kill")
-    "bc"  '(clone-indirect-buffer-other-window :which-key "Clone buffer to new window")
-    "bl"  '(consult-buffer :which-key "search lines in buffer")
-    "bo"  '(evil-buffer-new :which-key "new empty buffer")
-    "bf"  '(consult-buffer-other-frame :which-key "open a buffer in other frame")
     "bw"  '(consult-buffer-other-window :which-key "open a buffer in other windowframe")
-
-    ;;Bookmarks
-    "m"   '(:ignore m :which-key "Bookmarks")
-    "ml"  '(consult-bookmark :which-key "list bookmarks")
-    "mm"  '(consult-mark :which-key "jump local bookmarks")
-    "ms"  '(bookmark-set :which-key "add bookmark")
-    "mS"  '(bookmark-save :which-key "save bookmark")
-    "mr"  '(bookmark-rename :which-key "rename bookmark")
-    "md"  '(bookmark-delete :which-key "delete bookmark")
 
     ;;Code
     "c"   '(:ignore c :which-key "Code")
+    "cF"  '(eglot-format :which-key "code format")
     "ca"  '(eglot-code-actions :which-key "code actions")
+    "cd"  '(consult-flymake :which-key "consult-flymake")
+    "cf"  '(consult-imenu :which-key "consult imenu")
+    "cl"   '(consult-outline :which-key "consutl-outline")'
     "cr"  '(eglot-rename :which-key "rename variable")
-    "cf"  '(consult-imenu :which-key "list functions")
-    "cF"  '(eglot-format :which-key "format variable")
-    "cl"   '(consult-outline :which-key "go to heading")'
+
+    ;; Files
+    "f"   '(:ignore f :which-key "files")
+    "ff"  '(dired-jump :which-key "dired")
+    "fg"  '(consult-git-grep :which-key "gitgrep")
+    "fr"  '(consult-ripgrep :which-key "ripgrep")
 
     ;;Magit
     "g"   '(:ignore g :which-key "Magit")
+    "gd"  '(sam/magit-status-bare :which-key "magit status dotfiles")
     "gs"  '(sam/magit-status :which-key "magit status")
-    "gd"  '(sam/magit-status-dotfiles :which-key "magit status dotfiles")
 
-    ;;Project
-    "p"   '(:ignore m :which-key "Project")
-    "pf"  '(consult-project-imenu :which-key "list functions in project")
+    ;; Help
+    "h"   '(:ignore h :which-key "help")
+    "ha"  '(helpful-at-point :which-key "at point help")'
+    "hc"  '(helpful-command :which-key "command help")'
+    "he"  '(lambda () (interactive) (find-file (expand-file-name "~/.config/emacs/init.el")) :which-key "open emacs config")
+    "hf"  '(helpful-function :which-key "function help")'
+    "hk"  '(helpful-key :which-key "key help")'
+    "hm"  '(helpful-macro :which-key "macro help")'
+    "hr"  '(lambda () (interactive) (load-file (expand-file-name "~/.config/emacs/init.el")) :which-key "reload emacs config")
+    "hs"  '(helpful-symbol :which-key "symbol help")'
+    "hv"  '(helpful-variable :which-key "variable help")'
 
     ;; Org
     "o"   '(:ignore o :which-key "org")
     "ol"   '(consult-org-heading :which-key "go to heading")'
     "ot"   '(org-babel-tangle :which-key "tangle current buffer")'
 
-    ;; Files
-    "f"   '(:ignore f :which-key "files")
-    "ff"  '(dired-jump :which-key "dired")
-    "fr"  '(consult-ripgrep :which-key "ripgrep")
-    "fg"  '(consult-git-grep :which-key "gitgrep")
-
-    ;; Help
-    "h"   '(:ignore h :which-key "help")
-    "he"  '(lambda () (interactive) (find-file (expand-file-name "~/.config/emacs/init.el")) :which-key "open emacs config")
-    "hr"  '(lambda () (interactive) (load-file (expand-file-name "~/.config/emacs/init.el")) :which-key "reload emacs config")
-    "hf"  '(helpful-function :which-key "function help")'
-    "hv"  '(helpful-variable :which-key "variable help")'
-    "hk"  '(helpful-key :which-key "key help")'
-    "hm"  '(helpful-macro :which-key "macro help")'
-    "hc"  '(helpful-command :which-key "command help")'
-    "hs"  '(helpful-symbol :which-key "symbol help")'
-    "ha"  '(helpful-at-point :which-key "at point help")'
+    ;;Project
+    "p"   '(:ignore p :which-key "Project")
+    "pb"  '(project-switch-to-buffer :which-key "switch project buffer")
+    "pc"  '(project-compile :which-key "compile project")
+    "pd"  '(project-dired :which-key "project dired")
+    "pf"  '(project-find-file :which-key "project find file")
+    "pk"  '(project-kill-buffers :which-key "project kill buffers")
+    "po"  '(consult-project-imenu :which-key "project outline")
+    "pp"  '(project-switch-project :which-key "switch to project")
+    "ps"  '(project-shell :which-key "project shell")
 
     ;; Toggles
     "t"   '(:ignore t :which-key "toggles")
+    "ts"  '(hydra-text-scale/body :which-key "scale text")
     "tt"  '(consult-theme :which-key "choose theme")
     "ty"  '(consult-yank :which-key "choose yanked")
-    "ts"  '(hydra-text-scale/body :which-key "scale text")
 
     ;; Window
     "w"   '(:ignore w :which-key "window")
-    "wh"  '(evil-window-split :which-key "horizontal split")
-    "wv"  '(evil-window-vsplit :which-key "vertical split")
+    "wH"  '(split-window-vertically :which-key "vertical split")
+    "wV"  '(split-window-horizontally :which-key "horizontal split")
     "wd"  '(evil-window-delete :which-key "delete window")
-    "wn"  '(evil-window-next :which-key "focus next window")
-    "wp"  '(evil-window-prev :which-key "focus previous window")
+    "wh"  '(evil-window-left :which-key "left window")
     "wj"  '(evil-window-down :which-key "focus down window")
+    "wk"  '(evil-window-delete :which-key "delete window")
     "wk"  '(evil-window-up :which-key "focus up window")
     "wl"  '(evil-window-right :which-key "focus right window")
-    "wh"  '(evil-window-left :which-key "left window")
+    "wn"  '(evil-window-next :which-key "focus next window")
+    "wp"  '(evil-window-prev :which-key "focus previous window")
     "ws"  '(hydra-window-size/body :which-key "adjust window size")
   )
   )
@@ -455,6 +476,7 @@
   (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
     
 (use-package org
+  :disabled t
   :commands (org-capture org-agenda)
   :config
    (sam/org-font-setup)
@@ -503,6 +525,7 @@
 ;;;; COMPANY
 ;; A autocompletion package
 (use-package company
+  :disabled t
   :hook
   ('emacs-startup-hook . 'global-company-mode)
   :config
@@ -540,12 +563,16 @@
 
 ;;;; ELECTRIC
 (use-package elec-pair
+  :defer 0
   :config
   (electric-pair-mode 1))
 
+(use-package rainbow-delimiters
+ :config (rainbow-delimiters-mode))
 
 ;;;; PAREN
 (use-package paren
+  :defer 0
   :straight nil
   :config
   ;; Show matching parenthesis
@@ -584,36 +611,47 @@
   :commands (lua-mode))
 
 ;;;; MAGIT
-;; Wrapper for handling git bare repos 
-;;https://emacs.stackexchange.com/questions/30602/use-nonstandard-git-directory-with-magit
-(defvar dotfiles-git-dir (concat "--git-dir=" (expand-file-name "~/.dotfiles")))
-(defvar dotfiles-work-tree (concat "--work-tree=" (expand-file-name "~")))
-(defun sam/magit-status-dotfiles ()
-  "use magit-status on git bare repo set dotfiles-git-dir and dotfiles-work-tree"
+(setq bare-git-dir (concat "--git-dir=" (expand-file-name "~/.dotfiles")))
+(setq bare-work-tree (concat "--work-tree=" (expand-file-name "~")))
+
+(defun sam/magit-status-bare ()
   (interactive)
   (require 'magit-git)
-  (add-to-list 'magit-git-global-arguments dotfiles-git-dir) 
-  (add-to-list 'magit-git-global-arguments dotfiles-work-tree)
+  (add-to-list 'magit-git-global-arguments bare-git-dir)
+  (add-to-list 'magit-git-global-arguments bare-work-tree)
   (call-interactively 'magit-status))
 
-;; remove the git-dir and work-tree variables
 (defun sam/magit-status ()
-  "magit-status wrapper to escape sam/magit-status-dotfiles"
   (interactive)
   (require 'magit-git)
-  (setq magit-git-global-arguments (remove dotfiles-git-dir magit-git-global-arguments))
-  (setq magit-git-global-arguments (remove dotfiles-work-tree magit-git-global-arguments))
+  (setq magit-git-global-arguments (remove bare-git-dir magit-git-global-arguments))
+  (setq magit-git-global-arguments (remove bare-work-tree magit-git-global-arguments))
   (call-interactively 'magit-status))
 
-;; A git client for emacs
+
 (use-package magit
-  :commands (:any sam/magit-status sam/magit-status-dotfiles)
+  :commands (:any sam/magit-status sam/magit-status-bare)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   )
-(use-package forge
-  :after magit)
 
+
+(defvar my-dired-copy-list nil)
+
+(defun sam/dired-copy ()
+  (interactive)
+  (setq my-dired-copy-list (dired-get-marked-files)))
+
+(defun sam/dired-paste ()
+  (interactive)
+  (when my-dired-copy-list
+    (shell-command
+     (mapconcat
+      #'shell-quote-argument
+      `("cp" "-r" ,@my-dired-copy-list ,".")
+      " "))
+     (revert-buffer :ignore-auto :noconfirm)
+    (setq my-dired-copy-list nil)))
 
 
 ;;;; DIRED
@@ -622,8 +660,41 @@
 (use-package dired
   :straight nil
   :commands (dired dired-jump)
-  :custom ((dired-listing-switches "-agho --group-directories-first")))
+  :config
+  (setq dired-listing-switches "-lAh")
+  (setq ls-lisp-dirs-first t)
+  (setq dired-recursive-copies 'always)
+  (setq dired-recursive-deletes 'always)
+  (setq dired-ls-F-marks-symlinks t)
+  :hook
+  (dired-mode . (lambda ()
+                  (evil-local-set-key 'normal (kbd "l") 'dired-find-alternate-file)
+                  (evil-local-set-key 'normal (kbd "h") '(lambda () (interactive)(find-alternate-file "..")))
+                  (evil-local-set-key 'normal (kbd "v") 'dired-mark)
+                  (evil-local-set-key 'normal (kbd "dd") 'dired-do-delete)
+                  (evil-local-set-key 'normal (kbd "u") 'dired-unmark)
+                  (evil-local-set-key 'normal (kbd "U") 'dired-unmark-all-marks)
+                  (evil-local-set-key 'normal (kbd "yy") 'sam/dired-copy)
+                  (evil-local-set-key 'normal (kbd "p") 'sam/dired-paste)
+                  (evil-local-set-key 'normal (kbd "cw") 'dired-do-rename)
+                  (evil-local-set-key 'normal (kbd "mf") 'dired-create-empty-file)
+                  (evil-local-set-key 'normal (kbd "md") 'dired-create-directory)
+                  (evil-local-set-key 'normal (kbd "cp") 'dired-do-chmod)
+                  (evil-local-set-key 'normal (kbd "cg") 'dired-do-chgrp)
+                  (evil-local-set-key 'normal (kbd "co") 'dired-do-chown)
+                  (evil-local-set-key 'normal (kbd "ex") 'dired-do-compress)
+                  (evil-local-set-key 'normal (kbd "ex") 'dired-do-compress)
+                  (evil-local-set-key 'normal (kbd "W") 'wdired-change-to-wdired-mode)
+                  (evil-local-set-key 'normal (kbd "gd") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/Downloads"))))
+                  (evil-local-set-key 'normal (kbd "gc") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/.config"))))
+                  (evil-local-set-key 'normal (kbd "gh") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/"))))
+                  (evil-local-set-key 'normal (kbd "gp") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/Projects"))))
+                  (evil-local-set-key 'normal (kbd "gs") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/scripts"))))
+                  )))
 
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 ;;;; ELFEED
 ;; A rss client for emacs
@@ -631,8 +702,11 @@
 (use-package elfeed
   :commands (:any elfeed elfeed-update)
   :config
-  (setq elfeed-feeds
-        '(("https://archlinux.org/feeds/news"))))
+(setq elfeed-feeds
+      '("https://archlinux.org/feeds/news/" 
+        "https://karthinks.com/index.xml"
+        )))
+
 
 
 ;;;; MU4E
@@ -647,7 +721,7 @@
    mu4e-context-policy 'pick-first                                       ;; always pick first context
    mu4e-confirm-quit nil                                                 ;; don't ask to quit
    mu4e-change-filenames-when-moving t                                   ;; this is needed if using mbsync
-   mu4e-update-interval (* 60  60)                                       ;; update in seconds
+   mu4e-update-interval (* 10  60)                                       ;; update in seconds
    mu4e-get-mail-command "mbsync -c /home/sam/.config/isync/mbsyncrc -a" ;; update command
    mu4e-root-maildir "~/.local/share/mail"                                    ;; maildir location
    mu4e-compose-format-flowed t                                          ;; whether to compose messages to be sent as format=flowed.
@@ -778,6 +852,15 @@
   ))
   )
 (use-package mu4e-dashboard
+  :disabled t
   :straight '(mu4e-dashboard :type git :host github :repo "rougier/mu4e-dashboard")
   :after mu4e)
 
+(use-package mpc
+  :straight nil
+  :commands (mpc)
+  :bind (:map mpc-mode-map
+	      ("p" . mpd-play)
+	      ("P" . mpd-pause)
+	      ("l" . mpd-select)))
+(put 'dired-find-alternate-file 'disabled nil)

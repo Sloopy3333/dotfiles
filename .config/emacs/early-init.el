@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 
 (defvar default-file-name-handler file-name-handler-alist)
 ;; Increase gc memory and set file-name-handler-alist until init

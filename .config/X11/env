@@ -160,3 +160,4 @@ ex=:\
 *.pdf=:\
 *.nix=:\
 "
+PYTHONTRACEMALLOC=1

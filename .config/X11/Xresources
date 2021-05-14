@@ -28,7 +28,7 @@ xft.hintstyle: hintfull
 xft.lcdfilter: lcdfilter
 
 xterm.*.renderfont: true
-xterm.*.facename: xft:hack nerd font mono:size=12:regular:antialias=true
+xterm.*.facename: xft:hack nerd font:size=12:regular:antialias=true
 xterm.*.utf-8: 2
 xterm.*.locale: true
 xterm.*.metasendsescape: true

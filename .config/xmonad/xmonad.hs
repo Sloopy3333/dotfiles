@@ -76,8 +76,8 @@ myTerminalAlt :: String
 myTerminalAlt = "alacritty"
 
 myFilemanager :: String
-myFilemanager = myTerminal ++ " -e lf"
---myFilemanager = "emacsclient -c -a '' --eval '(dired nil)'"
+--myFilemanager = myTerminal ++ " -e lf"
+myFilemanager = "emacsclient -c -a '' --eval '(dired nil)'"
 
 myFilemanagerAlt :: String
 myFilemanagerAlt = "pcmanfm"
