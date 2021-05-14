@@ -615,6 +615,7 @@
 (setq bare-work-tree (concat "--work-tree=" (expand-file-name "~")))
 
 (defun sam/magit-status-bare ()
+  "set --git-dir and --work-tree in `magit-git-global-arguments' to `bare-git-dir' and `bare-work-tree' and calls `magit-status'"
   (interactive)
   (require 'magit-git)
   (add-to-list 'magit-git-global-arguments bare-git-dir)
@@ -622,6 +623,7 @@
   (call-interactively 'magit-status))
 
 (defun sam/magit-status ()
+  "removes --git-dir and --work-tree in `magit-git-global-arguments' and calls `magit-status'"
   (interactive)
   (require 'magit-git)
   (setq magit-git-global-arguments (remove bare-git-dir magit-git-global-arguments))
@@ -705,6 +707,7 @@
 (setq elfeed-feeds
       '("https://archlinux.org/feeds/news/" 
         "https://karthinks.com/index.xml"
+        "https://github.blog/feed/"
         )))
 
 
