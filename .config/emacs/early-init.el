@@ -1,8 +1,8 @@
 ;; -*- lexical-binding: t; -*-
 
-(defvar default-file-name-handler file-name-handler-alist)
+(setq default-file-name-handler file-name-handler-alist)
 ;; Increase gc memory and set file-name-handler-alist until init
-(setq gc-cons-threshold most-positive-fixnum
+(setq gc-cons-threshold (* 100 1024 1024)
       gc-cons-percentage 0.6
       file-name-handler-alist nil)
 
@@ -15,14 +15,13 @@
 
 
 ;; Fix the ugly UI
+(fset 'menu-bar-open nil)
 (push '(menu-bar-lines . 0)   default-frame-alist)
 (push '(tool-bar-lines . 0)   default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 (setq menu-bar-mode nil
       tool-bar-mode nil
       scroll-bar-mode nil)
-
-
 
 
 ;; Packages
@@ -33,7 +32,7 @@
  ;; check package modificaton whe they are edited only
  straight-check-for-modifications '(check-on-save find-when-checking)
  ;; always compile packages natively
- straight-disable-native-compile nil
+ ;;straight-disable-native-compile nil
  ;; disable package enable
  package-enable-at-startup nil
  ;; disable package-wuickstart
@@ -44,7 +43,7 @@
  ;;if set to t  use-package will be more verbose and write packages loading information in message buffer useful when debuging startup time
  use-package-verbose nil)
 (fset #'package--ensure-init-file #'ignore)
- 
+
 (setq user-emacs-directory "~/.local/share/emacs")
 (setq custom-file "~/.config/emacs/custom.el")
-(load custom-file)
+(load-file custom-file)

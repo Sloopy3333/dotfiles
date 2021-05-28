@@ -87,7 +87,7 @@ shortcut-add ud=https://www.urbandictionary.com/define.php?term=$0
 
 # Set the shortcut as the default, that is the shortcut to be used if no
 # shortcut is given and the string to open is not an URI.
-shortcut-default go
+shortcut-default dd
 
 # Maps
 nmap + zI

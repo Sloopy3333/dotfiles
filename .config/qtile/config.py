@@ -1,8 +1,10 @@
-# Imports
+#Imports
+
 from os.path import expanduser
 from libqtile import layout
 from libqtile.bar import Bar
 from libqtile.lazy import lazy
+from libqtile import hook
 from libqtile.layout import MonadTall, MonadWide, Max, Floating
 from libqtile.config import Click, Drag, Group, Key, Screen, Match, KeyChord
 from libqtile import widget
@@ -10,7 +12,7 @@ from libqtile import widget
 # user variables
 
 mod = "mod4"
-terminal = "st"
+terminal = "alacritty"
 terminal_alt = "xterm"
 browser = "brave"
 browser_alt = "vimb"
@@ -155,9 +157,9 @@ mouse = [
 
 my_layout = {"border_focus" : bar_colors["magenta"],
             "border_width" : 2,
-            "margin" : 5,
+            "margin" : 0,
             "single_border_width" : 0,
-            "single_margin" : 5,}
+            "single_margin" : 0,}
 
 layouts = [
     MonadTall(**my_layout, name="Tall",),
@@ -174,6 +176,13 @@ floating_layout = Floating(**my_layout, name = "Float",
         Match(title='mpv'),
     ]
 )
+
+@hook.subscribe.client_new
+def floating_dialogs(window):
+    dialog = window.window.get_wm_type() == 'dialog'
+    transient = window.window.get_wm_transient_for()
+    if dialog or transient:
+        window.floating = True
 
 groups = [
     Group("1"),
@@ -224,7 +233,7 @@ screens = [
                     highlight_color=bar_colors["black"],
                     this_current_screen_border=bar_colors["purple"],
                     active=bar_colors["yellow"],
-                    inactive=bar_colors["purple"],
+                    inactive=bar_colors["white"],
                     markup=True,
                     center_aligned=True,
                     disable_drag=True,
@@ -279,7 +288,7 @@ screens = [
                     padding = 6,
                     ),
                 widget.Memory(
-                    format = '{MemUsed} MB',
+                    format = '{MemUsed: .0f}{mm}',
                     measure_mem = 'M',
                     foreground = bar_colors["yellow"],
                     background = bar_colors["black"],
@@ -360,4 +369,3 @@ screens = [
         ),
     ),
 ]
-

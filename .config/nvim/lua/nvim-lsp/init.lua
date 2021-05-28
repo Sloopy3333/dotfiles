@@ -86,7 +86,7 @@ require'lspconfig'.ghcide.setup {
 --python
 --pip install python-language-server
 require'lspconfig'.pyright.setup {
-	cmd = {"pyright", '--stdio'},
+	cmd = {"pyright-langserver", '--stdio'},
 	filetypes = { "python" },
 	settings = {
       python = {

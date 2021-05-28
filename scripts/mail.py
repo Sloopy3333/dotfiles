@@ -1,5 +1,4 @@
 #!/bin/python3.9
-
 # import required libraries
 import imaplib
 import email

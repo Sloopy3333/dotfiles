@@ -18,6 +18,7 @@ return require('packer').startup(function()
 	use {'wbthomason/packer.nvim', opt = true}
 	--colors
 	use {'dracula/vim'}
+	use {'morhetz/gruvbox'}
 	use {"nvim-treesitter/nvim-treesitter"}
 	--fzf
         use {'junegunn/fzf'}

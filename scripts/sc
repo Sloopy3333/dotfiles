@@ -1,8 +1,4 @@
 #!/bin/sh
-# script to take screenshots
-# dependencies
-#	maim
-#	xdotool
 
 SC_DIR=~/external/hdd2/screenshots/
 
@@ -23,7 +19,7 @@ case $1 in
      -cw)
 	maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
 	;;
-      # copies selected window to clipboard 
+      # copies selected window to clipboard
      -cs)
 	maim -s | xclip -selection clipboard -t image/png
 	;;
@@ -35,4 +31,4 @@ case $1 in
      *)
 	maim $SC_DIR/$(date +%s).png
 	;;
-esac 
+esac

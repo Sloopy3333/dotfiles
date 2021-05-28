@@ -72,9 +72,8 @@ time("try_loadstring definition", false)
 time("Defining packer_plugins", true)
 _G.packer_plugins = {
   firenvim = {
-    loaded = false,
-    needs_bufread = false,
-    path = "/home/sam/.local/share/nvim/site/pack/packer/opt/firenvim"
+    loaded = true,
+    path = "/home/sam/.local/share/nvim/site/pack/packer/start/firenvim"
   },
   fzf = {
     loaded = true,
@@ -87,6 +86,10 @@ _G.packer_plugins = {
   ["galaxyline.nvim"] = {
     loaded = true,
     path = "/home/sam/.local/share/nvim/site/pack/packer/start/galaxyline.nvim"
+  },
+  gruvbox = {
+    loaded = true,
+    path = "/home/sam/.local/share/nvim/site/pack/packer/start/gruvbox"
   },
   ["nvim-autopairs"] = {
     loaded = true,

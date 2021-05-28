@@ -1,5 +1,4 @@
 #!/bin/sh
-#simple dmenu script to kill processes
 
 selected="$(ps -a -u $USER | dmenu -p "select process to kill:" | awk '{print $1" "$4}')"
 [ ! -z "$selected" ] && ans="$(echo "Yes\nNO" | dmenu -p "kill $selected ?")"

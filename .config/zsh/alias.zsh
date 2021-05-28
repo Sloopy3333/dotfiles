@@ -22,15 +22,11 @@ alias wifioff="nmcli radio wifi off"
 #misc
 alias vi='nvim'
 alias vim='nvim'
-alias build='rm -f config.h && sudo make install'
+alias build='sudo make clean install'
 alias mbsync='mbsync -c "$XDG_CONFIG_HOME"/isync/mbsyncrc'
-alias vifm='~/.config/vifm/scripts/vifmrun'
 alias aw='wiki-search'
 alias cat='bat'
 alias yay='paru'
-alias doom='$HOME/.config/emacs/bin/doom'
-alias emacs='/usr/bin/emacs'
-
 
 # devour
 alias steam="devour prime-run steam"
@@ -53,3 +49,8 @@ alias -s rc=$EDITOR
 # run sudo pacman -Fy once before running
 alias pacfind="pacman -Slq | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -Fl {1})' | xargs -ro sudo pacman -S"
 alias yayfind="paru -Slq | fzf -m --preview 'cat <(paru -Si {1}) <(paru -Fl {1})' | xargs -ro paru -S"
+
+# fancontrol
+alias fanauto="nbfc set -f 0 -a && nbfc set -f 1 -a"
+alias fanfull="nbfc set -f 0 -s 100 && nbfc set -f 1 -s 100"
+alias fanstat="nbfc status"
