@@ -2,7 +2,7 @@
 
 (setq default-file-name-handler file-name-handler-alist)
 ;; Increase gc memory and set file-name-handler-alist until init
-(setq gc-cons-threshold (* 100 1024 1024)
+(setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6
       file-name-handler-alist nil)
 
@@ -19,9 +19,12 @@
 (push '(menu-bar-lines . 0)   default-frame-alist)
 (push '(tool-bar-lines . 0)   default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
+(push '(internal-border-width . 6) default-frame-alist)
 (setq menu-bar-mode nil
       tool-bar-mode nil
       scroll-bar-mode nil)
+;; disable startup screen
+(setq inhibit-startup-screen t)
 
 
 ;; Packages
@@ -46,4 +49,9 @@
 
 (setq user-emacs-directory "~/.local/share/emacs")
 (setq custom-file "~/.config/emacs/custom.el")
-(load-file custom-file)
+
+;; fonts
+;; not necessary to put in early-init
+;;  this sets fonts before frame starts so i dont have to stare at default fonts while not running daemon
+(add-to-list 'default-frame-alist
+             '(font . "Hack Nerd Font Mono-11"))

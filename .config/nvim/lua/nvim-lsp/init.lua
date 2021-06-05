@@ -1,92 +1,22 @@
---local custom_lsp_attach = function(client)
---  vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
---  vim.api.nvim_buf_set_keymap(0, 'n', '<c-]>', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
---  vim.api.nvim_buf_set_option(0, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
---end
-
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = true;
-
-    source = {
-       path = {kind = "  "},
-        buffer = {kind = "  "},
-        calc = {kind = "  "},
-        vsnip = {kind = "  "},
-        nvim_lsp = {kind = "  "},
-        nvim_lua = {kind = "  "},
-        spell = {kind = "  "},
-        tags = {kind = "  "},
---        treesitter = {kind = "  "},
-        emoji = {kind = " ﲃ ", filetypes={"markdown"}}
-    }
-}
-
---Diagnostic
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = true,
-    signs = true,
-  }
-)
-
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-    return t "<Plug>(vsnip-jump-prev)"
-  else
-    return t "<S-Tab>"
-  end
-end
-
-
-local lua_lsp = '/home/sam/.local/share/nvim/lsp/lua/extension/server/bin/Linux/lua-language-server'
-local lua_main = '/home/sam/.local/share/nvim/lsp/lua/extension/server/main.lua'
-
-local lspconfig = require'lspconfig'
-
--- bash
--- npm i bash-language-server
-require'lspconfig'.bashls.setup {
-    cmd = {bash_lsp, 'start'},
-}
+local lspconfig = require"lspconfig"
 
 --clang
---https://clangd.llvm.org/installation.html
-require'lspconfig'.clangd.setup {
-    cmd = {"ccls", '--background-index'},
-    filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
-    root_dir = lspconfig.util.root_pattern("compile_commands.json", "compile_flags.txt", ".git")
+require"lspconfig".clangd.setup {
+    cmd = {"clangd", "--background-index"},
+    filetypes = { "c", "cpp", "objc", "objcpp" },
 }
 
 --haskell
---https://github.com/haskell/haskell-language-server/releases
-require'lspconfig'.ghcide.setup {
-    cmd = {"haskell-language-server-wrapper", '--lsp'},
-    filetypes = { 'haskell', 'lhaskell' },
-    root_dir = lspconfig.util.root_pattern('stack.yaml', 'hie-bios', 'BUILD.bazel', 'cabal.config', 'package.yaml', 'xmonad.hs')
+require"lspconfig".ghcide.setup {
+    cmd = {"haskell-language-server-wrapper", "--lsp"},
+    filetypes = { "haskell", "lhaskell" },
+    root_dir = lspconfig.util.root_pattern("stack.yaml", "hie-bios", "BUILD.bazel", "cabal.config", "package.yaml", "xmonad.hs")
 
 }
 
 --python
---pip install python-language-server
-require'lspconfig'.pyright.setup {
-	cmd = {"pyright-langserver", '--stdio'},
+require"lspconfig".pyright.setup {
+	cmd = {"pyright-langserver", "--stdio"},
 	filetypes = { "python" },
 	settings = {
       python = {
@@ -98,26 +28,32 @@ require'lspconfig'.pyright.setup {
     }
     }
 
+
 --lua
---https://github.com/sumneko/lua-language-server/wiki/Build-and-Run-(Standalone)
---https://api.github.com/repos/sumneko/vscode-lua/releases/latest
-require'lspconfig'.sumneko_lua.setup {
- cmd = {lua_lsp, "-E", lua_main};
- settings = {
+local sumneko_root_path = "/usr/share/lua-language-server"
+local sumneko_binary = "/usr/bin/lua-language-server"
+require"lspconfig".sumneko_lua.setup {
+  cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
+  settings = {
     Lua = {
       runtime = {
-        version = 'LuaJIT',
-        path = vim.split(package.path, ';'),
+        -- Tell the language server which version of Lua you"re using (most likely LuaJIT in the case of Neovim)
+        version = "LuaJIT",
+        -- Setup your lua path
+        path = vim.split(package.path, ";"),
       },
       diagnostics = {
-        globals = {'vim'},
+        -- Get the language server to recognize the `vim` global
+        globals = {"vim"},
       },
       workspace = {
+        -- Make the server aware of Neovim runtime files
         library = {
-          [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-          [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+          [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+          [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
         },
       },
+      -- Do not send telemetry data containing a randomized but unique identifier
       telemetry = {
         enable = false,
       },

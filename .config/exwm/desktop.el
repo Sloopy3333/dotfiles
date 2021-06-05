@@ -1,5 +1,16 @@
 ;; -*- lexical-binding: t; -*-
 
+(let ((executables (seq-mapcat
+                    (lambda (bin)
+                      (directory-files bin nil "^[^.]"))
+                    exec-path)))
+
+  (defun run-external-program (command)
+    (interactive (list (completing-read "$ " executables)))
+    (start-process-shell-command command nil command)))
+
+(bind-exwm-keys ("s-r" . run-external-program))
+
 (use-package exwm
   :init
   (setq exwm-workspace-index-map (lambda(index) (number-to-string (1+ index))))
@@ -68,6 +79,7 @@
         ([?\s-L] . windmove-swap-states-right)
         ([?\s-H] . windmove-swap-states-left)
 
+	([?\s-\ ] . 'run-external-programs)
 	([?\s-b] . (lambda() (interactive) (start-file-process-shell-command "brave" "brave" "brave")))
         ;;([?\s-C-t] . exwm-floating-toggle-floating)
         ;;([?\s-C-f] . exwm-layout-toggle-fullscreen)

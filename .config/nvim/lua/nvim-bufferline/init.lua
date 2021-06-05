@@ -1,11 +1,23 @@
 vim.o.termguicolors = true
-
--- colors for active , inactive buffer tabs 
+local colors = {
+    -- bg = '#2E2E2E',
+    bg = '#282828',
+    fg = "fbf1c7",
+    bg2 = "3c3836",
+    red = '#fb4934',
+    green = "#b8bb26",
+    yellow = '#fabd2f',
+    blue = '#83a598',
+    purple = '#d3869b',
+    cyan = '#8ec076',
+    orange = '#fe8019',
+    grey = '#928374',
+}
+-- colors for active , inactive buffer tabs
 require "bufferline".setup {
     options = {
         buffer_close_icon = "",
         modified_icon = "●",
-        close_icon = "",
         left_trunc_marker = "",
         right_trunc_marker = "",
         max_name_length = 14,
@@ -18,39 +30,38 @@ require "bufferline".setup {
     },
     highlights = {
         background = {
-            guifg = comment_fg,
-            guibg = "#282c36"
+            guifg = colors.white,
+            guibg = colors.bg
         },
         fill = {
-            guifg = comment_fg,
-            guibg = "#282c34"
+            guifg = colors.bg,
+            guibg = colors.bg
         },
         buffer_selected = {
-            guifg = normal_fg,
-            guibg = "#44475a",
+            guifg = colors.yellow,
+            guibg = colors.bg,
             gui = "bold"
         },
         separator_visible = {
-            guifg = "#282c34",
-            guibg = "#282c34"
+            guifg = colors.fg,
+            guibg = colors.bg
         },
         separator_selected = {
-            guifg = "#282c36",
-            guibg = "#282c36"
+            guifg = colors.red,
+            guibg = colors.bg
         },
         separator = {
-            guifg = "#282c36",
-            guibg = "#282c36"
+            guifg = colors.bg,
+            guibg = colors.bg
         },
         indicator_selected = {
-            guifg = "#282c36",
-            guibg = "#282c36"
+            guifg = colors.bg,
+            guibg = colors.bg
         },
         modified_selected = {
-            guifg = "#ff5555",
-            guibg = "#282a36"
+            guifg = colors.fg,
+            guibg = colors.bg
         }
     }
 }
 
-local opt = {silent = true}

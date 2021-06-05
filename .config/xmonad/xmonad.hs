@@ -126,7 +126,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       -- kill compile exit lock
       ((modm, xK_q), kill1),
       ((modm .|. shiftMask, xK_q), kill),
-      ((modm, xK_c), spawn "~/.local/bin/xmonad --recompile; ~/.local/bin/xmonad --restart"),
+      ((modm, xK_c), spawn "xmonad --recompile; xmonad --restart"),
+     -- ((modm, xK_c), spawn "~/.local/bin/xmonad --recompile; ~/.local/bin/xmonad --restart"),
       ((modm .|. shiftMask, xK_c), io exitSuccess),
 
       -- layout change focus
@@ -341,13 +342,14 @@ myStartupHook = do
   spawn "~/.config/xmobar/pipes &"
   spawn "~/scripts/bar/volume-pipe &"
   spawn "~/scripts/bar/backlight-pipe &"
-  spawn "sleep 1 && killall trayer; trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --height 20 --distance 2 --distancefrom right --transparent true --alpha 0 --tint 0x282a36 --widthtype request --monitor 0 --margin 2 &"
-  spawn "cmst -w 4&"
+  spawn "sleep 1 ; killall trayer ; trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --height 20 --distance 2 --distancefrom right --transparent true --alpha 0 --tint 0x282a36 --widthtype request --monitor 0 --margin 2 &"
+  spawn "killall cmst ; cmst -w 2&"
 
 --Main
 main :: IO ()
 main = do
-  myXmobar <- spawnPipe "/home/sam/.local/bin/xmobar -x 0 /home/sam/.config/xmobar/xmobar.config"
+  myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmobar/xmobar.config"
+  --myXmobar <- spawnPipe "/home/sam/.local/bin/xmobar -x 0 /home/sam/.config/xmobar/xmobar.config"
   xmonad $ docks $ def
         { terminal = myTerminal,
           focusFollowsMouse = myFocusFollowsMouse,

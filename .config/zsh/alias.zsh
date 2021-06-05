@@ -13,26 +13,20 @@ alias stageall="dot stage -A"
 alias commit="dot commit -m"
 alias push="dot push origin master"
 
-#network
+# network
 alias scwifi="nmcli d wifi list --rescan yes"
 alias cntwifi="nmcli --ask device wifi connect"
 alias wifion="nmcli radio wifi on"
 alias wifioff="nmcli radio wifi off"
 
-#misc
+# misc
 alias vi='nvim'
 alias vim='nvim'
 alias build='sudo make clean install'
 alias mbsync='mbsync -c "$XDG_CONFIG_HOME"/isync/mbsyncrc'
 alias aw='wiki-search'
-alias cat='bat'
+#alias cat='bat'
 alias yay='paru'
-
-# devour
-alias steam="devour prime-run steam"
-alias sxiv="devour sxiv"
-alias mpv="devour mpv"
-alias zathura="devour zathura"
 
 # files
 alias -s json=$EDITOR
@@ -51,6 +45,8 @@ alias pacfind="pacman -Slq | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -F
 alias yayfind="paru -Slq | fzf -m --preview 'cat <(paru -Si {1}) <(paru -Fl {1})' | xargs -ro paru -S"
 
 # fancontrol
+alias fanstart="/opt/nbfc/nbfc.exe start"
+alias fanstop="/opt/nbfc/nbfc.exe stop"
 alias fanauto="nbfc set -f 0 -a && nbfc set -f 1 -a"
 alias fanfull="nbfc set -f 0 -s 100 && nbfc set -f 1 -s 100"
 alias fanstat="nbfc status"

@@ -1,83 +1,46 @@
 local map = vim.api.nvim_set_keymap
+local opts = {noremap = true, silent = true}
 
--- leader
-map('n', '<Space>', '<NOP>', {noremap = true, silent = true})
-local wk = require("whichkey_setup")
+map('n', '<Space>', '<NOP>', opts)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-local which_key_map = {}
 
-which_key_map['.'] = {':Files<CR>', 'search current directory'}
-which_key_map['['] = {':bn<CR>', 'next buffer'}
-which_key_map[']'] = {':bn<CR>', 'previous buffer'}
+map('n', '<leader>.', ":lua require'telescope.builtin'.find_files{}<CR>", opts)
+map('n', '<leader>/', ":lua require'telescope.builtin'.current_buffer_fuzzy_find{}<CR>", opts)
 
--- Files
-which_key_map.f = {
-	name = '+Files',
-	f = {':Files ~/<CR>', 'search all files'},
-	g = {':GFiles <CR>', 'git files'},
-	w = {':Rg<CR>', 'find words'},
-	r = {':History<CR>', 'recent files'},
-	n = {':e', 'new file'},
-}
+-- buffers
+map('n', '<A-b>', ":lua require'telescope.builtin'.buffers{}<CR>", opts)
+map('n', '<A-tab>', ':bn<CR>', opts)
+map('n', '<S-tab>', ':bp<CR>', opts)
+map('n', '<A-q>', ':bp|sp|bn|bd<CR>', opts)
 
-which_key_map.b = {
-	name = '+Buffers',
-	b = {':Buffers<CR>', 'switch buffer'},
-	d = {':bd<CR>', 'kill buffer'},
-	D = {':%bd | Dashboard<CR>', 'kill all buffer'},
-	f = {':BLines<CR>', 'search in buffer'},
-	k = {':bd<CR>', 'kill buffer'},
-	K = {':%bd | Dashboard<CR>', 'kill all buffer'},
-	n = {':bn<CR>', 'next buffer'},
-	p = {':bp<CR>', 'previous buffer'},
-	s = {':w<CR>', 'save buffer'},
-	S = {':wa<CR>', 'save all buffer'},
-	Tab = {':bn<CR>', 'next buffer'},
-}
--- vimwiki
-which_key_map.v = {
-	name = '+vimwiki',
-	v = {':VimwikiIndex<CR>', 'open vimwiki'}
-}
+-- window
+-- split
+map('n', '<A-v>', ':vsplit<CR>', opts)
+map('n', '<A-s>', ':split<CR>', opts)
+-- window movement
+map('n', '<A-j>', ':wincmd j<CR>', opts)
+map('n', '<A-k>', ':wincmd k<CR>', opts)
+map('n', '<A-h>', ':wincmd h<CR>', opts)
+map('n', '<A-l>', ':wincmd l<CR>', opts)
+-- window resize
+map('n', '<A-J>', ':resize +5 j<CR>', opts)
+map('n', '<A-K>', ':resize -5 k<CR>', opts)
+map('n', '<A-L>', ':vertical resize +5<CR>', opts)
+map('n', '<A-H>', ':vertical resize -5<CR>', opts)
 
-which_key_map.w = {
-	name = '+window',
-	v = {':vsplit<CR>', 'vertical split'},
-	s = {':split<CR>', 'horizontal split'},
-	w = {':Windows<CR>', 'switch window'},
-	j = {':wincmd j<CR>', 'focus window down'},
-	k = {':wincmd k<CR>', 'focus window up'},
-	l = {':wincmd l<CR>', 'focus window right'},
-	h = {':wincmd h<CR>', 'focus window left'},
-	L = {':vertical resize +5<CR>', 'increase window width'},
-	H = {':vertical resize -5<CR>', 'decrease window width'},
-	J = {':resize +5<CR>', 'increase window height'},
-	K = {':resize -5<CR>', 'decrease window height'},
-}
+-- files
+map('n', '<leader>ff', ':Files ~/<CR>', opts)
+map('n', '<leader>fg', ':GFiles<CR>', opts)
+map('n', '<leader>fw', ':Rg<CR>', opts)
+map('n', '<leader>fr', ':History<CR>', opts)
+map('n', '<leader>fn', ':e', opts)
 
----- omnicomplete
-vim.cmd([[
-    inoremap <expr> <c-j> ("\<C-n>")
-    inoremap <expr> <c-k> ("\<C-p>")
-    inoremap <expr> <CR> pumvisible() ? "\<C-y>""\<C-g>u\<CR>"
-]])
-
--- scession
-which_key_map.s = {
-	name = "+scession",
-	s = {':ScessionSave<CR>', 'save scession'},
-	l = {':ScessionLoad<CR>', 'load scession'},
-}
-
--- settings
-which_key_map.h = {
-	name = '+settings',
-	e = {':Files ~/.config/nvim/<CR>', 'edit neovim configs'},
-	t = {':Colors<CR>', 'change colors'},
-	h = {':Helptags<CR>', 'help tags'},
-	c = {':Commands<CR>', 'help commands'},
-}
+-- config & help
+map('n', '<leader>he', ':Files ~/.config/nvim/<CR>', opts)
+map('n', '<leader>ht', ':Colors<CR>', opts)
+map('n', '<leader>hh', 'Helptags<CR>', opts)
+map('n', '<leader>hc', 'Commands<CR>', opts)
 
 -- fixing some annoying keys
 vim.cmd([[
@@ -87,22 +50,21 @@ vim.cmd([[
 	cmap Q  q
    ]])
 
---lsp
-which_key_map.c = {
-	name = '+code',
-	h = {':lua vim.lsp.buf.hover()<CR>', 'go to definition'},
-	d = {':lua vim.lsp.buf.declaration()<CR>', 'go to declaration'},
-	D = {':lua vim.lsp.buf.definition()<CR>', 'go to definition'},
-	i = {':lua vim.lsp.buf.implementation()<CR>', 'go to implementation'},
-	r = {':lua vim.lsp.buf.references()<CR>', 'go to references'},
-	f = {':lua vim.lsp.buf.formatting()<CR>', 'format code'},
-	a = {':lua vim.lsp.buf.code_action()<CR>', 'code actions'},
-}
-
-local custom_lsp_attach = function(client)
-  vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
-  vim.api.nvim_buf_set_keymap(0, 'n', '<c-]>', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
-  vim.api.nvim_buf_set_option(0, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-end
-
-wk.register_keymap('leader', which_key_map)
+-- lsp
+--vim.cmd("nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>")
+--vim.cmd("nnoremap <silent> gD <cmd>lua vim.lsp.buf.declaration()<CR>")
+--vim.cmd("nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>")
+--vim.cmd("nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<CR>")
+--vim.cmd("nnoremap <silent> ca :Lspsaga code_action<CR>")
+--vim.cmd("nnoremap <silent> K :Lspsaga hover_doc<CR>")
+---- vim.cmd('nnoremap <silent> <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>')
+--vim.cmd("nnoremap <silent> <C-p> :Lspsaga diagnostic_jump_prev<CR>")
+--vim.cmd("nnoremap <silent> <C-n> :Lspsaga diagnostic_jump_next<CR>")
+---- scroll down hover doc or scroll in definition preview
+--vim.cmd("nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>")
+---- scroll up hover doc
+--vim.cmd("nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>")
+--vim.cmd('command! -nargs=0 LspVirtualTextToggle lua require("lsp/virtual_text").toggle()')
+--
+--
+--
