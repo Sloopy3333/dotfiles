@@ -32,8 +32,8 @@
 ;;                   (sam/set-font))))
 ;;   (sam/set-font))
 
-;;(add-to-list 'default-frame-alist
-;;             '(font . "Hack Nerd Font Mono-11"))
+(add-to-list 'default-frame-alist
+             '(font . "Hack Nerd Font Mono-11"))
 
 ;; moderate decoration
 (setq font-lock-maximum-decoration nil)
@@ -56,6 +56,8 @@
 
 ;; disable scratch mode on startup
 (setq initial-major-mode 'fundamental-mode)
+;; initial buffer message
+(setq initial-scratch-message nil)
 
 ;; disable startup message
 (setq inhibit-startup-message t)

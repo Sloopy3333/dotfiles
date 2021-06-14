@@ -8,15 +8,27 @@
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 
+;; vertico
+(use-package vertico
+  :disabled t
+  :init (vertico-mode)
+  :bind (:map vertico-map
+              ("C-j" . vertico-next)
+              ("C-k" . vertico-previous)
+              )
+  )
 ;; Icomplete
 ;; simple built-in minibuffer selector
 (use-package icomplete
+;;  :disabled t
   :straight nil
   :bind (:map icomplete-minibuffer-map
               ("C-j" . 'icomplete-forward-completions)
               ("C-k" . 'icomplete-backward-completions)
               ("<down>" . 'icomplete-forward-completions)
               ("up" . 'icomplete-backward-completions)
+              ("<tab>" . 'icomplete-forward-completions)
+              ("<backtab>" . 'icomplete-backward-completions)
               ("<return>" . 'icomplete-force-complete-and-exit)
               ("u" . nil)
               :map icomplete-fido-mode-map
@@ -24,6 +36,7 @@
               ("C-k" . 'icomplete-backward-completions)
               ("<down>" . 'icomplete-forward-completions)
               ("up" . 'icomplete-backward-completions)
+              ("<backtab>" . 'icomplete-backward-completions)
               ("<return>" . 'icomplete-force-complete-and-exit)
               ("u" . nil))
   :config
@@ -40,42 +53,38 @@
   ;; enable recursive minibuffers
   (setq enable-recursive-minibuffers t)
   ;; maximum height of te minibuffer window
-  (setq icomplete-prospects-height 15)
+  (setq icomplete-prospects-height 20)
+  ;; disable cycling
+  (setq icomplete-scroll t)
   (setq icomplete-with-completion-tables t)
   (icomplete-mode)
-  (icomplete-vertical-mode)
-  ;;(fido-mode)
-  (set-face-attribute 'icomplete-first-match nil
-                      :foreground "#1d2021"
-                      :background "#fabd2f"
-                      :extend 't))
+  (icomplete-vertical-mode))
 
-;;
-;;;; Minibuffer
-;;;; a major mode for minibuffer
+
+;; Minibuffer
 (use-package minibuffer
   :straight nil
   :config
   ;; completion styles to be used by default see `completion-style-alist'
   ;; available styles are `partial-completion' `substring' `initials' `basic' `flex'
   (setq completion-styles
-        (basic partial-completion initials))
+        '(partial-completion substring initials basic))
   ;; override default completion style of specific modes
   (setq completion-category-overrides
-        '((file (styles . (flex basic)))
-          (buffer (styles . (flex basic)))
-          (project-file (styles . (flex basic)))
-          (info-menu (styles . (flex basic)))))
+        '((file (styles . (flex)))
+          (buffer (styles . (flex)))
+          (project-file (styles . (flex)))
+          (info-menu (styles . (flex)))))
   (setq completions-format 'vertical)
-  (setq completion-ignore-case nil)
+  (setq completion-ignore-case t)
   (setq completion-cycle-threshold t)
   (setq completion-flex-nospace nil)
-  (setq completion-show-help nil)
-  (setq completion-pcm-complete-word-inserts-delimiters t)
+  (setq completion-show-help t)
+  (setq completion-pcm-complee-word-inserts-delimiters t)
   (setq read-answer-short t)
   (setq read-file-name-completion-ignore-case t)
   (setq read-buffer-completion-ignore-case t)
-  (setq resize-mini-windows t)
+  (setq resize-mini-windows 'grow-only)
   (file-name-shadow-mode 1)
   (minibuffer-depth-indicate-mode 1))
 
@@ -83,15 +92,16 @@
 ;; Consult
 ;; provides various improvements to minibuffer command
 (use-package consult
-  :defer 1
-  :after (icomplete)
+  :after (:any icomplete vertico)
   :config
   (setq consult-buffer-sources '(consult--source-buffer)))
 
 ;;; Marginalia
 (use-package marginalia
-  :after (icomplete)
+  :after (:any icomplete vertico)
   :config
+  ;;(set-face-attribute 'marginalia--documentation nil
+  ;;(marginalia-documentation ((t (:inherit completions-annotations :extend t)))))
   (marginalia-mode)
   (setq marginalia-annotators '(marginalia-annotators-heavy t)))
 

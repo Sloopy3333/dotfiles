@@ -50,3 +50,6 @@ alias fanstop="/opt/nbfc/nbfc.exe stop"
 alias fanauto="nbfc set -f 0 -a && nbfc set -f 1 -a"
 alias fanfull="nbfc set -f 0 -s 100 && nbfc set -f 1 -s 100"
 alias fanstat="nbfc status"
+
+# emacs
+alias em="emacsclient -c -n"

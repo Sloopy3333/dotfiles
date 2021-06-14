@@ -6,7 +6,7 @@
              company-complete-common-or-cycle
              company-manual-begin
              company-grab-line)
-  :hook (window-setup . global-company-mode)
+  :hook (prog-mode . global-company-mode)
   :config
   ;; minimum characters to wait for to triger idle completion
   (setq company-minimum-prefix-length 2)
@@ -84,14 +84,14 @@
 ;; Electric pair
 (use-package elec-pair
   :straight nil
-  :hook (window-setup . electric-pair-mode)
+  :hook (prog-mode . electric-pair-mode)
   )
 
 
 ;; Electric indent
 (use-package electric
   :straight nil
-  :hook (window-setup . electric-indent-mode)
+  :hook (prog-mode . electric-indent-mode)
   )
 
 

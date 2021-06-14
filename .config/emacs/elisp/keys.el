@@ -2,13 +2,14 @@
 
 ;; Evil
 (use-package evil
-  :hook (window-setup . evil-mode)
+  :hook (emacs-startup . evil-mode)
   :init
   (setq evil-undo-system 'undo-tree)
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-i-jump nil))
+
 
 
 ;; Evil collection
@@ -27,6 +28,8 @@
   (which-key-mode)
   (setq which-key-idle-delay 1))
 
+
+
 ;; General
 (defun sam/switch-to-next-buffer ()
   "similar to `switch-to-next-buffer' but ignores special buffers"
@@ -41,6 +44,20 @@
   (previous-buffer)
   (while (string-match-p "^\*" (buffer-name))
     (previous-buffer)))
+
+(defun sam/switch-next-buffer-or-window ()
+  (interactive)
+  (if(> (count-windows) 1)
+      (next-window-any-frame)
+    (sam/switch-to-next-buffer)
+    ))
+
+(defun sam/switch-prev-buffer-or-window ()
+  (interactive)
+  (if(> (count-windows) 1)
+      (previous-window-any-frame)
+    (sam/switch-to-prev-buffer)
+    ))
 
 (defun sam/toggle-side-tree()
   (interactive)
@@ -69,7 +86,7 @@
   (interactive)
   (if(> (count-windows) 1)
       (kill-buffer-and-window)
-    (kill-this-buffer)))
+   (kill-this-buffer)))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -92,16 +109,20 @@
    "M-<tab>" 'sam/switch-to-next-buffer
    "M-<iso-lefttab>" 'sam/switch-to-prev-buffer
    "M-b" 'consult-buffer
-   "M-B" 'ibuffer
+   "M-S-b" 'ibuffer
    "M-q" 'sam/kill-buffer-or-window
-   "M-Q" 'bury-buffer)
+   "M-S-q" 'bury-buffer
+   "M-C-b" 'switch-to-buffer-other-window
+   "M-C-S-b" 'switch-to-buffer-other-frame)
 
   ;; window
   (general-def 'normal
     "M-s" 'split-window-vertically
     "M-v" 'split-window-horizontally
-    "M-j" 'windmove-down
-    "M-k" 'windmove-up
+    ;;"M-j" 'windmove-down
+    ;;"M-k" 'windmove-up
+    "M-j" 'sam/switch-next-buffer-or-window
+    "M-k" 'sam/switch-prev-buffer-or-window
     "M-l" 'windmove-right
     "M-h" 'windmove-left
     "M-J" 'windmove-swap-states-down
@@ -124,7 +145,7 @@
     "."   '(find-file :which-key "find file")
     "RET" '(consult-bookmark :which-key "Open Bookmarks")
     "/"   '(consult-line :which-key "search lines in buffer")
-    ":"   '(eval-expression :which-key "evaluate expression")
+   ";"   '(eval-expression :which-key "evaluate expression")
 
     ;;Code
     "c"   '(:ignore c :which-key "Code")
@@ -139,8 +160,8 @@
     ;; Files
     "f"   '(:ignore f :which-key "files")
     "ff"  '(dired-jump :which-key "dired")
-    "fg"  '(consult-git-grep :which-key "gitgrep")
-    "fr"  '(consult-ripgrep :which-key "ripgrep")
+    "fg"  '(consult-ripgrep :which-key "ripgrep")
+    "fr"  '(consult-recent-file :which-key "ripgrep")
 
     ;;Magit
     "g"   '(:ignore g :which-key "Magit")
@@ -177,8 +198,9 @@
 
     ;; Toggles
     "t"   '(:ignore t :which-key "toggles")
-    "tT"  '(consult-theme :which-key "switch theme")
+    "tt"  '(consult-theme :which-key "switch theme")
     "ty"  '(consult-yank :which-key "choose yanked")
+    "tf"  '(text-scale-adjust :which-key "scale text")
     )
   )
 

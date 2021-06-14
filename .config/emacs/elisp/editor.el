@@ -41,6 +41,8 @@
 (setq kept-old-versions 5)
 ;; number of new backup to keep
 (setq kept-new-versions 5)
+;; backup directory
+(setq backup-directory-alist '(("." . "~/.local/share/emacs/var/backup")))
 ;; backup directory fir tramp files
 (setq tramp-backup-directory-alist backup-directory-alist)
 
@@ -97,18 +99,52 @@
 ;; wrap words at whitespaces instead at the middle of word
 (setq-default word-wrap t)
 ;; give each line of text only one line ie no wraping
-;;(setq-default truncate-lines t)
-;;(setq truncate-partial-width-windows nil)
+(setq-default truncate-lines t)
+(setq truncate-partial-width-windows nil)
 
 ;; add a newline at end of file
 (setq require-final-newline t)
 
 ;; hard wraping
-(add-hook 'text-mode-hook #'auto-fill-mode)
+(add-hook 'text-mode-hook 'visual-line-mode)
 
 ;; remove all trailing whitespaces before saving
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; Parens
+;; highlights matching parens
+(use-package paren
+  :hook (prog-mode . show-paren-mode)
+  :config
+  (setq show-paren-delay 0.1
+        show-paren-highlight-openparen t
+        show-paren-when-point-inside-paren t
+        show-paren-when-point-in-periphery t))
+
+
+;; Hl-line
+;; enable line higlighting
+(use-package hl-line
+  ;; Highlights the current line
+  :hook (prog-mode . global-hl-line-mode)
+  :init (defvar global-hl-line-modes '(prog-mode
+                                       text-mode conf-mode special-mode org-agenda-mode)))
+
+
+;; Number line
+;; enable relative line number mode
+(setq-default display-line-numbers 'relative)
+;; explicitly define a width to reduce the cost of on-the-fly computation
+(setq-default display-line-numbers-width 3)
+;; Disable number line in certiain mode
+(dolist
+    (mode '(org-mode-hook
+            term-mode-hook
+            shell-mode-hook
+            dired-mode-hook
+            eshell-mode-hook
+            vterm-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 ;; Savehist
 ;; persistant history across sessions
 (use-package savehist
@@ -139,19 +175,19 @@
 ;; improves performance in large files by disabling some modes
 (use-package so-long
   :straight nil
-  :hook (window-setup . global-so-long-mode)
+  :hook (prog-mode . global-so-long-mode)
   :config
   (setq so-long-threshold 400)
   ;; don't disable font-lock-mode, line-number-mode and don't make buffer read only
   (delq 'font-lock-mode so-long-minor-modes)
   (delq 'display-line-numbers-mode so-long-minor-modes)
-  (delq 'buffer-read-only so-long-variable-overrides 'assq)
+  (delq 'buffer-read-only so-long-variable-overrides)
   ;; reduce the level of syntax highlighting
   (add-to-list 'so-long-variable-overrides '(font-lock-maximum-decoration . 1))
   ;; disable save-place in large files
   (add-to-list 'so-long-variable-overrides '(save-place-alist . nil))
   ;; disable these
-  (appendq so-long-minor-modes
+  (append so-long-minor-modes
            '(eldoc-mode
              auto-composition-mode
              undo-tree-mode

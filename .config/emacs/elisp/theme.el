@@ -7,47 +7,84 @@
   (doom-themes-visual-bell-config)
   (doom-themes-neotree-config)
   (doom-themes-org-config)
-  (load-theme 'doom-gruvbox t))
+  (load-theme 'doom-solarized-dark-high-contrast t))
 
 
-;; solarized theme
-(use-package solarized-theme
-  :disabled t
-  :config
-  ;; make the fringe stand out from the background
-  (setq solarized-distinct-fringe-background nil)
-  ;; use variable face for some headings and titles
-  (setq solarized-use-variable-pitch nil)
-  ;; low contrast modeline
-  (setq solarized-high-contrast-mode-line nil)
-  ;; use less bolding
-  (setq solarized-use-less-bold t)
-  ;; use more italics
-  (setq solarized-use-more-italic t)
-  ;; use colors for indicators such as git:gutter, flycheck and similar
-  (setq solarized-emphasize-indicators t)
-  ;; don't change size of org-mode headlines (but keep other size-changes)
-  (setq solarized-scale-org-headlines nil)
-  ;; avoid all font-size changes
-  (setq solarized-height-minus-1 1.0)
-  (setq solarized-height-plus-1 1.0)
-  (setq solarized-height-plus-2 1.0)
-  (setq solarized-height-plus-3 1.0)
-  (setq solarized-height-plus-4 1.0)
-  (load-theme 'solarized-dark t))
 
+
+(defun mode-line-fill (face reserve)
+  "Return empty space using FACE and leaving RESERVE space on the right."
+  (unless reserve
+    (setq reserve 20))
+  (when (and window-system (eq 'right (get-scroll-bar-mode)))
+    (setq reserve (- reserve 3)))
+  (propertize " "
+              'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))
+              'face face))
+
+
+(setq battery-mode-line-format "%p%% (%t,%b) ")
+(display-battery-mode)
+(setq display-time-default-load-average 1)
+(setq display-time-format "%a %d %b %Y %I:%M %p")
+(setq display-time-interval 60)
+(display-time-mode 1)
+
+(setq-default mode-line-format
+      (list
+       '(:eval (format " [%s] " (+ 1 exwm-workspace-current-index)))
+       '(:eval(list
+               (when (buffer-modified-p)
+                 (propertize " "
+                             'face 'font-lock-warning-face
+                             'help-echo "Buffer has been modified"))
+               (when buffer-read-only
+                 (propertize " "
+                             'face 'font-lock-type-face
+                             'help-echo "Buffer is read-only"))
+               '(:eval (propertize "%b " 'face 'font-lock-keyword-face
+                                   'help-echo (buffer-file-name)))))
+
+       '(:eval (propertize "%m " 'face 'font-lock-keyword-face
+                           'help-echo (buffer-file-name)))
+
+       '(:eval (when-let (vc vc-mode)
+                 (list " "
+                       (propertize (substring vc 5)
+                                   'face 'font-lock-comment-face)
+                       " ")))
+
+       (mode-line-fill 'mode-line 70)
+       '(:eval (propertize (format-time-string "%a %d %b %Y %I:%M %p")
+                           'help-echo
+                           (concat (format-time-string "%c; ")
+                                   (emacs-uptime "Uptime:%hh"))))
+       " " mode-line-misc-info
+       ))
+
+
+
+;;(setq-default mode-line-format nil)
 ;; Doom-modeline
 ;; a minimal modeline from doom emacs
 (use-package doom-modeline
-  :defer 0
-  :config (doom-modeline-mode 1)
+  :disabled t
+  :config
+  (setq display-time-default-load-average 1)
+  (display-battery-mode 1)
+  (setq display-time-interval 1)
+  (setq display-time-format "%a %d %b %Y %I:%M %p")
+  (display-time-mode 1)
+  (doom-modeline-mode 1)
+  ;;(setq-default header-line-format mode-line-format)
+  ;;(setq-default mode-line-format nil)
   :custom ((doom-modeline-height 15)
-           (setq doom-modeline-icon t)))
+           (setq doom-modeline-icon nil)))
 ;; this is requried to display icons in modline while running emacsclient
-(defun enable-doom-modeline-icons (_frame)
-  (setq doom-modeline-icon t))
-(add-hook 'after-make-frame-functions
-          #'enable-doom-modeline-icons)
+;;(defun enable-doom-modeline-icons (_frame)
+;;  (setq doom-modeline-icon t))
+;;(add-hook 'after-make-frame-functions
+;;          #'enable-doom-modeline-icons)
 ;; disable in term mode
 ;;(add-hook 'term-mode-hook #'hide-mode-line-mode)
 
@@ -66,47 +103,14 @@
 ;; All-the-icons-dired
 ;; adds icons to dired
 (use-package all-the-icons-dired
-  :after (:any dired dired-jump dired-noselect)
+  ;;:after (:any dired dired-jump dired-noselect)
   :hook (dired-mode . all-the-icons-dired-mode))
 
 
 ;; Rainbow-delimiters
 ;; highlights matching brackets in same color
 (use-package rainbow-delimiters
-  :hook (window-setup . rainbow-delimiters-mode))
+  :hook (prog-mode . rainbow-delimiters-mode))
 
-;; Parens
-;; highlights matching parens
-(use-package paren
-  :hook (emacs-startup . show-paren-mode)
-  :config
-  (setq show-paren-delay 0.1
-        show-paren-highlight-openparen t
-        show-paren-when-point-inside-paren t
-        show-paren-when-point-in-periphery t))
-
-
-;; Hl-line
-;; enable line higlighting
-(use-package hl-line
-  ;; Highlights the current line
-  :hook (window-setup . global-hl-line-mode)
-  :init (defvar global-hl-line-modes '(prog-mode
-                                       text-mode conf-mode special-mode org-agenda-mode)))
-
-
-;; Number line
-;; enable relative line number mode
-(setq-default display-line-numbers 'relative)
-;; explicitly define a width to reduce the cost of on-the-fly computation
-(setq-default display-line-numbers-width 3)
-;; Disable number line in certiain mode
-(dolist
-    (mode '(org-mode-hook
-            term-mode-hook
-            shell-mode-hook
-            dired-mode-hook
-            eshell-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (provide 'theme.el)

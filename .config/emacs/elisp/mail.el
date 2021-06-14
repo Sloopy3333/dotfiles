@@ -1,9 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+
 ;; Mu4E
 (use-package mu4e
-  :defer 5
-  :commands mu4e
+  :commands (mu4e)
   :config
   (setq
    mu4e-completing-read-function 'completing-read                        ;; use buffer minibuffer
@@ -58,6 +59,15 @@
 
 ;; Html mails might be better rendered in a browser
 ;;(add-to-list 'mu4e-view-actions '("View in browser" . mu4e-action-view-in-browser)))
+
+;;(require 'org-mu4e)
+;;(setq org-capture-templates
+;;  `(("m" "Email Workflow")
+;;    ("mf" "Follow" entry (file+olp "~/org/mail.org" "Follow")
+;;          "* TODO %:formname %:subject \n %a \n %i")
+;;    ("mr" "Read later" entry (file+olp "~/org/mail.org" "Read")
+;;          "* TODO %a \n\n  %i")))
+
 
 
 (provide 'mail.el)

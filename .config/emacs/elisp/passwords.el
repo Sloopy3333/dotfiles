@@ -1,5 +1,6 @@
 (use-package pass
-  :commands pass)
+  :commands (pass))
+
 (use-package password-store
   :after pass)
 
