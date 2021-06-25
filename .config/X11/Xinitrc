@@ -3,7 +3,9 @@ userresources=$HOME/.config/X11/Xresources
 usermodmap=$HOME/.config/X11/Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
-wm="dbus-launch --exit-with-session emacs -mm --debug-init -l ~/.config/exwm/desktop.el"
+#wm="dbus-launch emacs -mm --debug-init -l ~/.config/exwm/desktop.el"
+wm="/home/sam/.local/share/xmonad/xmonad-x86_64-linux"
+#wm="dwm"
 
 
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
@@ -17,14 +19,12 @@ fi
 [ -f $sysmodmap ] && xmodmap $sysmodmap
 [ -f "$userresources" ] && xrdb -merge "$userresources"
 [ -f "$usermodmap" ] && xmodmap "$usermodmap"
-. $HOME/.config/X11/env
+
 xsetroot -cursor_name left_ptr &
 sudo $HOME/scripts/powertop.sh &
 $HOME/scripts/walli -r &
+/usr/local/bin/emacs --daemon --no-x-resources &
 [ $wm = "dwm" ] && dwmblocks &
-#/usr/local/bin/emacs --daemon --no-x-resources &
-cmst -m -w 5&
-#sleep 1; nm-applet --indicator &
-#dunst &
-#mpd &
+cmst -m -w 3 &
+mpd &
 exec $wm

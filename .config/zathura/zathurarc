@@ -54,6 +54,7 @@ set recolor true
 set font "Hack Nerd Font 12"
 set page-pading 5
 set pages-per-row 1
+set guioptions none
 map ZZ quit
 map r reload
 map p print

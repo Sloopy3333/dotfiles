@@ -40,7 +40,10 @@
   :bind (:map company-active-map
               ("<return>" . company-complete-selection)
               ("<tab>" . company-select-next)
-              ("<backtab>" . company-select-previous)))
+              ("<backtab>" . company-select-previous)
+              ("M-/" . 'hippie-expand)
+              ))
+
 
 ;; Company box
 (use-package company-box
@@ -77,7 +80,7 @@
 (use-package eglot
   :commands (eglot)
   :config
-  (add-to-list 'eglot-server-programs '(c-mode . ("clangd" "--background-index")))
+  ;;(add-to-list 'eglot-server-programs '(c-mode . ("clangd" "--background-index")))
   (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio"))))
 
 

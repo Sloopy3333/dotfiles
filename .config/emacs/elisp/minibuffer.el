@@ -10,7 +10,6 @@
 
 ;; vertico
 (use-package vertico
-  :disabled t
   :init (vertico-mode)
   :bind (:map vertico-map
               ("C-j" . vertico-next)
@@ -20,7 +19,7 @@
 ;; Icomplete
 ;; simple built-in minibuffer selector
 (use-package icomplete
-;;  :disabled t
+  :disabled t
   :straight nil
   :bind (:map icomplete-minibuffer-map
               ("C-j" . 'icomplete-forward-completions)

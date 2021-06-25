@@ -111,3 +111,10 @@ dot
 /.config/xmonad/xmonad-contrib-git/
 /.config/xmonad/xmonad-git/
 /.elfeed/
+/.config/xmonad/xmonad-contrib/
+/.config/xmonad/.stack-work/
+/.config/xmonad/stack.yaml.lock
+/.config/chromium/
+/.config/emacs/myth-theme.el
+/.config/emacs/myth/
+/.config/exwm/scripts/

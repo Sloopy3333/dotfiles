@@ -46,18 +46,40 @@
     (previous-buffer)))
 
 (defun sam/switch-next-buffer-or-window ()
+  "move focus to next window if exist or cycle forward through the buffer list"
   (interactive)
   (if(> (count-windows) 1)
-      (next-window-any-frame)
+      (other-window 1)
     (sam/switch-to-next-buffer)
     ))
 
 (defun sam/switch-prev-buffer-or-window ()
+  "move focus to next window if exist or cycle backward through the buffer list"
   (interactive)
   (if(> (count-windows) 1)
-      (previous-window-any-frame)
+      (other-window -1)
     (sam/switch-to-prev-buffer)
     ))
+
+(defun sam/split-window-right ()
+  "split window right switch to window and rename create new buffer named untitled$"
+  (interactive)
+  (progn
+    (split-window-right)
+    (windmove-right)
+    (let (($buf (generate-new-buffer "untitled")))
+      (switch-to-buffer $buf))))
+
+
+(defun sam/split-window-below ()
+  "split window below switch to window and rename create new buffer named untitled$"
+  (interactive)
+  (progn
+    (split-window-below)
+    (windmove-down)
+    (let (($buf (generate-new-buffer "untitled")))
+      (switch-to-buffer $buf))))
+
 
 (defun sam/toggle-side-tree()
   (interactive)
@@ -77,14 +99,18 @@
         (rename-buffer "Side-tree")))))
 
 (defun sam/toggle-term()
+  "toggle ansi term"
   (interactive)
   (if (get-buffer "*terminal*")
       (kill-buffer "*terminal*")
     (term)))
 
+
+;; not usefull anymore
 (defun sam/kill-buffer-or-window ()
   (interactive)
   (if(> (count-windows) 1)
+      (progn)
       (kill-buffer-and-window)
    (kill-this-buffer)))
 
@@ -109,16 +135,16 @@
    "M-<tab>" 'sam/switch-to-next-buffer
    "M-<iso-lefttab>" 'sam/switch-to-prev-buffer
    "M-b" 'consult-buffer
-   "M-S-b" 'ibuffer
-   "M-q" 'sam/kill-buffer-or-window
-   "M-S-q" 'bury-buffer
+   "M-B" 'ibuffer
+   "M-q" 'kill-buffer-and-window
+   "M-Q" 'delete-window
    "M-C-b" 'switch-to-buffer-other-window
-   "M-C-S-b" 'switch-to-buffer-other-frame)
+   "M-C-B" 'switch-to-buffer-other-frame)
 
   ;; window
   (general-def 'normal
-    "M-s" 'split-window-vertically
-    "M-v" 'split-window-horizontally
+    "M-s" 'sam/split-window-right
+    "M-v" 'sam/split-window-below
     ;;"M-j" 'windmove-down
     ;;"M-k" 'windmove-up
     "M-j" 'sam/switch-next-buffer-or-window
@@ -139,7 +165,7 @@
   (general-create-definer sam/leader-keys
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
-    :global-prefix "S-SPC")
+    :global-prefix "C-SPC")
   (sam/leader-keys
     ;;"SPC" '(execute-extended-command :which-key "M-X")
     "."   '(find-file :which-key "find file")
@@ -179,6 +205,7 @@
     "hr"  '(lambda () (interactive) (load-file (expand-file-name "~/.config/emacs/init.el")) :which-key "reload emacs config")
     "hs"  '(helpful-symbol :which-key "symbol help")'
     "hv"  '(helpful-variable :which-key "variable help")'
+    "hh"  '(consult-apropos :which-key "apropos search")
 
     ;; Org
     "o"   '(:ignore o :which-key "org")

@@ -10,7 +10,7 @@ case $1 in
 	cat $HOME/.config/walli/wallpaper | xargs xwallpaper --stretch
 	;;
     *)
-	SELECTED=$(sxiv -o -q -r -t $WALL_DIR)
+	SELECTED=$(devour sxiv -o -q -r -t $WALL_DIR)
 	[ "$SELECTED" = "" ] && exit
 	echo $SELECTED > ~/.config/walli/wallpaper
 	xwallpaper $OPT $SELECTED

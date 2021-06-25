@@ -7,7 +7,6 @@
 (setq no-littering-var-directory "~/.local/share/emacs/var")
 (use-package no-littering)
 
-;;(use-package esup)
 
 ;; Gcmh
 ;; dynamicaly alter the `gc-cons-treshold' depending on the user-activity
@@ -29,5 +28,6 @@
              helpful-variable
              helpful-command
              helpful-key))
+
 
 (provide 'utils.el)

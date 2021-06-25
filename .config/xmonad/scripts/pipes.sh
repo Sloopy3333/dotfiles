@@ -1,4 +1,5 @@
 #!/bin/sh
+
 _volume_pipe=/tmp/volume-pipe
 [ ! -f $_volume_pipe ] && mkfifo $_volume_pipe
 

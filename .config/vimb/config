@@ -1,5 +1,5 @@
 # HoMepage that vimb opens if started without a URI.
-set home-page=/home/sam/.config/startpage/index.html
+#set home-page=/home/sam/.config/startpage/index.html
 
 # Downloads
 set download-path=~/Downloads
@@ -63,7 +63,7 @@ set show-titlebar=false
 # Indicates if the status bar should be shown.
 set status-bar=false
 
-# Cookie accept policy {`always', `never', `origin' (accept all non-third-party cookies)}.  
+# Cookie accept policy {`always', `never', `origin' (accept all non-third-party cookies)}.
 set cookie-accept=origin
 
 # Indicates if Vimb prefetches domain names.
@@ -108,5 +108,5 @@ set completion-selected-css=color:#282a36;background-color:#bd93f9;font:12p Hack
 set input-css=color:#f8f8f2;background-color:#282a36;font:12pt Hack Nerd Font;
 set input-error-css=color:#ff5555;background-color:#282a36;font:12pt Hack Nerd Font;
 set status-css=color:#bd93f9;background-color:#282a36;font:12pt Hack Nerd Font;
-set status-ssl-css=color:#99cc99;background-color:#393939;font:12pt Hack Nerd Font; 
+set status-ssl-css=color:#99cc99;background-color:#393939;font:12pt Hack Nerd Font;
 set status-ssl-invalid-css=color:#f2777a;background-color:#393939;font:12pt Hack Nerd Font ;

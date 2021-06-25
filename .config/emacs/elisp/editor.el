@@ -143,7 +143,8 @@
             shell-mode-hook
             dired-mode-hook
             eshell-mode-hook
-            vterm-mode-hook))
+            vterm-mode-hook
+            pass-mode))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 ;; Savehist
 ;; persistant history across sessions

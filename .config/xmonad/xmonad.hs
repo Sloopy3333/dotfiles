@@ -26,7 +26,6 @@ import XMonad.Layout.Renamed
 import XMonad.Layout.NoBorders
 import XMonad.Layout.LayoutModifier(ModifiedLayout)
 import XMonad.Layout.ShowWName
-import XMonad.Layout.LimitWindows
 
 -- actions
 import XMonad.Actions.CopyWindow(copy, kill1, copyToAll, killAllOtherCopies)
@@ -44,20 +43,34 @@ import Graphics.X11.ExtraTypes.XF86
 
 --colors
 
-black = "#282828"
-red = "#fb4934"
-green = "#b8bb26"
-yellow = "#fabd2f"
-blue = "#83a598"
-cyan = "#8ec07c"
-white = "#ebbdd2"
-orange = "#fe8019"
-purple = "#d3869b"
+bg = "#002b36"
+fg = "#eee8b5"
+border = "#586e75"
+yellow = "#b58900"
+green = "#859900"
 
 -- user variables
 
 myModMask :: KeyMask
 myModMask = mod4Mask
+
+myFont :: String
+myFont = "xft:Hack Nerd Font:regular:size=12:antialias=true:hinting=true"
+
+myFocusFollowsMouse :: Bool
+myFocusFollowsMouse = True
+
+myClickJustFocuses :: Bool
+myClickJustFocuses = False
+
+myBorderWidth :: Dimension
+myBorderWidth = 2
+
+myFocusedBorderColor :: String
+myFocusedBorderColor = border
+
+myUnFocusedBorderColor :: String
+myUnFocusedBorderColor = bg
 
 myTerminal :: String
 myTerminal = "st"
@@ -66,7 +79,6 @@ myTerminalAlt :: String
 myTerminalAlt = "xterm"
 
 myFilemanager :: String
---myFilemanager = myTerminal ++ " -e lf"
 myFilemanager = "emacsclient -c -a '' --eval '(dired nil)'"
 
 myFilemanagerAlt :: String
@@ -90,20 +102,6 @@ myRssreader = "emacsclient -c -a '' --eval '(elfeed)'"
 myIDE :: String
 myIDE = "emacsclient -c -a emacs"
 
-myFont :: String
-myFont = "xft:Hack Nerd Font:regular:size=12:antialias=true:hinting=true"
-
-myFocusFollowsMouse :: Bool
-myFocusFollowsMouse = True
-
-myClickJustFocuses :: Bool
-myClickJustFocuses = False
-
-myBorderWidth :: Dimension
-myBorderWidth = 2
-
-myFocusedBorderColor :: String
-myFocusedBorderColor = yellow
 
 -- keybidings and keychords
 
@@ -127,7 +125,6 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm, xK_q), kill1),
       ((modm .|. shiftMask, xK_q), kill),
       ((modm, xK_c), spawn "xmonad --recompile; xmonad --restart"),
-     -- ((modm, xK_c), spawn "~/.local/bin/xmonad --recompile; ~/.local/bin/xmonad --restart"),
       ((modm .|. shiftMask, xK_c), io exitSuccess),
 
       -- layout change focus
@@ -165,13 +162,13 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm .|. controlMask, xK_Print), spawn "~/scripts/sc -cs"),
 
       --volume
-      ((0, xF86XK_AudioMute), spawn "~/scripts/bar/volume-pipe toggle"),
-      ((0, xF86XK_AudioRaiseVolume), spawn "~/scripts/bar/volume-pipe up"),
-      ((0, xF86XK_AudioLowerVolume), spawn "~/scripts/bar/volume-pipe down"),
+      --((0, xF86XK_AudioMute), spawn "~/.config/xmonad/scripts/volume-pipe toggle"),
+      --((0, xF86XK_AudioRaiseVolume), spawn "~/.config/xmonad/scripts/volume-pipe.sh up"),
+      --((0, xF86XK_AudioLowerVolume), spawn "~/.config/xmonad/scripts/volume-pipe.sh down"),
 
       -- backlight
-      ((0, xF86XK_MonBrightnessUp), spawn "~/scripts/bar/backlight-pipe up"),
-      ((0, xF86XK_MonBrightnessDown), spawn "~/scripts/bar/backlight-pipe down")
+      ((0, xF86XK_MonBrightnessUp), spawn "~/.config/xmonad/scripts/backlight-pipe.sh up"),
+      ((0, xF86XK_MonBrightnessDown), spawn "~/.config/xmonad/scripts/backlight-pipe.sh down")
     ]
       ++
       --change workspace
@@ -189,12 +186,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ++ [ ( (modm, xK_d),
              submap . M.fromList $
                [ ((0, xK_s), spawn "~/scripts/dpower"),
-                 ((0, xK_p), spawn "~/scripts/bw"),
+                 ((0, xK_p), spawn "~/scripts/dpass"),
                  ((0, xK_m), spawn "~/scripts/dman"),
                  ((0, xK_k), spawn "~/scripts/dkill"),
                  ((0, xK_c), spawn "~/scripts/dcol"),
-                 ((0, xK_w), spawn "~/scripts/dsearch"),
-                 ((0, xK_e), spawn "~/scripts/dconfig")
+                 ((0, xK_w), spawn "~/scripts/dsearch")
                ]
            )
          ]
@@ -218,7 +214,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       [ ( (modm, xK_p),
           submap . M.fromList $
             [ ((0, xK_h), namedScratchpadAction myScratchPads "htop"),
-              ((0, xK_m), namedScratchpadAction myScratchPads "ncmpcpp")
+              ((0, xK_m), namedScratchpadAction myScratchPads "emms")
             ]
         )
       ]
@@ -267,19 +263,17 @@ mySpacing i = spacingRaw False (Border 0 i 0 i) True (Border i 0 i 0) True
 
 tall =
   renamed [Replace "Tall"] $
-    mySpacing 4 $
+    mySpacing 2 $
         Tall 1 (3 / 100) (1 / 2)
 
 wide =
   renamed [Replace "Wide"] $
-    mySpacing 4 $
+    mySpacing 2 $
         Mirror (Tall 1 (3 / 100) (1 / 2))
 
 full =
   renamed [Replace "Full"] $
-    mySpacing 4 $
-      limitWindows
-        15
+    mySpacing 2 $
         Full
 
 myLayout =
@@ -320,36 +314,35 @@ myManageHook =
 myEventHook = mempty
 
 -- dynamicloghook
---windowCount :: X (Maybe String)
---windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+windowCount :: X (Maybe String)
+windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+
 myXmobarPP h =
   xmobarPP
     { ppCurrent = xmobarColor green "" . wrap "[" "]",
-      ppVisible = xmobarColor purple "" . wrap "" "" . clickable,
+      ppVisible = xmobarColor fg "" . wrap "" "" . clickable,
       ppHidden = xmobarColor yellow "" . wrap "" "" . clickable,
-      ppHiddenNoWindows = xmobarColor purple "" . clickable,
-      ppSep = "<fc=white> | </fc>",
-      ppTitle = xmobarColor cyan "" . shorten 60,
-      ppLayout = xmobarColor yellow "",
+      ppHiddenNoWindows = xmobarColor fg "" . clickable,
+      ppSep = "<fc=fg> | </fc>",
+      ppTitle = xmobarColor fg "" . shorten 60,
+      ppLayout = xmobarColor fg "",
       ppOutput = hPutStrLn h,
       --, ppExtras  = [windowCount]
       ppOrder = \(ws : l : t : ex) -> [ws, l] ++ ex ++ [t]
     }
 
--- startuphook
+--startuphook
 myStartupHook :: X ()
 myStartupHook = do
-  spawn "~/.config/xmobar/pipes &"
-  spawn "~/scripts/bar/volume-pipe &"
-  spawn "~/scripts/bar/backlight-pipe &"
-  spawn "sleep 1 ; killall trayer ; trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --height 20 --distance 2 --distancefrom right --transparent true --alpha 0 --tint 0x282a36 --widthtype request --monitor 0 --margin 2 &"
-  spawn "killall cmst ; cmst -w 2&"
+  spawnOnce "~/.config/xmonad/scripts/pipes.sh &"
+  spawn "~/.config/xmonad/scripts/volume-pipe.sh &"
+  spawn "~/.config/xmonad/scripts/backlight-pipe.sh &"
+  spawn "~/.config/xmonad/scripts/systray.sh &"
 
 --Main
 main :: IO ()
 main = do
-  myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmobar/xmobar.config"
-  --myXmobar <- spawnPipe "/home/sam/.local/bin/xmobar -x 0 /home/sam/.config/xmobar/xmobar.config"
+  myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
   xmonad $ docks $ def
         { terminal = myTerminal,
           focusFollowsMouse = myFocusFollowsMouse,
@@ -358,6 +351,7 @@ main = do
           modMask = myModMask,
           workspaces = myWorkspaces,
           focusedBorderColor = myFocusedBorderColor,
+          normalBorderColor = myUnFocusedBorderColor,
           keys = myKeys,
           layoutHook = showWName' myShowWNameTheme myLayout,
           manageHook = myManageHook,
