@@ -28,7 +28,6 @@
 ;; backup files are files with ~ at the end. they are created when the file is saved for first time from a buffer.
 ;; if editing a new file backup of the original(first save) will be created when you save the file for second time.
 ;; no more than one backup will be created untill you exit the buffer so you always have the backup of the file that existed before opening the file in buffer
-
 ;; enable backup files
 (setq make-backup-files t)
 ;; number each backup file
@@ -48,7 +47,7 @@
 
 ;; Autosave files
 ;; emacs creates a file with # in name until you save
-;; these files are automaticaly created if emacs crashes, Xserver crashes, or emacs id killed from shell
+;; these files are automaticaly created if emacs crashes, Xserver crashes, or emacs is killed from shell
 ;; files can be reverted with`revert-buffer' or `recover-file'
 
 ;; enable auo-save
@@ -67,21 +66,20 @@
   (setq recentf-max-saved-items 200)
   (setq recentf-auto-cleanup 'never)
 
+  ;; resolve simlinks and clean the recent file names
   (defun sam\recentf-file-truename (file)
     (if (or (not (file-remote-p file))
             (equal "sudo" (file-remote-p file 'method)))
         (abbreviate-file-name (file-truename (tramp-file-name-localname tfile)))
       file))
-
   ;; resolve symlinks expand $HOME remove /sudo:X@ from recent files
   (add-to-list 'recentf-filename-handlers #'sam/recentf-file-truename)
-
   ;; remove text properties from recentf files
   (add-to-list 'recentf-filename-handlers #'substring-no-properties))
 
 
 ;; Text formating
-;; don't insert tabs fir indentation
+;; don't insert tabs for indentation
 (setq-default indent-tabs-mode nil)
 ;; display width for tab characters
 (setq tab-width 4)
@@ -93,20 +91,20 @@
 ;; Make `tabify' and `untabify' only affect indentation. Not tabs/spaces in the middle of a line.
 (setq tabify-regexp "^\t* [ \t]+")
 
-;; column beyond which line wraping happens
+;; a gentle reminder
 (setq-default fill-column 80)
 
 ;; wrap words at whitespaces instead at the middle of word
 (setq-default word-wrap t)
-;; give each line of text only one line ie no wraping
-(setq-default truncate-lines t)
+;; if non nil give each line of text only one line ie no wraping
+(setq-default truncate-lines nil)
 (setq truncate-partial-width-windows nil)
+
+;; hard wraping
+(add-hook 'prog-mode-hook 'visual-line-mode)
 
 ;; add a newline at end of file
 (setq require-final-newline t)
-
-;; hard wraping
-(add-hook 'text-mode-hook 'visual-line-mode)
 
 ;; remove all trailing whitespaces before saving
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -128,7 +126,7 @@
   ;; Highlights the current line
   :hook (prog-mode . global-hl-line-mode)
   :init (defvar global-hl-line-modes '(prog-mode
-                                       text-mode conf-mode special-mode org-agenda-mode)))
+                                       text-mode conf-mode special-mode org-agenda-mode dired-mode)))
 
 
 ;; Number line
@@ -146,6 +144,7 @@
             vterm-mode-hook
             pass-mode))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
 ;; Savehist
 ;; persistant history across sessions
 (use-package savehist
@@ -206,21 +205,5 @@
 (setq-default bidi-display-reordering 'left-to-right
               bidi-paragraph-direction 'left-to-right)
 
-;; window management
-(use-package window
-  :straight nil
-  :config
-  (setq switch-to-buffer-obey-display-actions t)
-  (setq frame-title-format '("%b – Emacs"))
-  (setq frame-resize-pixelwise t)
-  (setq window-resize-pixelwise nil)
-  :custom
-  (display-buffer-alist
-   '(("\\*ansi-term\\*"
-      (display-buffer-in-side-window)
-      (side . bottom)
-      (slot . -1)
-      (window-height . 0.3)))
-   ))
 
 (provide 'editor.el)

@@ -1,38 +1,67 @@
 (in-package :nyxt)
+
 (defvar *my-keymap* (make-keymap "my-map"))
 (define-key *my-keymap*
-  "M-j" 'switch-buffer-next
-  "M-k" 'switch-buffer-previous
-  "M-b" 'switch-buffer
-  "M-n" 'make-buffer
-  "C-u" 'nyxt/web-mode:scroll-page-up
-  "C-d" 'nyxt/web-mode:scroll-page-down)
+    "M-j" 'switch-buffer-next
+    "M-k" 'switch-buffer-previous
+    "M-b" 'switch-buffer
+    "M-n" 'make-buffer
+    "C-u" 'nyxt/web-mode:scroll-page-up
+    "C-d" 'nyxt/web-mode:scroll-page-down
+    )
 
-(define-mode my-mode ()
-  ((keymap-scheme (keymap:make-scheme
-                   scheme:cua *my-keymap*
-                   scheme:emacs *my-keymap*
-                   scheme:vi-normal *my-keymap*))))
+;; Enable vim bindings
+(define-configuration (buffer web-buffer)
+    ((default-modes (append '(auto-mode nyxt::vi-normal-mode *my-keymap*) %slot-default%))))
 
+(define-configuration (buffer prompt-buffer)
+    ((default-modes (append '(nyxt::vi-insert-mode *my-keymap*) %slot-default%))))
+
+;; Search engines
 (define-configuration buffer
-    ((default-modes (append '(my-mode vi-normal-mode ) %slot-default%))))
-
-(define-configuration (prompt-buffer)
-  ((default-modes (append '(vi-insert-mode) %slot-default%))))
-
-;;(defvar *my-search-engines* nil)
-;;(setf *my-search-engines*
-;;      (list
-;;       '("wi" "https://en.wikipedia.org/w/index.php?search=~a" "https://en.wikipedia.org/")
-;;       '("yt" "https://www.youtube.com/results?search_query=~a" "https://www.youtube.com/")
-;;       '("go" "https://www.google.com/search?q=~a" "https://www.google.com/")))
-;;
-;;(define-configuration browser
-;;  ((search-engines (append (mapcar (lambda (x)
-;;				     (make-instance 'search-engine
-;;						:shortcut (first x)
-;;						:search-url (second x)
-;;						:fallback-url (third x)))
-;;				   *my-search-engines*)
-;;                           %slot-default))))
-(in-package #:nyxt-user)
+    ((search-engines
+      (list
+       (make-instance 'search-engine
+                      :shortcut "aw"
+                      :search-url "https://wiki.archlinux.org/index.php?search=~a"
+                      :fallback-url "https://wiki.archlinux.org/")
+       (make-instance 'search-engine
+                      :shortcut "au"
+                      :search-url "https://aur.archlinux.org/packages/?O=0&K=~a"
+                      :fallback-url "https://aur.archlinux.org/")
+       (make-instance 'search-engine
+                      :shortcut "ap"
+                      :search-url "https://archlinux.org/packages/?sort=&q=~a"
+                      :fallback-url "https://archlinux.org/packages/")
+       (make-instance 'search-engine
+                      :shortcut "gh"
+                      :search-url "https://github.com/search?q=~a"
+                      :fallback-url "https://github.com/trending")
+       (make-instance 'search-engine
+                      :shortcut "gl"
+                      :search-url "https://gitlab.com/search?search=~a"
+                      :fallback-url "https://gitlab.com")
+       (make-instance 'search-engine
+                      :shortcut "ho"
+                      :search-url "https://hoogle.haskell.org/?hoogle=~a"
+                      :fallback-url "https://hoogle.haskell.org/")
+       (make-instance 'search-engine
+                      :shortcut "yt"
+                      :search-url "https://youtube.com/results?search_query=~a"
+                      :fallback-url "https://youtube.com/")
+       (make-instance 'search-engine
+                      :shortcut "so"
+                      :search-url "https://stackoverflow.com/search?q=~a"
+                      :fallback-url "https://stackoverflow.com/")
+       (make-instance 'search-engine
+                      :shortcut "wp"
+                      :search-url "https://www.wikipedia.org/w/index.php?title=Special:Search&search=~a"
+                      :fallback-url "https://www.wikipedia.org/")
+       (make-instance 'search-engine
+                      :shortcut "dd"
+                      :search-url "https://duckduckgo.com/?kae=d&q=~a"
+                      :fallback-url "https://duckduckgo.com/")
+       (make-instance 'search-engine
+                      :shortcut "go"
+                      :search-url "https://www.google.com/search?q=~a"
+                      :fallback-url "https://www.google.com")))))

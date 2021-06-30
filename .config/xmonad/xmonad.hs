@@ -42,12 +42,11 @@ import XMonad.Util.SpawnOnce
 import Graphics.X11.ExtraTypes.XF86
 
 --colors
-
-bg = "#002b36"
-fg = "#eee8b5"
-border = "#586e75"
-yellow = "#b58900"
-green = "#859900"
+myBg     = "#002b36"
+myFg     = "#eee8b5"
+myGrey   = "#586e75"
+myYellow = "#b58900"
+myGreen  = "#859900"
 
 -- user variables
 
@@ -67,16 +66,16 @@ myBorderWidth :: Dimension
 myBorderWidth = 2
 
 myFocusedBorderColor :: String
-myFocusedBorderColor = border
+myFocusedBorderColor = myGrey
 
 myUnFocusedBorderColor :: String
-myUnFocusedBorderColor = bg
+myUnFocusedBorderColor = myBg
 
 myTerminal :: String
-myTerminal = "st"
+myTerminal = "urxvt"
 
 myTerminalAlt :: String
-myTerminalAlt = "xterm"
+myTerminalAlt = "st -e sh"
 
 myFilemanager :: String
 myFilemanager = "emacsclient -c -a '' --eval '(dired nil)'"
@@ -102,73 +101,72 @@ myRssreader = "emacsclient -c -a '' --eval '(elfeed)'"
 myIDE :: String
 myIDE = "emacsclient -c -a emacs"
 
-
 -- keybidings and keychords
 
 myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
     [
       -- spawn applications
-      ((modm, xK_t), spawn $ XMonad.terminal conf),
-      ((modm .|. shiftMask, xK_t), spawn myTerminalAlt),
-      ((modm, xK_f), spawn myFilemanager),
-      ((modm .|. shiftMask, xK_f), spawn myFilemanagerAlt),
-      ((modm, xK_b), spawn myBrowser),
-      ((modm .|. shiftMask, xK_b), spawn myBrowserAlt),
-      ((modm, xK_m), spawn myMail),
-      ((modm .|. shiftMask, xK_m), spawn myMusicplayer),
-      ((modm, xK_r), spawn myRssreader),
-      ((modm, xK_e), spawn myIDE),
-      ((modm, xK_space), spawn "dmenu_run"),
+      ((modm, xK_t),                     spawn $ XMonad.terminal conf),
+      ((modm .|. shiftMask, xK_t),       spawn myTerminalAlt),
+      ((modm, xK_f),                     spawn myFilemanager),
+      ((modm .|. shiftMask, xK_f),       spawn myFilemanagerAlt),
+      ((modm, xK_b),                     spawn myBrowser),
+      ((modm .|. shiftMask, xK_b),       spawn myBrowserAlt),
+      ((modm, xK_m),                     spawn myMail),
+      ((modm .|. shiftMask, xK_m),       spawn myMusicplayer),
+      ((modm, xK_r),                     spawn myRssreader),
+      ((modm, xK_e),                     spawn myIDE),
+      ((modm, xK_space),                 spawn "dmenu_run"),
 
       -- kill compile exit lock
-      ((modm, xK_q), kill1),
-      ((modm .|. shiftMask, xK_q), kill),
-      ((modm, xK_c), spawn "xmonad --recompile; xmonad --restart"),
-      ((modm .|. shiftMask, xK_c), io exitSuccess),
+      ((modm, xK_q),                     kill1),
+      ((modm .|. shiftMask, xK_q),       kill),
+      ((modm, xK_c),                     spawn "xmonad --recompile; xmonad --restart"),
+      ((modm .|. shiftMask, xK_c),       io exitSuccess),
 
       -- layout change focus
-      ((modm, xK_Tab), windows W.focusDown),
-      ((modm .|. shiftMask, xK_Tab), windows W.focusUp),
-      ((modm, xK_j), windows W.focusDown),
-      ((modm, xK_k), windows W.focusUp),
+      ((modm, xK_Tab),                   windows W.focusDown),
+      ((modm .|. shiftMask, xK_Tab),     windows W.focusUp),
+      ((modm, xK_j),                     windows W.focusDown),
+      ((modm, xK_k),                     windows W.focusUp),
 
       -- shift windows
-      ((modm .|. shiftMask, xK_j), windows W.swapDown),
-      ((modm .|. shiftMask, xK_k), windows W.swapUp),
-      ((modm, xK_Return), windows W.swapMaster),
+      ((modm .|. shiftMask, xK_j),       windows W.swapDown),
+      ((modm .|. shiftMask, xK_k),       windows W.swapUp),
+      ((modm, xK_Return),                windows W.swapMaster),
 
       -- change layout
-      ((modm, xK_n), sendMessage NextLayout),
-      ((modm .|. shiftMask, xK_n), setLayout $ XMonad.layoutHook conf),
+      ((modm, xK_n),                     sendMessage NextLayout),
+      ((modm .|. shiftMask, xK_n),       setLayout $ XMonad.layoutHook conf),
 
       -- resize windows and float
-      ((modm .|. controlMask, xK_h), sendMessage Shrink),
-      ((modm .|. controlMask, xK_l), sendMessage Expand),
-      ((modm .|. controlMask, xK_t), withFocused $ windows . W.sink),
+      ((modm .|. controlMask, xK_h),     sendMessage Shrink),
+      ((modm .|. controlMask, xK_l),     sendMessage Expand),
+      ((modm .|. controlMask, xK_t),     withFocused $ windows . W.sink),
 
       -- copy window to all workspace
-      ((modm, xK_0), windows copyToAll),
-      ((modm .|. shiftMask, xK_0), killAllOtherCopies),
+      ((modm, xK_0),                     windows copyToAll),
+      ((modm .|. shiftMask, xK_0),       killAllOtherCopies),
 
       -- gaps and struts and fullscreen
-      ((modm .|. controlMask, xK_f), sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled]),
-      ((modm, xK_equal), sequence_ [incWindowSpacing 2, incScreenSpacing 2]),
-      ((modm, xK_minus), sequence_ [decWindowSpacing 2, decScreenSpacing 2]),
+      ((modm .|. controlMask, xK_f),     sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled]),
+      ((modm, xK_equal),                 sequence_ [incWindowSpacing 2, incScreenSpacing 2]),
+      ((modm, xK_minus),                 sequence_ [decWindowSpacing 2, decScreenSpacing 2]),
 
       -- screenshots
-      ((modm, xK_Print), spawn "~/scripts/sc"),
-      ((modm .|. shiftMask, xK_Print), spawn "~/scripts/sc -s"),
+      ((modm, xK_Print),                 spawn "~/scripts/sc"),
+      ((modm .|. shiftMask, xK_Print),   spawn "~/scripts/sc -s"),
       ((modm .|. controlMask, xK_Print), spawn "~/scripts/sc -cs"),
 
       --volume
-      --((0, xF86XK_AudioMute), spawn "~/.config/xmonad/scripts/volume-pipe toggle"),
-      --((0, xF86XK_AudioRaiseVolume), spawn "~/.config/xmonad/scripts/volume-pipe.sh up"),
-      --((0, xF86XK_AudioLowerVolume), spawn "~/.config/xmonad/scripts/volume-pipe.sh down"),
+      ((0, xF86XK_AudioMute),            spawn "~/.config/xmonad/scripts/volume-pipe.sh toggle"),
+      ((0, xF86XK_AudioRaiseVolume),     spawn "~/.config/xmonad/scripts/volume-pipe.sh up"),
+      ((0, xF86XK_AudioLowerVolume),     spawn "~/.config/xmonad/scripts/volume-pipe.sh down"),
 
       -- backlight
-      ((0, xF86XK_MonBrightnessUp), spawn "~/.config/xmonad/scripts/backlight-pipe.sh up"),
-      ((0, xF86XK_MonBrightnessDown), spawn "~/.config/xmonad/scripts/backlight-pipe.sh down")
+      ((0, xF86XK_MonBrightnessUp),      spawn "~/.config/xmonad/scripts/backlight-pipe.sh up"),
+      ((0, xF86XK_MonBrightnessDown),    spawn "~/.config/xmonad/scripts/backlight-pipe.sh down")
     ]
       ++
       --change workspace
@@ -234,6 +232,7 @@ clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>
   where
     i = fromJust $ M.lookup ws myWorkspaceIndices
 
+
 -- Scratchpads
 myScratchPads =
   [ NS "htop" spawnHtop findHtop manageHtop,
@@ -285,15 +284,6 @@ myLayout =
         ||| wide
         ||| full
 
-myShowWNameTheme :: SWNConfig
-myShowWNameTheme =
-  def
-    { swn_font = "xft:Hack Nerd Font:bold:size=60",
-      swn_fade = 1.0,
-      swn_bgcolor = "#282a36",
-      swn_color = "#f1f1f0"
-    }
-
 --managehook
 
 myManageHook =
@@ -319,16 +309,16 @@ windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace
 
 myXmobarPP h =
   xmobarPP
-    { ppCurrent = xmobarColor green "" . wrap "[" "]",
-      ppVisible = xmobarColor fg "" . wrap "" "" . clickable,
-      ppHidden = xmobarColor yellow "" . wrap "" "" . clickable,
-      ppHiddenNoWindows = xmobarColor fg "" . clickable,
-      ppSep = "<fc=fg> | </fc>",
-      ppTitle = xmobarColor fg "" . shorten 60,
-      ppLayout = xmobarColor fg "",
-      ppOutput = hPutStrLn h,
-      --, ppExtras  = [windowCount]
-      ppOrder = \(ws : l : t : ex) -> [ws, l] ++ ex ++ [t]
+    { ppCurrent         = xmobarColor myGreen "" . wrap "[" "]",
+      ppVisible         = xmobarColor myFg "" . wrap "" "" . clickable,
+      ppHidden          = xmobarColor myYellow "" . wrap "" "" . clickable,
+      ppHiddenNoWindows = xmobarColor myFg "" . clickable,
+      ppSep             = "<fc=fg> | </fc>",
+      ppTitle           = xmobarColor myFg "" . shorten 60,
+      ppLayout          = xmobarColor myFg "",
+      ppOutput          = hPutStrLn h,
+  --, ppExtras          = [windowCount]
+      ppOrder           = \(ws : l : t : ex) -> [ws, l] ++ ex ++ [t]
     }
 
 --startuphook
@@ -344,18 +334,18 @@ main :: IO ()
 main = do
   myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
   xmonad $ docks $ def
-        { terminal = myTerminal,
-          focusFollowsMouse = myFocusFollowsMouse,
-          clickJustFocuses = myClickJustFocuses,
-          borderWidth = myBorderWidth,
-          modMask = myModMask,
-          workspaces = myWorkspaces,
+        { terminal           = myTerminal,
+          focusFollowsMouse  = myFocusFollowsMouse,
+          clickJustFocuses   = myClickJustFocuses,
+          borderWidth        = myBorderWidth,
+          modMask            = myModMask,
+          workspaces         = myWorkspaces,
           focusedBorderColor = myFocusedBorderColor,
-          normalBorderColor = myUnFocusedBorderColor,
-          keys = myKeys,
-          layoutHook = showWName' myShowWNameTheme myLayout,
-          manageHook = myManageHook,
-          handleEventHook = myEventHook,
-          logHook = dynamicLogWithPP $ myXmobarPP myXmobar,
-          startupHook = myStartupHook
+          normalBorderColor  = myUnFocusedBorderColor,
+          keys               = myKeys,
+          layoutHook         = myLayout,
+          manageHook         = myManageHook,
+          handleEventHook    = myEventHook,
+          logHook            = dynamicLogWithPP $ myXmobarPP myXmobar,
+          startupHook        = myStartupHook
         }

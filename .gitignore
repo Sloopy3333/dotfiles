@@ -118,3 +118,5 @@ dot
 /.config/emacs/myth-theme.el
 /.config/emacs/myth/
 /.config/exwm/scripts/
+/method.txt
+/.config/xmonad/xmonad

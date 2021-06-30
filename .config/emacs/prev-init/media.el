@@ -21,5 +21,3 @@
               ("m" . 'emms-shuffle)))
 
 (provide 'music.el)
-
-;;(use-package mpdel)

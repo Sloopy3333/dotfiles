@@ -1,3 +1,6 @@
+;; -*- lexical-binding: t; -*-
+
+;; vterm
 (use-package vterm
   :commands vterm-mode
   ;;:hook (vterm-mode . hide-mode-line-mode)
@@ -9,4 +12,4 @@
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 5000))
 
-(provide 'shells.el)
+(provide 'init-vterm.el)

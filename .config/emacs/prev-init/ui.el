@@ -24,7 +24,7 @@
 ;;  (set-face-attribute 'font-lock-keyword-face nil
 ;;                      :font "Hack Nerd Font Mono"
 ;;                      :slant 'italic))
-
+;;
 ;; (if (daemonp)
 ;;     (add-hook 'after-make-frame-functions
 ;;               (lambda (frame)

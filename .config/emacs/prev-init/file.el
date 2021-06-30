@@ -57,7 +57,7 @@
                   (evil-local-set-key 'normal (kbd "U") 'dired-unmark-all-marks)
                   (evil-local-set-key 'normal (kbd "yy") 'sam/dired-get-selected)
                   (evil-local-set-key 'normal (kbd "p") 'sam/dired-paste)
-                  (evil-local-set-key 'normal (kbd "x") 'sam/dired-cut)
+                  (evil-local-set-key 'normal (kbd "xx") 'sam/dired-cut)
                   (evil-local-set-key 'normal (kbd "cw") '(lambda (x) (interactive "s:") (rename-file (dired-get-filename) x) (revert-buffer)))
                   (evil-local-set-key 'normal (kbd "mf") '(lambda (x) (interactive "s:") (make-empty-file x) (revert-buffer)))
                   (evil-local-set-key 'normal (kbd "md") '(lambda (x) (interactive "s:") (make-directory x) (revert-buffer)))

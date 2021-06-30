@@ -5,20 +5,31 @@ export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
 export XDG_BIN_HOME=${XDG_BIN_HOME:="$HOME/.local/bin"}
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 
-# applications
+
+export LESSHISTFILE='-'
+
+# other applications
+
+ZDOTDIR=$HOME/.config/zsh
+#exports
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/scripts:$PATH"
-export EDITOR="emacsclient -c -n"
+export EDITOR="/usr/bin/nvim"
 export BROWSER="librewolf"
 export PAGER=less
+
 
 # History in cache directory:
 HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.cache/zsh/history
-export HISTFILE="$XDG_DATA_HOME"/zsh/history
-export LESSHISTFILE='-'
 
+# dash shell
+
+# dash shell
+#ENV=$XDG_CONFIG_HOME/dash/dashrc; export ENV
+
+export HISTFILE="$XDG_DATA_HOME"/zsh/history
 export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
 export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
 export CARGO_HOME="$XDG_DATA_HOME"/cargo

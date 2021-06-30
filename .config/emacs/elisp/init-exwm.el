@@ -10,26 +10,6 @@
     (interactive (list (completing-read "Execute: " system-executables)))
     (start-process-shell-command command nil command)))
 
-
-;; not usefull anymore
-(defun sam/exwm-kill-buffer-or-window ()
-  "kill the buffer or window"
-  (interactive)
-  (if(> (count-windows) 1)
-      (kill-buffer-and-window)
-    (kill-this-buffer)
-    ))
-
-;; not usefull anymore
-(defun sam/exwm-bury-buffer-kill-window ()
-  "kill the buffer or window"
-        (interactive)
-  (if(> (count-windows) 1)
-      (progn(bury-buffer)
-      (delete-window))
-    (bury-buffer)
-    ))
-
 (defun sam/exwm-split-window-right ()
   "split window right switch to window and rename create new buffer named untitled$"
   (interactive)
@@ -53,14 +33,14 @@
   "similar to `switch-to-next-buffer' but ignores special buffers"
   (interactive)
   (next-buffer)
-  (while (string-match-p "^\\*" (buffer-name))
+  (while (string-match-p "^*" (buffer-name))
     (next-buffer)))
 
 (defun sam/exwm-switch-to-prev-buffer ()
   "similar to `switch-to-prev-buffer' but ignores special buffers"
   (interactive)
   (previous-buffer)
-  (while (string-match-p "^\*" (buffer-name))
+  (while (string-match-p "^*" (buffer-name))
     (previous-buffer)))
 
 (defun sam/exwm-switch-next-buffer-or-window ()
@@ -68,31 +48,32 @@
   (interactive)
   (if(> (count-windows) 1)
       (other-window 1)
-    (sam/switch-to-next-buffer)
-    ))
+    (sam/switch-to-next-buffer)))
 
 (defun sam/exwm-switch-prev-buffer-or-window ()
   "move focus to next window if exist or cycle through the buffer list"
   (interactive)
   (if(> (count-windows) 1)
       (other-window -1)
-    (sam/switch-to-prev-buffer)
-    ))
+    (sam/switch-to-prev-buffer)))
 
 ;; voulme
 (defun sam/exwm-audio-raise ()
+  "raise the voulme by 5%"
   (interactive)
   (progn
   (start-process "volume" nil "amixer" "set" "Master" "5%+")
   (force-mode-line-update)))
 
 (defun sam/exwm-audio-down ()
+  "lower the voulme by 5%"
   (interactive)
   (progn
 (start-process "volume" nil "amixer" "set" "Master" "5%-")
   (force-mode-line-update)))
 
 (defun sam/exwm-audio-toggle ()
+  "toggle mute audio"
   (interactive)
   (progn
 (start-process "volume" nil "amixer" "set" "Master" "toggle")
@@ -100,21 +81,18 @@
 
 ;; backlight
 (defun sam/exwm-backlight-raise ()
+  "raise backlight by 2%"
   (interactive)
   (progn
   (start-process "backlight" nil "xbacklight" "-inc" "+2")
   (force-mode-line-update)))
 
 (defun sam/exwm-backlight-down ()
+  "lower backlight by 2%"
   (interactive)
   (progn
   (start-process "backlight" nil "xbacklight" "-inc" "-2")
   (force-mode-line-update)))
-
-
-(defun sam/exwm-screenshot ()
-  (interactive)
-  (start-process "screenshot" "a" "maim" "/home/sam/external/hdd2/screenshots/$(date +%s).png"))
 
 ;; window rules
 (defun sam/exwm-window-rules ()
@@ -123,7 +101,7 @@
   (pcase exwm-class-name
     ("mpv" (exwm-floating-toggle-floating)
      (exwm-layout-toggle-mode-line))
-    ("Pcmanfm" (exwm-layout-toggle-mode-line))
+    ;;("Pcmanfm" (exwm-layout-toggle-mode-line))
     ))
 
 (use-package exwm
@@ -139,8 +117,8 @@
 
   (add-hook 'exwm-manage-finish-hook 'sam/exwm-window-rules)
 
-    ;; this little bit will make sure that XF86 keys work in exwm buffers as well
-    (dolist (k '(XF86AudioLowerVolume
+  ;; this is to make sure that XF86 keys work in exwm buffers as well
+  (dolist (k '(XF86AudioLowerVolume
                XF86AudioRaiseVolume
                XF86AudioMute
                XF86MonBrightnessUp
@@ -160,29 +138,26 @@
 
   ;; These keys should always pass through to Emacs
   (setq exwm-input-prefix-keys
-        '(?\C-x
-          ?\C-u
-          ?\C-h
-          ?\M-x
+        '(?\M-x
           ?\M-`
           ?\M-&
           ?\M-:
-          ?\M-:
-          ?\M-j
-          ?\\ -h
-          ?\S-\ ))
+          ?\M-\ ))
 
   ;; any key followed by C-q will be sent to the focused window rather than exwm
   (define-key exwm-mode-map [?\C-q] #'exwm-input-send-next-key)
 
+  ;; hide the minibuffer and echo area when they're not used, by
+  ;;(setq exwm-workspace-minibuffer-position 'bottom)
+
   ;; initial number of workspaces
-  (setq exwm-workspace-number 2)
+  (setq exwm-workspace-number 4)
 
   ;; name workspace from 1 insted of 0
   (setq exwm-workspace-index-map
         (lambda (index) (number-to-string (1+ index))))
 
- ; switch to worspace with s-i
+  ;; switch to ith worspace with s-i
   (dotimes (i 10)
     (exwm-input-set-key (kbd (format "s-%d" i))
                         `(lambda ()
@@ -195,71 +170,56 @@
                            (interactive)
                            (exwm-workspace-move-window (1- ,i)))))
 
-  ;; Global keybindings
-  (setq exwm-input-global-keys
-        `(
-          ;; Bind "s-w" to switch workspace interactively.
-          ([?\s-w] . exwm-workspace-switch)
+  (exwm-input-set-key (kbd "s-@") (lambda () (interactive) (exwm-workspace-move-window 1)))
 
-         (, (kbd "s-@") . (lambda () (interactive) (exwm-workspace-move-window 2)))
+  (exwm-input-set-key (kbd "s-c") #'exwm-restart)
+  (exwm-input-set-key (kbd "s-C") #'kill-emacs)
+  (exwm-input-set-key (kbd "s-R") #'exwm-reset)
 
-          ([?\s-R] . exwm-reset)
-          ([?\s-c] . exwm-restart)
-          ([?\s-C] . kill-emacs)
+  (exwm-input-set-key (kbd "s-<tab>") #'sam/exwm-switch-to-next-buffer)
+  (exwm-input-set-key (kbd "s-<iso-lefttab>") #'sam/exwm-switch-to-prev-buffer)
+  (exwm-input-set-key (kbd "s-j") #'sam/exwm-switch-next-buffer-or-window)
+  (exwm-input-set-key (kbd "s-k") #'sam/exwm-switch-prev-buffer-or-window)
+  (exwm-input-set-key (kbd "s-l") #'windmove-left)
+  (exwm-input-set-key (kbd "s-l") #'windmove-right)
 
-          ([?\s-\t] . exwm-switch-to-next-buffer)
-          ([?\s-a] . switch-to-buffer)
-          ([?\s-q] . kill-buffer-and-window)
-          ([?\s-Q] . bury-buffer)
+  (exwm-input-set-key (kbd "s-s") #'sam/exwm-split-window-right)
+  (exwm-input-set-key (kbd "s-v") #'sam/exwm-split-window-below)
 
-          ([?\s-s] . sam/exwm-split-window-right)
-          ([?\s-v] . sam/exwm-split-window-below)
+  (exwm-input-set-key (kbd "s-a") #'switch-to-buffer)
+  (exwm-input-set-key (kbd "s-q") #'kill-buffer-and-window)
+  (exwm-input-set-key (kbd "s-Q") #'bury-buffer)
 
-          ([?\s-j] . sam/exwm-switch-next-buffer-or-window)
-          ([?\s-k] . sam/exwm-switch-prev-buffer-or-window)
-          ([?\s-l] . windmove-right)
-          ([?\s-h] . windmove-left)
+  (exwm-input-set-key (kbd "s-J") #'windmove-swap-states-down)
+  (exwm-input-set-key (kbd "s-K") #'windmove-swap-states-up)
+  (exwm-input-set-key (kbd "s-L") #'windmove-swap-states-right)
+  (exwm-input-set-key (kbd "s-H") #'windmove-swap-states-left)
 
-          ([?\s-J] . windmove-swap-states-down)
-          ([?\s-K] . windmove-swap-states-up)
-          ([?\s-L] . windmove-swap-states-right)
-          ([?\s-H] . windmove-swap-states-left)
+  (exwm-input-set-key (kbd "s-C-j") #'enlarge-window)
+  (exwm-input-set-key (kbd "s-C-k") #'shrink-window)
+  (exwm-input-set-key (kbd "s-C-l") #'enlarge-window-horizontally)
+  (exwm-input-set-key (kbd "s-C-h") #'shrink-window-horizontally)
 
-          (, (kbd "s-C-j") . enlarge-window)
-          (, (kbd "s-C-k") . shrink-window)
-          (, (kbd "s-C-l") . enlarge-window-horizontally)
-          (, (kbd "s-C-h") . shrink-window-horizontally)
+  (exwm-input-set-key (kbd "s-C-t") #'exwm-floating-toggle-floating)
+  (exwm-input-set-key (kbd "s-C-f") #'exwm-layout-toggle-fullscreen)
 
-          (, (kbd "s-<tab>") . sam/switch-to-next-buffer)
-          (, (kbd "s-<iso-lefttab>") . sam/switch-to-prev-buffer)
+  (exwm-input-set-key (kbd "s-SPC") #'sam/exwm-dmenu-run)
+  (exwm-input-set-key (kbd "s-d") #'sam/exwm-transient)
+  (exwm-input-set-key (kbd "s-t") #'eshell)
+  (exwm-input-set-key (kbd "s-T") (lambda() (interactive) (start-process-shell-command "urxvt" nil "urxvt")))
+  (exwm-input-set-key (kbd "s-f") #'dired-jump)
+  (exwm-input-set-key (kbd "s-F") (lambda() (interactive) (start-process-shell-command "pcmanfm" nil "pcmanfm")))
+  (exwm-input-set-key (kbd "s-b") (lambda() (interactive) (start-process-shell-command "librewolf" nil "librewolf")))
+  (exwm-input-set-key (kbd "s-m") #'mu4e)
+  (exwm-input-set-key (kbd "s-r") #'elfeed)
 
-          (, (kbd "s-C-t") . exwm-floating-toggle-floating)
-          (, (kbd "s-C-f") . exwm-layout-toggle-fullscreen)
+  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")  #'sam/exwm-audio-raise)
+  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")  #'sam/exwm-audio-down)
+  (exwm-input-set-key (kbd "<XF86AudioMute>")  #'sam/exwm-audio-toggle)
 
-	  ([?\s-\ ] . sam/exwm-dmenu-run)
-	  ([?\s-d] . sam/exwm-transient)
+  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")  #'sam/exwm-backlight-raise)
+  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") #'sam/exwm-backlight-down)
 
-	  ([?\s-t] . eshell)
-	  ([?\s-m] . mu4e)
-	  ([?\s-f] . dired-jump)
-	  ([?\s-r] . elfeed)
-	  ([?\s-T] . (lambda() (interactive) (start-process-shell-command "urxvt" nil "urxvt")))
-	  ([?\s-b] . (lambda() (interactive) (start-process-shell-command "librewolf" nil "librewolf")))
-	  ([?\s-F] . (lambda() (interactive) (start-process-shell-command "pcmanfm" nil "pcmanfm")))
-
-         (, (kbd "<XF86AudioRaiseVolume>") . sam/exwm-audio-raise)
-         (, (kbd "<XF86AudioLowerVolume>") . sam/exwm-audio-down)
-         (, (kbd "<XF86AudioMute>") . sam/exwm-audio-toggle)
-
-         (, (kbd "<XF86MonBrightnessUp>") . sam/exwm-backlight-raise)
-         (, (kbd "<XF86MonBrightnessDown>") . sam/exwm-backlight-down)
-
-         (, (kbd "<print>") . sam/exwm-screenshot)
-
-          ))
-
-  ;; hide the minibuffer and echo area when they're not used, by
-   ;;(setq exwm-workspace-minibuffer-position 'top)
 
   ;; system tray
   (require 'exwm-systemtray)
@@ -365,3 +325,5 @@
   :bind (:map transient-map
               ("<escape>" . transient-quit-one))
   )
+
+(provide 'init.exwm.el)
