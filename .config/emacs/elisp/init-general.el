@@ -81,8 +81,8 @@
   (interactive)
   (if(> (count-windows) 1)
       (progn)
-      (kill-buffer-and-window)
-   (kill-this-buffer)))
+    (kill-buffer-and-window)
+    (kill-this-buffer)))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -141,17 +141,17 @@
     "."   '(find-file :which-key "find file")
     "RET" '(consult-bookmark :which-key "Open Bookmarks")
     "/"   '(consult-line :which-key "search lines in buffer")
-   ";"   '(eval-expression :which-key "evaluate expression")
+    ";"   '(eval-expression :which-key "evaluate expression")
 
     ;;Code
     "c"   '(:ignore c :which-key "Code")
-    "cc"  '(eglot :which-key "code format")
-    "cF"  '(eglot-format :which-key "code format")
-    "ca"  '(eglot-code-actions :which-key "code actions")
+    "cc"  '(lsp :which-key "code format")
+    "cF"  '(lsp-format-buffer :which-key "code format")
+    "ca"  '(lsp-execute-code-action :which-key "code actions")
     "cd"  '(consult-flymake :which-key "consult-flymake")
     "cf"  '(consult-imenu :which-key "consult imenu")
-    "cl"   '(consult-outline :which-key "consutl-outline")'
-    "cr"  '(eglot-rename :which-key "rename variable")
+    "cl"  '(consult-outline :which-key "consutl-outline")'
+    "cr"  '(lsp-rename :which-key "rename variable")
 
     ;; Files
     "f"   '(:ignore f :which-key "files")

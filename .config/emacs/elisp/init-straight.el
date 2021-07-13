@@ -18,6 +18,8 @@
  straight-build-dir (format "build-%s" emacs-version)
  ;; shallow clone
  straight-vc-git-default-clone-depth 1
+ ;; no need to integrate with package.el
+ straight-enable-package-integration nil
  )
 
 ;; bootstrap straight

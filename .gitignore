@@ -120,3 +120,7 @@ dot
 /.config/exwm/scripts/
 /method.txt
 /.config/xmonad/xmonad
+/.config/NuGet/
+/.config/Thunar/
+/.config/xfce4/
+/downloads/

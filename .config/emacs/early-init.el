@@ -8,10 +8,11 @@
 
 ;; Reset gc memory and file-name-handler-alist after init
 (add-hook 'emacs-startup-hook
- (lambda()
-  (setq gc-cons-threshold (* 16 1024 1204)
-        gc-cons-percentage 0.1
-        file-name-handler-alist default-file-name-handler)))
+          (lambda()
+            (setq gc-cons-threshold (* 16 1024 1204)
+                  gc-cons-percentage 0.1
+                  file-name-handler-alist default-file-name-handler)))
+          ;;(setq read-process-output-max (* 3 1024 1024)))
 
 
 ;; Fix the ugly UI
@@ -27,31 +28,17 @@
 (setq inhibit-startup-screen t)
 
 
-;; Packages
-;;some settings for straight and use-package
-(setq
- ;;use develop branch
- straight-repository-branch "develop"
- ;; check package modificaton whe they are edited only
- straight-check-for-modifications '(check-on-save find-when-checking)
- ;; always compile packages natively
- ;;straight-disable-native-compile nil
- ;; disable package enable
- package-enable-at-startup nil
- ;; disable package-wuickstart
- package-quickstart nil
- autoload-compute-prefix nil
- ;; tell straight to use use-package
- straight-use-package-by-default t
- ;;if set to t  use-package will be more verbose and write packages loading information in message buffer useful when debuging startup time
- use-package-verbose nil)
+;; Package.el
+;; disabel loading package.le
+(setq package-enable-at-startup nil)
 (fset #'package--ensure-init-file #'ignore)
 
+;; set some important directories for emacs
 (setq user-emacs-directory "~/.local/share/emacs")
 (setq custom-file "~/.config/emacs/custom.el")
 
 ;; fonts
 ;; not necessary to put in early-init
-;;  this sets fonts before frame starts so i dont have to stare at default fonts while not running daemon
+;; this sets fonts before frame starts so i dont have to stare at default fonts while not running daemon
 (add-to-list 'default-frame-alist
              '(font . "Hack Nerd Font Mono-11"))

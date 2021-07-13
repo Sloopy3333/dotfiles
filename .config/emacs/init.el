@@ -1,4 +1,4 @@
-;; -*- lexical-binding:; -*-
+;; -*- lexical-binding: t; -*-
 
 (add-to-list 'load-path "~/.config/emacs/elisp")
 
@@ -11,16 +11,14 @@
 (load-library "init-gcmh")
 (load-library "init-helpful")
 
-;; ui and themes
+;;;; ui and themes
 (load-library "init-ui")
-(load-library "init-solarized")
+;;(load-library "init-solarized")
+(load-library "init-base16-theme")
 (load-library "init-modeline")
 (load-library "init-all-the-icons")
 
-;; window manger
-;;(load-library "init-exwm.el")
-
-;; editor
+;;;; editor
 (load-library "init-editor")
 (load-library "init-electric")
 (load-library "init-so-long")
@@ -30,6 +28,7 @@
 (load-library "init-undo-tree")
 (load-library "init-recentf")
 (load-library "init-savehist")
+(load-library "init-window")
 
 ;; minibuffer
 (load-library "init-minibuffer")
@@ -43,8 +42,8 @@
 (load-library "init-evil-collection")
 (load-library "init-which-key")
 (load-library "init-general")
-;;
-;;;; file mangement
+
+;; file mangement
 (load-library "init-dired")
 
 ;; completions
@@ -52,6 +51,11 @@
 (load-library "init-company-box")
 (load-library "init-eglot")
 (load-library "init-elec-pair")
+(load-library "init-lsp-mode")
+(load-library "init-lsp-ui")
+(load-library "init-lsp-java")
+(load-library "init-lsp-haskell")
+(load-library "init-lsp-pyright")
 
 ;; version control
 (load-library "init-magit")
@@ -60,8 +64,7 @@
 (load-library "init-haskell-mode")
 
 ;; shells
-(load-library "init-ansi-term")
-;;(load-library "init-vterm")
+(load-library "init-eshell")
 
 
 ;; chat

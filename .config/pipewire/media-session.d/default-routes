@@ -1,6 +1,7 @@
 {
-  "default.route.alsa_card.pci-0000_01_00.1:profile:off": [ ],
-  "default.route.alsa_card.pci-0000_00_1f.3:profile:off": [ ],
-  "default.route.alsa_card.pci-0000_00_1f.3:profile:output:analog-stereo+input:analog-stereo": [ ],
-  "default.route.alsa_card.pci-0000_00_1f.3:profile:output:stereo-fallback+input:stereo-fallback": [ ]
+ "default.route.alsa_card.pci-0000_01_00.1:profile:off": [ ],
+ "default.route.alsa_card.pci-0000_00_1f.3:profile:off": [ ],
+ "default.route.alsa_card.pci-0000_00_1f.3:profile:output:analog-stereo+input:analog-stereo": [ "analog-output-speaker" ],
+ "default.route.alsa_card.pci-0000_00_1f.3:profile:output:stereo-fallback+input:stereo-fallback": [ ],
+ "default.route.alsa_card.pci-0000_00_1f.3:output:analog-output-speaker": { "mute": false, "volumes": [ 0.042883, 0.042883 ], "channels": [ "FL", "FR" ] }
 }

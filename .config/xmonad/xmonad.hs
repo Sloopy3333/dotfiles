@@ -18,14 +18,13 @@ import XMonad.Hooks.ManageDocks(avoidStruts, docks, manageDocks, ToggleStruts(..
 import XMonad.Hooks.DynamicLog(dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))
 
 -- layouts and layout modifiers
-import XMonad.Layout.Tabbed
-import XMonad.Layout.Spacing
 
 -- layout modifier
 import XMonad.Layout.Renamed
 import XMonad.Layout.NoBorders
+import XMonad.Layout.Spacing
+import XMonad.Layout.ResizableTile
 import XMonad.Layout.LayoutModifier(ModifiedLayout)
-import XMonad.Layout.ShowWName
 
 -- actions
 import XMonad.Actions.CopyWindow(copy, kill1, copyToAll, killAllOtherCopies)
@@ -41,12 +40,21 @@ import XMonad.Util.SpawnOnce
 -- keys
 import Graphics.X11.ExtraTypes.XF86
 
+-- prompts
+import XMonad.Prompt
+import XMonad.Prompt.Input
+import XMonad.Prompt.Shell
+import XMonad.Prompt.Window
+import XMonad.Prompt.Man
+import XMonad.Prompt.Theme
+
 --colors
-myBg     = "#002b36"
-myFg     = "#eee8b5"
-myGrey   = "#586e75"
-myYellow = "#b58900"
-myGreen  = "#859900"
+myBg     = "#282828"
+myFg     = "#fbf1c7"
+myGrey   = "#928374"
+myYellow = "#fabd27"
+myGreen  = "#665c54"
+myBlue   = "#83a598"
 
 -- user variables
 
@@ -72,10 +80,10 @@ myUnFocusedBorderColor :: String
 myUnFocusedBorderColor = myBg
 
 myTerminal :: String
-myTerminal = "urxvt"
+myTerminal = "xterm"
 
 myTerminalAlt :: String
-myTerminalAlt = "st -e sh"
+myTerminalAlt = "st"
 
 myFilemanager :: String
 myFilemanager = "emacsclient -c -a '' --eval '(dired nil)'"
@@ -84,16 +92,16 @@ myFilemanagerAlt :: String
 myFilemanagerAlt = "pcmanfm"
 
 myBrowser :: String
-myBrowser = "librewolf"
+myBrowser = "librewolf -p 'Regular'"
 
 myBrowserAlt :: String
-myBrowserAlt = "librewolf"
+myBrowserAlt = "librewolf -p 'Logins'"
 
 myMail :: String
 myMail = "emacsclient -c -a '' --eval '(mu4e)'"
 
 myMusicplayer :: String
-myMusicplayer = myTerminal ++ " -e ncmpcpp"
+myMusicplayer = myTerminal ++ " -e ncmpcpp      "
 
 myRssreader :: String
 myRssreader = "emacsclient -c -a '' --eval '(elfeed)'"
@@ -117,7 +125,13 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm .|. shiftMask, xK_m),       spawn myMusicplayer),
       ((modm, xK_r),                     spawn myRssreader),
       ((modm, xK_e),                     spawn myIDE),
-      ((modm, xK_space),                 spawn "dmenu_run"),
+
+      ((modm, xK_space),                 shellPrompt myPrompt),
+      ((modm , xK_a     ),               windowPrompt myPrompt {autoComplete = Just 500000} Goto allWindows),
+      ((modm .|. shiftMask, xK_a),       windowPrompt myPrompt {autoComplete = Just 500000} Bring allWindows),
+      ((modm, xK_z),                     manPrompt myPrompt),
+      ((modm, xK_x),                     themePrompt myPrompt),
+
 
       -- kill compile exit lock
       ((modm, xK_q),                     kill1),
@@ -143,6 +157,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       -- resize windows and float
       ((modm .|. controlMask, xK_h),     sendMessage Shrink),
       ((modm .|. controlMask, xK_l),     sendMessage Expand),
+      ((modm .|. controlMask, xK_j),     sendMessage MirrorShrink),
+      ((modm .|. controlMask, xK_k),     sendMessage MirrorExpand),
       ((modm .|. controlMask, xK_t),     withFocused $ windows . W.sink),
 
       -- copy window to all workspace
@@ -150,9 +166,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm .|. shiftMask, xK_0),       killAllOtherCopies),
 
       -- gaps and struts and fullscreen
-      ((modm .|. controlMask, xK_f),     sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled]),
       ((modm, xK_equal),                 sequence_ [incWindowSpacing 2, incScreenSpacing 2]),
       ((modm, xK_minus),                 sequence_ [decWindowSpacing 2, decScreenSpacing 2]),
+      ((modm .|. controlMask, xK_equal), sequence_ [setWindowSpacing (Border 0 2 0 2), setScreenSpacing (Border 0 2 0 2)]),
+      ((modm .|. controlMask, xK_f),     sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled]),
 
       -- screenshots
       ((modm, xK_Print),                 spawn "~/scripts/sc"),
@@ -233,7 +250,54 @@ clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>
     i = fromJust $ M.lookup ws myWorkspaceIndices
 
 
--- Scratchpads
+--Layouts
+mySpacing :: Integer -> l a -> ModifiedLayout Spacing l a
+mySpacing i = spacingRaw False (Border 0 i 0 i) True (Border i 0 i 0) True
+
+tall =
+  renamed [Replace "Tall"] $
+    mySpacing 2 $
+        ResizableTall 1 (3/100) (1/2) []
+
+wide =
+  renamed [Replace "Wide"] $
+    mySpacing 2 $
+        Mirror (Tall 1 (3 / 100) (1 / 2))
+
+full =
+  renamed [Replace "Full"] $
+    mySpacing 2 $
+        Full
+
+myLayout =
+  avoidStruts $
+    smartBorders myDefaultLayout
+  where
+    myDefaultLayout =
+      tall
+        ||| wide
+        ||| full
+
+-- Prompts
+myPrompt = def
+  {
+    position            = Top,
+    font                = myFont,
+    bgColor             = myBg,
+    fgColor             = myFg,
+    bgHLight            = myGrey,
+    fgHLight            = myFg,
+    promptBorderWidth   = 0,
+    height              = 18,
+    alwaysHighlight     = True,
+    maxComplRows        = Just 20,
+    maxComplColumns     = Just 5,
+    historyFilter       = id,
+    historySize         = 100
+  }
+
+
+-- Scratchpad
 myScratchPads =
   [ NS "htop" spawnHtop findHtop manageHtop,
     NS "ncmpcpp" spawncmpcpp findncmpcpp managncmpcpp
@@ -255,34 +319,6 @@ myScratchPads =
         w = 0.95
         t = (1 - h) / 2
         l = (1 - w) / 2
-
---Layouts
-mySpacing :: Integer -> l a -> ModifiedLayout Spacing l a
-mySpacing i = spacingRaw False (Border 0 i 0 i) True (Border i 0 i 0) True
-
-tall =
-  renamed [Replace "Tall"] $
-    mySpacing 2 $
-        Tall 1 (3 / 100) (1 / 2)
-
-wide =
-  renamed [Replace "Wide"] $
-    mySpacing 2 $
-        Mirror (Tall 1 (3 / 100) (1 / 2))
-
-full =
-  renamed [Replace "Full"] $
-    mySpacing 2 $
-        Full
-
-myLayout =
-  avoidStruts $
-    smartBorders myDefaultLayout
-  where
-    myDefaultLayout =
-      tall
-        ||| wide
-        ||| full
 
 --managehook
 

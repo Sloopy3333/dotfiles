@@ -53,3 +53,13 @@ alias fanstat="nbfc status"
 
 # emacs
 alias em="emacsclient -c -n"
+
+# pacman
+alias pac="sudo pacman"
+
+# systemctl
+alias stl="sudo systemctl"
+alias stle="sudo systemctl enable --now"
+alias stld="sudo systemctl disable --now"
+alias stls="sudo systemctl status"
+alias stlu="sudo systemctl --user"

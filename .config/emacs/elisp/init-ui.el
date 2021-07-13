@@ -1,5 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
+;; for now disabled this since i set fonts in early-init.el
 ;; Fonts
 ;; set various face attributes
 ;;(defun sam/set-font ()
@@ -32,10 +33,7 @@
 ;;                   (sam/set-font))))
 ;;   (sam/set-font))
 
-(add-to-list 'default-frame-alist
-             '(font . "Hack Nerd Font Mono-11"))
-
-;; moderate decoration
+;; moderate font-lock decoration
 (setq font-lock-maximum-decoration nil)
 
 ;; Scroll

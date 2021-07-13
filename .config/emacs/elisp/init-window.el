@@ -17,4 +17,8 @@
       (window-height . 0.3)))
    ))
 
-(provide 'init-ansi-term.el)
+(use-package winner
+  :config
+  (winner-mode))
+
+(provide 'init-window.el)

@@ -47,7 +47,7 @@
 
 ;; Autosave files
 ;; emacs creates a file with # in name until you save
-;; these files are automaticaly created if emacs crashes, Xserver crashes, or emacs is killed from shell
+;; these files are automaticaly c
 ;; files can be reverted with`revert-buffer' or `recover-file'
 
 ;; enable auo-save
@@ -68,7 +68,7 @@
 ;; Make `tabify' and `untabify' only affect indentation. Not tabs/spaces in the middle of a line.
 (setq tabify-regexp "^\t* [ \t]+")
 
-;; a gentle reminder
+;; limit beyond which line wraping occur
 (setq-default fill-column 80)
 
 ;; wrap words at whitespaces instead at the middle of word
