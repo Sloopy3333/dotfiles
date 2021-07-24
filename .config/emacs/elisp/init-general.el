@@ -157,7 +157,15 @@
     "f"   '(:ignore f :which-key "files")
     "ff"  '(dired-jump :which-key "dired")
     "fg"  '(consult-ripgrep :which-key "ripgrep")
-    "fr"  '(consult-recent-file :which-key "ripgrep")
+    "fr"  '(consult-recent-file :which-key "recent files")
+
+    ;; search
+    "s"   '(:ignore s :which-key "search")
+    "sl"  '(consult-line :which-key "search lines")
+    "sf"  '(consult-imenu :which-key "imenu")
+    "sg"  '(consult-grep :which-key "grep search")
+    "si"  '(consult-isearch :which-key "isearch")
+    "so"  '(consult-org-heading :which-key "search org heading")
 
     ;;Magit
     "g"   '(:ignore g :which-key "Magit")

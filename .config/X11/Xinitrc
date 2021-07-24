@@ -20,10 +20,9 @@ fi
 [ -f "$usermodmap" ] && xmodmap "$usermodmap"
 
 xsetroot -cursor_name left_ptr &
-xbacklight -set 2% &
-sudo $HOME/scripts/powertop.sh &
+xbacklight -set 4% &
+#sudo $HOME/scripts/powertop.sh &
 $HOME/scripts/walli -r &
 #/usr/local/bin/emacs --daemon --no-x-resources &
-[ $wm = "dwm" ] && dwmblocks &
 cmst -m -w 5 &
 exec $wm

@@ -124,3 +124,6 @@ dot
 /.config/Thunar/
 /.config/xfce4/
 /downloads/
+/.config/mozila/
+/.config/nyxt/#init.lisp#
+/.config/stumpwm/

@@ -4,7 +4,7 @@
 
 ;; Mu4E
 (use-package mu4e
-  :commands (mu4e)
+  :defer 5
   :config
   (setq
    mu4e-completing-read-function 'completing-read                        ;; use buffer minibuffer

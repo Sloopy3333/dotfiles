@@ -1,10 +1,10 @@
 #!/bin/sh
 
 get_vol(){
-status="$(amixer sget Master | grep -o -m 1 "\[[a-z]*\]" |  tr -d '%[]')"
-vol="$(amixer sget Master | grep -o -m 1 '[[:digit:]]*%' | tr -d '%')"
-if [ $status = off ]; then
-    myvol="ﱝ"
+status="$(pamixer --get-mute)"
+vol="$(pamixer --get-volume)"
+if [ $status = "true" ]; then
+    myvol="ﱝ "
 else
     myvol=" $vol"
 fi
@@ -17,13 +17,13 @@ case $1 in
   "")
     ;;
   "up")
-    amixer set Master 5%+ >/dev/null
+    pamixer -i 5 >/dev/null
     ;;
   "down")
-    amixer set Master 5%- > /dev/null
+    pamixer -d 5 > /dev/null
     ;;
   "toggle")
-    amixer set Master "toggle" >/dev/null
+    pamixer -t >/dev/null
     ;;
   *)
     exit 0

@@ -5,7 +5,7 @@
   :straight nil
   :config
   (setq switch-to-buffer-obey-display-actions t)
-  (setq frame-title-format '("%b – Emacs"))
+  (setq frame-title-format '("Emacs:%b"))
   (setq frame-resize-pixelwise t)
   (setq window-resize-pixelwise nil)
   :custom

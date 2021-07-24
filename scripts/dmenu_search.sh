@@ -1,6 +1,6 @@
 #!/bin/bash
 
-browser="brave"
+browser="chromium"
 declare -A searchengine
 searchengine[amazon]="https://www.amazon.com/s?k="
 searchengine[aur]="https://aur.archlinux.org/packages/?O=0&K="

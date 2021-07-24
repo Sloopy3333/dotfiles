@@ -49,6 +49,7 @@
   :hook
   (dired-mode . (lambda ()
                   (dired-hide-details-mode)
+                  (auto-revert-mode)
                   (evil-local-set-key 'normal (kbd "l")  'sam/find-file)
                   (evil-local-set-key 'normal (kbd "h")  '(lambda () (interactive)(find-alternate-file "..")))
                   (evil-local-set-key 'normal (kbd "v")  'dired-mark)
@@ -68,7 +69,7 @@
                   (evil-local-set-key 'normal (kbd "W")  'wdired-change-to-wdired-mode)
                   (evil-local-set-key 'normal (kbd "r")  'revert-buffer)
                   (evil-local-set-key 'normal (kbd "gc") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/.config"))))
-                  (evil-local-set-key 'normal (kbd "gd") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/Downloads"))))
+                  (evil-local-set-key 'normal (kbd "gd") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/downloads"))))
                   (evil-local-set-key 'normal (kbd "gh") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/"))))
                   (evil-local-set-key 'normal (kbd "gp") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/projects"))))
                   (evil-local-set-key 'normal (kbd "gs") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/scripts"))))

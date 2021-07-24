@@ -27,6 +27,8 @@
 ;; disable startup screen
 (setq inhibit-startup-screen t)
 
+;; less warnings
+(setq warning-minimum-level :emergency)
 
 ;; Package.el
 ;; disabel loading package.le
@@ -42,3 +44,6 @@
 ;; this sets fonts before frame starts so i dont have to stare at default fonts while not running daemon
 (add-to-list 'default-frame-alist
              '(font . "Hack Nerd Font Mono-11"))
+
+(set-frame-parameter (selected-frame) 'alpha '(95 95))
+(add-to-list 'default-frame-alist '(alpha 95 95))

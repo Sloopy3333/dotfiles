@@ -1,5 +1,3 @@
---imports
-
 -- core
 import XMonad
 
@@ -17,9 +15,7 @@ import System.IO (hPutStrLn)
 import XMonad.Hooks.ManageDocks(avoidStruts, docks, manageDocks, ToggleStruts(..))
 import XMonad.Hooks.DynamicLog(dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))
 
--- layouts and layout modifiers
-
--- layout modifier
+-- layout
 import XMonad.Layout.Renamed
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
@@ -40,77 +36,178 @@ import XMonad.Util.SpawnOnce
 -- keys
 import Graphics.X11.ExtraTypes.XF86
 
--- prompts
-import XMonad.Prompt
-import XMonad.Prompt.Input
-import XMonad.Prompt.Shell
-import XMonad.Prompt.Window
-import XMonad.Prompt.Man
-import XMonad.Prompt.Theme
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --colors
-myBg     = "#282828"
-myFg     = "#fbf1c7"
-myGrey   = "#928374"
-myYellow = "#fabd27"
-myGreen  = "#665c54"
-myBlue   = "#83a598"
+data ColorSchemes = ColorSchemes{black ,white ,gray ,yellow ,orange ,red ,purple ,blue ,cyan ,green :: String}
 
+myGruvbox :: ColorSchemes
+myGruvbox = ColorSchemes {
+                          black   = "#282828",
+                          white   = "#ebdbb2",
+                          gray    = "#928374",
+                          yellow  = "#fabd2f",
+                          orange  = "#fe8019",
+                          red     = "#fb4934",
+                          purple  = "#d3869b",
+                          blue    = "#83a598",
+                          cyan    = "#8ec07c",
+                          green   = "#b8bb26"
+                         }
+
+mySolarized :: ColorSchemes
+mySolarized = ColorSchemes {
+                            black   = "#002b36",
+                            white   = "#eee8d5",
+                            gray    = "#073642",
+                            yellow  = "#b58900",
+                            orange  = "#cb4b16",
+                            red     = "#d30102",
+                            purple  = "#d33682",
+                            blue    = "#268bd2",
+                            cyan    = "#2aa198",
+                            green   = "#859900"
+                           }
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- user variables
+myModMask              = mod4Mask                                                         :: KeyMask
+myFocusFollowsMouse    = True                                                             :: Bool
+myClickJustFocuses     = False                                                            :: Bool
+myBorderWidth          = 2                                                                :: Dimension
+myWindowGap            = 0                                                                :: Integer
+myColor                = myGruvbox                                                        :: ColorSchemes
+myFocusedBorderColor   = white myColor                                                    :: String
+myUnFocusedBorderColor = black myColor                                                    :: String
+myFont                 = "xft:Hack Nerd Font:regular:size=12:antialias=true:hinting=true" :: String
+myTerminal             = "xterm"                                                          :: String
+myTerminalAlt          = "emacsclient -c -a '' --eval '(ehsell nil)'"                     :: String
+myFilemanager          = "emacsclient -c -a '' --eval '(dired nil)'"                      :: String
+myFilemanagerAlt       = "pcmanfm"                                                        :: String
+myBrowser              = "chromium"                                                       :: String
+myBrowserAlt           = "librewolf -p 'Logins'"                                          :: String
+myMail                 = "emacsclient -c -a '' --eval '(mu4e)'"                           :: String
+myMusicplayer          = myTerminal ++ " -e ncmpcpp"                                      :: String
+myRssreader            = "emacsclient -c -a '' --eval '(elfeed)'"                         :: String
+myIDE                  = "emacsclient -c -a emacs"                                        :: String
 
-myModMask :: KeyMask
-myModMask = mod4Mask
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--Layouts
+mySpacing :: Integer -> l a -> ModifiedLayout Spacing l a
+mySpacing i = spacingRaw False (Border 0 i 0 i) True (Border i 0 i 0) True
 
-myFont :: String
-myFont = "xft:Hack Nerd Font:regular:size=12:antialias=true:hinting=true"
+tall =
+  renamed [Replace "Tall"] $
+    mySpacing myWindowGap $
+        ResizableTall 1 (3/100) (1/2) []
 
-myFocusFollowsMouse :: Bool
-myFocusFollowsMouse = True
+wide =
+  renamed [Replace "Wide"] $
+    mySpacing myWindowGap $
+        Mirror (Tall 1 (3 / 100) (1 / 2))
 
-myClickJustFocuses :: Bool
-myClickJustFocuses = False
+full =
+  renamed [Replace "Full"] $
+    mySpacing myWindowGap $
+        Full
 
-myBorderWidth :: Dimension
-myBorderWidth = 2
+myLayout =
+  avoidStruts $
+    smartBorders myDefaultLayout
+  where
+    myDefaultLayout =
+      tall
+        ||| wide
+        ||| full
 
-myFocusedBorderColor :: String
-myFocusedBorderColor = myGrey
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Prompts
+myDmenuPromptList :: [(KeySym, String)]
+myDmenuPromptList = [(xK_s, "dmenu_power.sh"),
+                     (xK_k, "dmenu_kill.sh"),
+                     (xK_m, "dmenu_man.sh"),
+                     (xK_p, "dmenu_pass.sh")
+                    ]
 
-myUnFocusedBorderColor :: String
-myUnFocusedBorderColor = myBg
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Scratchpad
+myScratchPads =
+  [ NS "htop" spawnHtop findHtop manageHtop,
+    NS "ncmpcpp" spawncmpcpp findncmpcpp managncmpcpp
+  ]
+  where
+    spawnHtop = myTerminal ++ " -e htop"
+    findHtop = title =? "htop"
+    manageHtop = customFloating $ W.RationalRect l t w h
+      where
+        h = 0.90
+        w = 0.95
+        t = (1 - h) / 2
+        l = (1 - w) / 2
+    spawncmpcpp = myTerminal ++ " -e ncmpcpp"
+    findncmpcpp = title =? "ncmpcpp"
+    managncmpcpp = customFloating $ W.RationalRect l t w h
+      where
+        h = 0.90
+        w = 0.95
+        t = (1 - h) / 2
+        l = (1 - w) / 2
 
-myTerminal :: String
-myTerminal = "xterm"
+myScratchPadList :: [(KeySym, String)]
+myScratchPadList = [(xK_h, "htop"),
+                    (xK_m, "ncmpcpp")
+                   ]
 
-myTerminalAlt :: String
-myTerminalAlt = "st"
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--managehook
+myManageHook =
+  composeAll
+    [ manageDocks,
+      className =? "Steam" --> doFloat,
+      className =? "Pavucontrol" --> doFloat,
+      className =? "mpv" --> doFloat,
+      title     =? "Picture in Picture" --> doFloat,
+      className =? "Freetube" --> doFloat,
+      className =? "VirtualBox Manager" --> doFloat,
+      className =? "Steam" --> doShift (myWorkspaces !! 2),
+      className =? "csgo_linux64" --> doShift (myWorkspaces !! 3)
+    ]
+    <+> namedScratchpadManageHook myScratchPads
 
-myFilemanager :: String
-myFilemanager = "emacsclient -c -a '' --eval '(dired nil)'"
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- eventhook
+myEventHook = mempty
 
-myFilemanagerAlt :: String
-myFilemanagerAlt = "pcmanfm"
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--dynamicloghook
+--windowCount :: X (Maybe String)
+--windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+--
+--myXmobarPP h =
+--  xmobarPP
+--    { ppCurrent         = xmobarColor green "" . wrap "[" "]",
+--      ppVisible         = xmobarColor white "" . wrap "" "" . clickable,
+--      ppHidden          = xmobarColor yellow "" . wrap "" "" . clickable,
+--      ppHiddenNoWindows = xmobarColor white "" . clickable,
+--      ppSep             = "<fc=fg> | </fc>",
+--      ppTitle           = xmobarColor white "" . shorten 60,
+--      ppLayout          = xmobarColor white "",
+--      ppOutput          = hPutStrLn h,
+--      --ppExtras          = [windowCount],
+--      ppOrder           = \(ws : l : t : ex) -> [ws, l] ++ ex ++ [t]
+--    }
 
-myBrowser :: String
-myBrowser = "librewolf -p 'Regular'"
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--startuphook
+myStartupHook :: X ()
+myStartupHook = mempty --do
+  --spawnOnce "~/.config/xmonad/scripts/pipes.sh &"
+  --spawn "~/.config/xmonad/scripts/volume-pipe.sh &"
+  --spawn "~/.config/xmonad/scripts/backlight-pipe.sh &"
+  --spawn "~/.config/xmonad/scripts/systray.sh &"
 
-myBrowserAlt :: String
-myBrowserAlt = "librewolf -p 'Logins'"
-
-myMail :: String
-myMail = "emacsclient -c -a '' --eval '(mu4e)'"
-
-myMusicplayer :: String
-myMusicplayer = myTerminal ++ " -e ncmpcpp      "
-
-myRssreader :: String
-myRssreader = "emacsclient -c -a '' --eval '(elfeed)'"
-
-myIDE :: String
-myIDE = "emacsclient -c -a emacs"
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- keybidings and keychords
-
 myKeys conf@XConfig {XMonad.modMask = modm} =
   M.fromList $
     [
@@ -126,11 +223,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm, xK_r),                     spawn myRssreader),
       ((modm, xK_e),                     spawn myIDE),
 
-      ((modm, xK_space),                 shellPrompt myPrompt),
-      ((modm , xK_a     ),               windowPrompt myPrompt {autoComplete = Just 500000} Goto allWindows),
-      ((modm .|. shiftMask, xK_a),       windowPrompt myPrompt {autoComplete = Just 500000} Bring allWindows),
-      ((modm, xK_z),                     manPrompt myPrompt),
-      ((modm, xK_x),                     themePrompt myPrompt),
+      -- prompts
+      ((modm, xK_space),                 spawn "dmenu_run"),
 
 
       -- kill compile exit lock
@@ -155,10 +249,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm .|. shiftMask, xK_n),       setLayout $ XMonad.layoutHook conf),
 
       -- resize windows and float
-      ((modm .|. controlMask, xK_h),     sendMessage Shrink),
-      ((modm .|. controlMask, xK_l),     sendMessage Expand),
       ((modm .|. controlMask, xK_j),     sendMessage MirrorShrink),
       ((modm .|. controlMask, xK_k),     sendMessage MirrorExpand),
+      ((modm .|. controlMask, xK_h),     sendMessage Shrink),
+      ((modm .|. controlMask, xK_l),     sendMessage Expand),
       ((modm .|. controlMask, xK_t),     withFocused $ windows . W.sink),
 
       -- copy window to all workspace
@@ -168,7 +262,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       -- gaps and struts and fullscreen
       ((modm, xK_equal),                 sequence_ [incWindowSpacing 2, incScreenSpacing 2]),
       ((modm, xK_minus),                 sequence_ [decWindowSpacing 2, decScreenSpacing 2]),
-      ((modm .|. controlMask, xK_equal), sequence_ [setWindowSpacing (Border 0 2 0 2), setScreenSpacing (Border 0 2 0 2)]),
+      ((modm .|. controlMask, xK_equal), sequence_ [setWindowSpacing (Border 0 myWindowGap 0 myWindowGap), setScreenSpacing (Border 0 myWindowGap 0 myWindowGap)]),
       ((modm .|. controlMask, xK_f),     sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled]),
 
       -- screenshots
@@ -197,43 +291,14 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
         | (i, k) <- zip myWorkspaces [xK_1 ..],
           (f, m) <- [(W.view, 0), (W.shift, shiftMask), (copy, shiftMask .|. controlMask)]
       ]
-      -- dmenu submap
-      ++ [ ( (modm, xK_d),
-             submap . M.fromList $
-               [ ((0, xK_s), spawn "~/scripts/dpower"),
-                 ((0, xK_p), spawn "~/scripts/dpass"),
-                 ((0, xK_m), spawn "~/scripts/dman"),
-                 ((0, xK_k), spawn "~/scripts/dkill"),
-                 ((0, xK_c), spawn "~/scripts/dcol"),
-                 ((0, xK_w), spawn "~/scripts/dsearch")
-               ]
-           )
-         ]
-      -- dmenu search submap
-      ++ [ ( (modm, xK_s),
-             submap . M.fromList $
-               [ ((0, xK_a), spawn "~/scripts/dsearch archwiki"),
-                 ((0, xK_p), spawn "~/scripts/dsearch aur"),
-                 ((0, xK_d), spawn "~/scripts/dsearch duckduckgo"),
-                 ((0, xK_g), spawn "~/scripts/dsearch google"),
-                 ((0, xK_h), spawn "~/scripts/dsearch hoogle"),
-                 ((0, xK_r), spawn "~/scripts/dsearch reddit"),
-                 ((0, xK_s), spawn "~/scripts/dsearch startpage"),
-                 ((0, xK_u), spawn "~/scripts/dsearch urbandictionary"),
-                 ((0, xK_y), spawn "~/scripts/dsearch youtube")
-               ]
-           )
-         ]
-      ++
-      -- scratchpad submap
-      [ ( (modm, xK_p),
-          submap . M.fromList $
-            [ ((0, xK_h), namedScratchpadAction myScratchPads "htop"),
-              ((0, xK_m), namedScratchpadAction myScratchPads "emms")
-            ]
-        )
-      ]
 
+      -- dmenu submap
+      ++ [ ( (modm, xK_d), submap . M.fromList $ [((0, k),  spawn e) | (k, e) <- myDmenuPromptList])]
+
+      -- scratchpad submap
+      ++ [ ( (modm, xK_p), submap . M.fromList $ [((0, k),  namedScratchpadAction myScratchPads e) | (k, e) <- myScratchPadList])]
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --mousebinding
 myMouseBindings XConfig {XMonad.modMask = modm} =
   M.fromList
@@ -242,133 +307,18 @@ myMouseBindings XConfig {XMonad.modMask = modm} =
       ((modm, button3), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster) -- mod-button3, Set the window to floating mode and resize by dragging
     ]
 
--- clickable works
+--Workspaces
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 myWorkspaceIndices = M.fromList $ zip myWorkspaces [1 ..]
-clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>"
-  where
-    i = fromJust $ M.lookup ws myWorkspaceIndices
+--clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>"
+--  where
+--    i = fromJust $ M.lookup ws myWorkspaceIndices
 
-
---Layouts
-mySpacing :: Integer -> l a -> ModifiedLayout Spacing l a
-mySpacing i = spacingRaw False (Border 0 i 0 i) True (Border i 0 i 0) True
-
-tall =
-  renamed [Replace "Tall"] $
-    mySpacing 2 $
-        ResizableTall 1 (3/100) (1/2) []
-
-wide =
-  renamed [Replace "Wide"] $
-    mySpacing 2 $
-        Mirror (Tall 1 (3 / 100) (1 / 2))
-
-full =
-  renamed [Replace "Full"] $
-    mySpacing 2 $
-        Full
-
-myLayout =
-  avoidStruts $
-    smartBorders myDefaultLayout
-  where
-    myDefaultLayout =
-      tall
-        ||| wide
-        ||| full
-
--- Prompts
-myPrompt = def
-  {
-    position            = Top,
-    font                = myFont,
-    bgColor             = myBg,
-    fgColor             = myFg,
-    bgHLight            = myGrey,
-    fgHLight            = myFg,
-    promptBorderWidth   = 0,
-    height              = 18,
-    alwaysHighlight     = True,
-    maxComplRows        = Just 20,
-    maxComplColumns     = Just 5,
-    historyFilter       = id,
-    historySize         = 100
-  }
-
-
--- Scratchpad
-myScratchPads =
-  [ NS "htop" spawnHtop findHtop manageHtop,
-    NS "ncmpcpp" spawncmpcpp findncmpcpp managncmpcpp
-  ]
-  where
-    spawnHtop = myTerminal ++ " -e htop"
-    findHtop = title =? "htop"
-    manageHtop = customFloating $ W.RationalRect l t w h
-      where
-        h = 0.90
-        w = 0.95
-        t = (1 - h) / 2
-        l = (1 - w) / 2
-    spawncmpcpp = myTerminal ++ " -e ncmpcpp"
-    findncmpcpp = title =? "ncmpcpp"
-    managncmpcpp = customFloating $ W.RationalRect l t w h
-      where
-        h = 0.90
-        w = 0.95
-        t = (1 - h) / 2
-        l = (1 - w) / 2
-
---managehook
-
-myManageHook =
-  composeAll
-    [ manageDocks,
-      className =? "Steam" --> doFloat,
-      className =? "Pavucontrol" --> doFloat,
-      className =? "vlc" --> doFloat,
-      title =? "Picture in Picture" --> doFloat,
-      className =? "Freetube" --> doFloat,
-      className =? "VirtualBox Manager" --> doFloat,
-      className =? "Steam" --> doShift (myWorkspaces !! 2),
-      className =? "csgo_linux64" --> doShift (myWorkspaces !! 3)
-    ]
-    <+> namedScratchpadManageHook myScratchPads
-
--- eventhook
-myEventHook = mempty
-
--- dynamicloghook
-windowCount :: X (Maybe String)
-windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
-
-myXmobarPP h =
-  xmobarPP
-    { ppCurrent         = xmobarColor myGreen "" . wrap "[" "]",
-      ppVisible         = xmobarColor myFg "" . wrap "" "" . clickable,
-      ppHidden          = xmobarColor myYellow "" . wrap "" "" . clickable,
-      ppHiddenNoWindows = xmobarColor myFg "" . clickable,
-      ppSep             = "<fc=fg> | </fc>",
-      ppTitle           = xmobarColor myFg "" . shorten 60,
-      ppLayout          = xmobarColor myFg "",
-      ppOutput          = hPutStrLn h,
-  --, ppExtras          = [windowCount]
-      ppOrder           = \(ws : l : t : ex) -> [ws, l] ++ ex ++ [t]
-    }
-
---startuphook
-myStartupHook :: X ()
-myStartupHook = do
-  spawnOnce "~/.config/xmonad/scripts/pipes.sh &"
-  spawn "~/.config/xmonad/scripts/volume-pipe.sh &"
-  spawn "~/.config/xmonad/scripts/backlight-pipe.sh &"
-  spawn "~/.config/xmonad/scripts/systray.sh &"
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --Main
 main :: IO ()
 main = do
-  myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
+--  myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
   xmonad $ docks $ def
         { terminal           = myTerminal,
           focusFollowsMouse  = myFocusFollowsMouse,
@@ -382,6 +332,6 @@ main = do
           layoutHook         = myLayout,
           manageHook         = myManageHook,
           handleEventHook    = myEventHook,
-          logHook            = dynamicLogWithPP $ myXmobarPP myXmobar,
+--          logHook            = dynamicLogWithPP $ myXmobarPP myXmobar,
           startupHook        = myStartupHook
         }

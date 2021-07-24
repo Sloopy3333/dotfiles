@@ -8,7 +8,7 @@
 
 ;; utils
 (load-library "init-no-littering")
-(load-library "init-gcmh")
+;;(load-library "init-gcmh")
 (load-library "init-helpful")
 
 ;;;; ui and themes
@@ -32,7 +32,7 @@
 
 ;; minibuffer
 (load-library "init-minibuffer")
-(load-library "init-icomplete")
+;;(load-library "init-icomplete")
 (load-library "init-vertico")
 (load-library "init-consult")
 (load-library "init-marginalia")
@@ -51,11 +51,11 @@
 (load-library "init-company-box")
 (load-library "init-eglot")
 (load-library "init-elec-pair")
-(load-library "init-lsp-mode")
-(load-library "init-lsp-ui")
-(load-library "init-lsp-java")
-(load-library "init-lsp-haskell")
-(load-library "init-lsp-pyright")
+;;(load-library "init-lsp-mode")
+;;(load-library "init-lsp-ui")
+;;(load-library "init-lsp-java")
+;;(load-library "init-lsp-haskell")
+;;(load-library "init-lsp-pyright")
 
 ;; version control
 (load-library "init-magit")
@@ -85,3 +85,6 @@
 
 ;; password
 (load-library "init-pass")
+
+;;proced
+(load-library "init-proced")
