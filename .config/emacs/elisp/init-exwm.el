@@ -43,10 +43,6 @@
   (interactive)
   (start-process-shell-command name nil command))
 
-(defun sam/exwm-spawn-in-background (command)
-  (let ((command-parts (split-string command "[ ]+")))
-    (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
-
 ;; window and buffer management
 (defun sam/exwm-split-window-right ()
   "split window right switch to window and switch to scratch buffer"
@@ -55,8 +51,8 @@
     (split-window-right)
     (windmove-right)
     (switch-to-buffer "scratch")))
-;; (let (($buf (generate-new-buffer "untitled")))
-;;   (switch-to-buffer $buf))))
+   ;; (let (($buf (generate-new-buffer "untitled")))
+   ;;   (switch-to-buffer $buf))))
 
 (defun sam/exwm-split-window-below ()
   "split window below switch to window and switch to scratch buffer"
@@ -65,8 +61,8 @@
     (split-window-below)
     (windmove-down)
     (switch-to-buffer "scratch")))
-;;(let (($buf (generate-new-buffer "untitled")))
-;;  (switch-to-buffer $buf))))
+    ;;(let (($buf (generate-new-buffer "untitled")))
+    ;;  (switch-to-buffer $buf))))
 
 (defun sam/exwm-switch-to-next-buffer ()
   "similar to `switch-to-next-buffer' but ignores special buffers"
@@ -103,7 +99,7 @@ or restore previous layout if a single window exists"
   (interactive)
   (if (= (count-windows) 1)
       (when single-window--last-configuration
-	    (set-window-configuration single-window--last-configuration))
+	(set-window-configuration single-window--last-configuration))
     (setq single-window--last-configuration (current-window-configuration))
     (delete-other-windows)))
 
@@ -112,26 +108,26 @@ or restore previous layout if a single window exists"
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
-	         (next-win-buffer (window-buffer (next-window)))
-	         (this-win-edges (window-edges (selected-window)))
-	         (next-win-edges (window-edges (next-window)))
-	         (this-win-2nd (not (and (<= (car this-win-edges)
-					                     (car next-win-edges))
-				                     (<= (cadr this-win-edges)
-					                     (cadr next-win-edges)))))
-	         (splitter
-	          (if (= (car this-win-edges)
-		             (car (window-edges (next-window))))
-		          'split-window-horizontally
-		        'split-window-vertically)))
-	    (delete-other-windows)
-	    (let ((first-win (selected-window)))
-	      (funcall splitter)
-	      (if this-win-2nd (other-window 1))
-	      (set-window-buffer (selected-window) this-win-buffer)
-	      (set-window-buffer (next-window) next-win-buffer)
-	      (select-window first-win)
-	      (if this-win-2nd (other-window 1))))))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
 
 
 ;; volume
@@ -147,27 +143,22 @@ or restore previous layout if a single window exists"
 (defun sam/exwm-backlight-ctl (opt)
   (start-file-process-shell-command "backlight" nil (concat "xbacklight " opt))
   (sit-for 1)
-  (message "Backlight is %-1.1s" (shell-command-to-string "xbacklight -get")))
+    (message "Backlight is %-1.1s" (shell-command-to-string "xbacklight -get")))
 
 ;; screenshot
-(defun sam/exwm-screenshot-full (&optional rename)
+(defun sam/exwm-screenshot-full ()
   (interactive)
   (let ((path
          (concat "~/external/hdd2/screenshots/"
-                 (if rename
-                     (concat (read-string "Screenshot name: ") ".png")
-                   (concat (format-time-string "%y-%m-%d,%H:%M:%S") ".png")))))
+                 (format-time-string "%y-%m-%d,%H:%M:%S") ".png")))
     (start-process-shell-command "maim" nil (concat "maim " path))
-    (sit-for 1)
     (message "screenshot saved at %s" path)))
 
-(defun sam/exwm-screenshot-select (&optional rename)
+(defun sam/exwm-screenshot-select ()
   (interactive)
   (let ((path
          (concat "~/external/hdd2/screenshots/"
-                 (if rename
-                     (concat (read-string "Screenshot name: ") ".png")
-                   (concat (format-time-string "%y-%m-%d,%H:%M:%S") ".png")))))
+                 (format-time-string "%y-%m-%d,%H:%M:%S") ".png")))
     (start-process-shell-command "maim" nil (concat "maim -s " path))
     (message "screenshot saved at %s" path)))
 
@@ -234,22 +225,18 @@ or restore previous layout if a single window exists"
   (require 'exwm-systemtray)
   (exwm-systemtray-enable)
 
-  ;; startup applications
-  ;;(sam/exwm-spawn-in-background "connman-gtk")
+  ;;(add-hook 'exwm-manage-finish-hook #'exwm-layout-hide-mode-line)
 
   ;; setup modeline for exwm
   (sam/exwm-set-modeline)
 
-  (setq exwm-layout-show-all-buffers nil)
-  (setq exwm-workspace-show-all-buffers nil)
+  ;; rename buffers
+  (add-hook 'exwm-update-class-hook #'sam/exwm-rename-buffer)
+  (add-hook 'exwm-update-title-hook #'sam/exwm-rename-buffer)
 
   ;; hide modeline for floating windows
   (add-hook 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
   (add-hook 'exwm-floating-exit-hook #'exwm-layout-show-mode-line)
-
-  ;; rename buffers
-  (add-hook 'exwm-update-class-hook #'sam/exwm-rename-buffer)
-  (add-hook 'exwm-update-title-hook #'sam/exwm-rename-buffer)
 
   ;; window rules
   (add-hook 'exwm-manage-finish-hook 'sam/exwm-window-rules)
@@ -266,6 +253,7 @@ or restore previous layout if a single window exists"
 
   ;; initial number of workspaces
   (setq exwm-workspace-number 4)
+  (setq exwm-layout-show-all-buffers nil)
 
   ;; name workspace from 1 insted of 0
   (setq exwm-workspace-index-map
@@ -290,17 +278,20 @@ or restore previous layout if a single window exists"
                print))
     (cl-pushnew k exwm-input-prefix-keys))
 
+  ;; These keys should always pass through to Emacs
+  (setq exwm-input-prefix-keys
+        '(?\M-x
+          ?\M-:                         ;
+          ))
+
   ;; switch to ith worspace with s-i
   (dotimes (i 10)
     (exwm-input-set-key (kbd (format "s-%d" i))
                         `(lambda ()
                            (interactive)
-                           (exwm-workspace-switch-create (1-, i)))))
+                           (exwm-workspace-switch-create (1- ,i)))))
 
-  (exwm-input-set-key (kbd "s-w")  #'exwm-workspace-switch)
-  (exwm-input-set-key (kbd "s-W")  #'exwm-workspace-move-window)
-
-  ;; execute commnds
+  (exwm-input-set-key (kbd "s-!")  #'exwm-workspace-move-window)
   (exwm-input-set-key (kbd "s-x")  #'execute-extended-command)
   (exwm-input-set-key (kbd "M-x")  #'execute-extended-command)
   (exwm-input-set-key (kbd "s-;")  #'eval-expression)
@@ -309,6 +300,7 @@ or restore previous layout if a single window exists"
   (exwm-input-set-key (kbd "s-c") #'exwm-restart)
   (exwm-input-set-key (kbd "s-C") #'kill-emacs)
   (exwm-input-set-key (kbd "s-R") #'exwm-reset)
+  ;;(exwm-input-set-key (kbd "s-x") #'exwm-input-toggle-keyboard)
 
   ;; input methods
   (exwm-input-set-key (kbd "s-i") #'exwm-input--next-key)
@@ -329,6 +321,7 @@ or restore previous layout if a single window exists"
   (exwm-input-set-key (kbd "s-=") #'balance-windows)
   (exwm-input-set-key (kbd "s-n") #'sam/exwm-toggle-single-window)
   (exwm-input-set-key (kbd "s-N") #'sam/exwm-toggle-window-split)
+
 
   ;; winner mode
   (exwm-input-set-key (kbd "s-u") #' winner-undo)
@@ -395,10 +388,8 @@ or restore previous layout if a single window exists"
   (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive) (sam/exwm-backlight-ctl "-dec +2")))
 
   ;;screenshot
-  (exwm-input--set-key (kbd "<print>") #'sam/exwm-screenshot-full)
-  (exwm-input--set-key (kbd "S-<print>") #'sam/exwm-screenshot-select)
-  (exwm-input--set-key (kbd "s-<print>") (lambda () (interactive) (sam/exwm-screenshot-full t)))
-  (exwm-input--set-key (kbd "s-S-<print>") (lambda () (interactive) (sam/exwm-screenshot-select t)))
+  (exwm-input--set-key (kbd "s-<print>") #'sam/exwm-screenshot-full)
+  (exwm-input--set-key (kbd "s-S-<print>") #'sam/exwm-screenshot-select)
 
   (exwm-enable))
 

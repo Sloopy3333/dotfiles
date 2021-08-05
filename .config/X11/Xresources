@@ -1,4 +1,4 @@
- hard contrast: *background: #1d2021
+! hard contrast: *background: #1d2021
 *background: #282828
 ! soft contrast: *background: #32302f
 *foreground: #ebdbb2
@@ -32,10 +32,10 @@ XTerm*utf8: 2
 xterm.*.locale: true
 Xft.dpi: 96
 
-XTerm*faceName: xft:Hack Nerd Font:size=12:antialias=true:hinting=true
+XTerm*faceName: xft:IBM Plex Mono Medium:size=12:antialias=true:hinting=true
 Xft.rgba: rgb
-Xft.autohint: true
-Xft.hintstyle: hintone
+Xft.autohint: 0
+Xft.hintstyle: hinfull
 Xft.lcdfilter: lcdfilter
 XTerm*renderFont: true
 xterm.*.metasendsescape: true
@@ -62,3 +62,7 @@ xterm*VT100.Translations: #override \
     Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
     Ctrl Shift <Key>C:    copy-selection(CLIPBOARD) \n\
     Ctrl <Btn1Up>: exec-formatted("xdg-open '%t'", PRIMARY)
+
+
+! dzen
+dzen2.font: xft:IBM Plex Mono:bold:size=12:antialias=true:hinting=true

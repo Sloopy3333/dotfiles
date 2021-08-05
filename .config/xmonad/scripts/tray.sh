@@ -1,4 +1,4 @@
 #!/bin/sh
 
 killall trayer
-trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --height 22 --transparent true --alpha 0 --tint 0x282a36 --widthtype request --monitor 0
+trayer --edge bottom --align right --SetDockType true --SetPartialStrut true --expand true --height 22 --transparent true --alpha 0 --tint 0x282a36 --widthtype request --monitor 0

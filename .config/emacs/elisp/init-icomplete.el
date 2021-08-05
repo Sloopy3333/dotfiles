@@ -3,8 +3,9 @@
 ;; Icomplete
 ;; simple built-in minibuffer selector
 (use-package icomplete
-  :disabled t
   :straight nil
+  :hook
+  (icomplete-minibuffer-setup . (lambda () (setq max-mini-window-height 20)))
   :bind (:map icomplete-minibuffer-map
               ("C-j" . 'icomplete-forward-completions)
               ("C-k" . 'icomplete-backward-completions)
@@ -37,10 +38,15 @@
   (setq enable-recursive-minibuffers t)
   ;; maximum height of te minibuffer window
   (setq icomplete-prospects-height 20)
+  (setq resize-mini-windows nil)
   ;; disable cycling
   (setq icomplete-scroll t)
   (setq icomplete-with-completion-tables t)
   (icomplete-mode)
-  (icomplete-vertical-mode))
+  (icomplete-vertical-mode)
+  (set-face-attribute 'icomplete-selected-match nil
+                      :extend t
+                      :weight 'bold)
+  )
 
 (provide 'init-icomplete.el)

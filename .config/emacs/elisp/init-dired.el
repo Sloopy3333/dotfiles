@@ -28,7 +28,7 @@
     (revert-buffer :ignore-auto :noconfirm)
     (setq my-dired-copy-list nil)))
 
-(defun sam/find-file ()
+(defun sam/dired-find-file ()
   (interactive)
   (if (file-directory-p (dired-get-filename))
       (dired-find-alternate-file)
@@ -37,7 +37,6 @@
 
 (use-package dired
   :straight nil
-  :commands (dired dired-jump)
   :config
   (put 'dired-find-alternate-file 'disabled nil)
   (setq dired-listing-switches "-lhDA --group-directories-first")
@@ -46,11 +45,10 @@
   (setq dired-recursive-deletes 'always)
   (setq dired-ls-F-marks-symlinks t)
   (setq dired-hide-details-mode t)
-  :hook
-  (dired-mode . (lambda ()
+  :hook (dired-mode . (lambda ()
                   (dired-hide-details-mode)
                   (auto-revert-mode)
-                  (evil-local-set-key 'normal (kbd "l")  'sam/find-file)
+                  (evil-local-set-key 'normal (kbd "l")  'sam/dired-find-file)
                   (evil-local-set-key 'normal (kbd "h")  '(lambda () (interactive)(find-alternate-file "..")))
                   (evil-local-set-key 'normal (kbd "v")  'dired-mark)
                   (evil-local-set-key 'normal (kbd "dd") 'dired-do-delete)
@@ -67,6 +65,7 @@
                   (evil-local-set-key 'normal (kbd "co") 'dired-do-chown)
                   (evil-local-set-key 'normal (kbd "ex") 'dired-do-compress)
                   (evil-local-set-key 'normal (kbd "W")  'wdired-change-to-wdired-mode)
+                  (evil-local-set-key 'normal (kbd "w")  'eshell)
                   (evil-local-set-key 'normal (kbd "r")  'revert-buffer)
                   (evil-local-set-key 'normal (kbd "gc") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/.config"))))
                   (evil-local-set-key 'normal (kbd "gd") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/downloads"))))

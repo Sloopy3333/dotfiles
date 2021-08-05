@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-;;; Marginalia
+;; Marginalia
 (use-package marginalia
   :after (:any icomplete vertico)
   :config

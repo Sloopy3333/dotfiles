@@ -1,37 +1,20 @@
 ;; -*- lexical-binding: t; -*-
 
-;; for now disabled this since i set fonts in early-init.el
 ;; Fonts
 ;; set various face attributes
-;;(defun sam/set-font ()
-;;  (set-face-attribute 'default nil
-;;                      :font "Hack Nerd Font Mono"
-;;                      :width 'normal
-;;                      :weight 'normal
-;;                      :height 115)
-;;  (set-face-attribute 'variable-pitch nil
-;;                      :font "Hack Nerd Font Mono"
-;;                      :width 'normal
-;;                      :weight 'normal
-;;                      :height 115)
-;;  (set-face-attribute 'fixed-pitch nil
-;;                      :font "Hack Nerd Font Mono"
-;;                      :width 'normal
-;;                      :weight 'normal
-;;                      :height 115)
-;;  (set-face-attribute 'font-lock-comment-face nil
-;;                      :font "Hack Nerd Font Mono"
-;;                      :slant 'italic)
-;;  (set-face-attribute 'font-lock-keyword-face nil
-;;                      :font "Hack Nerd Font Mono"
-;;                      :slant 'italic))
-;;
-;; (if (daemonp)
-;;     (add-hook 'after-make-frame-functions
-;;               (lambda (frame)
-;;                 (with-selected-frame frame
-;;                   (sam/set-font))))
-;;   (sam/set-font))
+(defun sam/set-font ()
+  (set-face-attribute 'default nil :inherit nil :family "IBM Plex Mono Medium" :foundry "IBM" :weight 'medium :height 120)
+  (set-face-attribute 'variable-pitch nil :family "IBM Plex Sans" :height 130)
+  (set-face-attribute 'fixed-pitch nil :inherit 'default)
+  (set-face-attribute 'font-lock-comment-face nil :inherit 'default :slant 'italic)
+  (set-face-attribute 'font-lock-keyword-face nil :inherit 'default :slant 'italic))
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (with-selected-frame frame
+                  (sam/set-font))))
+  (sam/set-font))
 
 ;; moderate font-lock decoration
 (setq font-lock-maximum-decoration nil)
@@ -103,15 +86,21 @@
 ;; resize windows inside emacs stepwise
 (setq window-resize-pixelwise nil)
 
-;; disable pop-up
-;;(setq pop-up-windows nil)
+;; disable pop-up and `display-buffer' should make new window
+(setq pop-up-windows nil)
 
 ;; The native border "consumes" a pixel of the fringe on righter-most splits,
-;; `window-divider' does not. Available since Emacs 25.1.
+;; `window-divider' does not
 (setq window-divider-default-places t
       window-divider-default-bottom-width 1
       window-divider-default-right-width 1)
 (add-hook 'emacs-init-hook #'window-divider-mode)
+
+
+;; Silence compiler warnings as they can be pretty disruptive
+(setq native-comp-async-report-warnings-errors 'silent)
+
+
 
 ;; Print time took to load emacs in messages buffer
 (defun sam/display-startup-time ()

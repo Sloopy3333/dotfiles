@@ -20,6 +20,11 @@
   (setq magit-git-global-arguments (remove bare-work-tree magit-git-global-arguments))
   (call-interactively 'magit-status))
 
+(defun sam-magit-status (state)
+  (interactive)
+  (setq magit-git-executable state)
+  (call-interactively 'magit-status))
+
 (use-package magit
   :commands (:any sam/magit-status sam/magit-status-bare)
   :custom

@@ -2,6 +2,7 @@
 
 ;; a bottom terminal like vs code
 (use-package window
+  :disabled t
   :straight nil
   :config
   (setq switch-to-buffer-obey-display-actions t)

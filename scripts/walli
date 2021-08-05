@@ -1,18 +1,21 @@
 #!/bin/sh
 
-[ ! -d /home/$USER/.config/walli ] && mkdir /home/$USER/.config/walli
-[ ! -f /home/$USER/.config/walli/wallpaper ] && touch /home/$USER/.config/walli/wallpaper
+data_dir=$XDG_DATA_DIR
+data_file="$XDG_DATA_HOME/wallpaper"
+wall_dir=~/external/hdd2/walls
 
-WALL_DIR=~/external/hdd2/walls
+#[ ! -d $data_dir ] && mkdir /home/$USER/.config/walli
+[ ! -f $data_file ] && touch $data_file
+
 OPT="${2:---stretch}"
 case $1 in
     -r)
-	cat $HOME/.config/walli/wallpaper | xargs xwallpaper --stretch
+	cat $data_file | xargs xwallpaper --stretch
 	;;
     *)
-	SELECTED=$(devour sxiv -o -q -r -t $WALL_DIR)
+	SELECTED=$(devour sxiv -o -q -r -t $wall_dir)
 	[ "$SELECTED" = "" ] && exit
-	echo $SELECTED > ~/.config/walli/wallpaper
+	echo $SELECTED > $data_file
 	xwallpaper $OPT $SELECTED
 	;;
 esac

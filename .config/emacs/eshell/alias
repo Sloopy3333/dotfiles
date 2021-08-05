@@ -1,5 +1,0 @@
-alias cl 'clear 1'
-alias ed find-file $1
-alias ED find-file-other-window $1
-alias gs sam/magit-status
-alias gd sam/magit-status-bare

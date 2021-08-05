@@ -4,7 +4,7 @@
   :commands (haskell-mode)
   :hook (haskell-mode . interactive-haskell-mode)
   :config
-  (setq haskell-process-type auto)
+  (setq haskell-process-type 'auto)
   )
 
 (provide 'init-haskell-mode.el)

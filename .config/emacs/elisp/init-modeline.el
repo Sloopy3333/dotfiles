@@ -13,9 +13,7 @@
                         ;; left
                         (format-mode-line
                          (list
-                          (if (frame-parameter (selected-frame) 'exwm-active)
-                              '(:eval (format " [%s] " (+ 1 exwm-workspace-current-index))))
-                          "%@"
+                          "%@ "
                           '(:eval (propertize "%b " 'face '(:inherit font-lock-type-face :weight bold)))
                           " "
                           "("
@@ -23,23 +21,14 @@
                           ":"
                           "%l"
                           ")"
-                          " "
-                          "["
-                          "" mode-name
-                          "" vc-mode
-                          "]"
                           ))
                         ;; right
                         (format-mode-line
                          (list
-                          '(:eval
-                            (propertize
-                             (battery-format "%p (%b %t %r W)"
-                                             (battery-linux-sysfs)) 'face '(:inherit font-lock-string-face :weight bold)))
-                          " | "
-                          '(:eval
-                            (propertize
-                             (format-time-string "%a, %b %d %I:%M %p") 'face '(:inherit font-lock-preprocessor-face :weight bold)))
+                          "["
+                          "" mode-name
+                          "" vc-mode
+                          "]"
                           ))
                         ))))
 

@@ -8,7 +8,6 @@ if [ $status = off ]; then
 else
     myvol=$vol
 fi
-echo "V:$myvol" | tee /tmp/volume-pipe
 }
 
 case $1 in

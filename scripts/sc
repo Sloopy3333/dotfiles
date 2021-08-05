@@ -1,15 +1,17 @@
 #!/bin/sh
 
 SC_DIR=~/external/hdd2/screenshots/
+NAME="$(date +%d-%m-%Y-%I:%M:%p).png"
+[ $1 = "-r" ] && NAME="$(echo "" | dmenu -p 'name :').png"
 
-case $1 in
-      # screenshots select tool
+case $2 in
+      # screenshots select
      -s)
-	maim -s $SC_DIR/$(date +%s).png
+	maim -s $SC_DIR/$NAME
 	;;
       # screenshots focused window
      -w)
-     maim -i $(xdotool getactivewindow) $SC_DIR/$(date +%s).png
+     maim -i $(xdotool getactivewindow) $SC_DIR/$NAME
 	;;
       # copies entire screen
      -c)
@@ -29,6 +31,6 @@ case $1 in
 	;;
       # full screenshots
      *)
-	maim $SC_DIR/$(date +%s).png
+	maim $SC_DIR/$NAME
 	;;
 esac

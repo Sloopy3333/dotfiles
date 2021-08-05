@@ -10,7 +10,6 @@
 ;; reload file as they change on disk
 (setq global-auto-revert-mode t)
 
-
 ;; create directory if not exist in `find-file'
 (add-hook 'find-file-not-found-functions
           (defun sam/create-missing-directories ()
@@ -52,14 +51,14 @@
 
 ;; enable auo-save
 (setq auto-save-default t)
-;; don't auto-disable auto-save after deleting big chunks. This defeats
+;; don't auto-disable auto-save after deleting big chunks
 (setq auto-save-include-big-deletions t)
 
 ;; Text formating
 ;; don't insert tabs for indentation
 (setq-default indent-tabs-mode nil)
 ;; display width for tab characters
-(setq tab-width 4)
+(setq-default tab-width 4)
 
 ;; hitting TAB indents the current line if point is at the left margin or in the line's indentation,
 ;; otherwise it inserts a "real" TAB character.

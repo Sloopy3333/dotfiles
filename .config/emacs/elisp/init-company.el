@@ -2,10 +2,6 @@
 
 ;; Company
 (use-package company
-  :commands (company-complete-common
-             company-complete-common-or-cycle
-             company-manual-begin
-             company-grab-line)
   :hook (prog-mode . global-company-mode)
   :config
   ;; minimum characters to wait for to triger idle completion

@@ -127,3 +127,7 @@ dot
 /.config/mozila/
 /.config/nyxt/#init.lisp#
 /.config/stumpwm/
+/.config/cmst/cmst.conf
+/.config/X11/#Xinitrc#
+/scripts/bare.sh
+~/,config/emacs/elisp/history

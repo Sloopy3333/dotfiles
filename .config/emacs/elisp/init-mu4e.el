@@ -4,22 +4,21 @@
 
 ;; Mu4E
 (use-package mu4e
-  :defer 5
+  :commands mu4e
   :config
-  (setq
-   mu4e-completing-read-function 'completing-read                        ;; use buffer minibuffer
-   mu4e-split-view 'vertical                                             ;; use vertical split
-   message-kill-buffer-on-exit t                                         ;; kill message after exit
-   mu4e-context-policy 'pick-first                                       ;; always pick first context
-   mu4e-confirm-quit nil                                                 ;; don't ask to quit
-   mu4e-change-filenames-when-moving t                                   ;; this is needed if using mbsync
-   mu4e-update-interval (* 10  60)                                       ;; update in seconds
-   mu4e-get-mail-command "mbsync -c /home/sam/.config/isync/mbsyncrc -a" ;; update command
-   mu4e-root-maildir "~/.local/share/mail"                               ;; maildir location mu4e-compose-format-flowed t
-   message-send-mail-function 'smtpmail-send-it                          ;; use smtpmail-send-it to send mail
-   mu4e-view-prefer-html t                                               ;; whether to base the body display on the html-version.
-                                        ;mu4e-view-use-gnus 't                                                 ;; use gnu article mode for view
-   mu4e-view-show-images 't)                                             ;; show images in email
+  (setq mu4e-completing-read-function 'completing-read)                        ;; use buffer minibuffer
+   (setq mu4e-split-view 'vertical)                                             ;; use vertical split
+   (setq message-kill-buffer-on-exit t)                                         ;; kill message after exit
+   (setq mu4e-context-policy 'pick-first)                                       ;; always pick first context
+   (setq mu4e-confirm-quit nil)                                                 ;; don't ask to quit
+   (setq mu4e-change-filenames-when-moving t)                                   ;; this is needed if using mbsync
+   (setq mu4e-update-interval (* 10  60))                                       ;; update in seconds
+   (setq mu4e-get-mail-command "mbsync -c /home/sam/.config/isync/mbsyncrc -a") ;; update command
+   (setq mu4e-root-maildir "~/.local/share/mail")                               ;; maildir location mu4e-compose-format-flowed t
+   (setq message-send-mail-function 'smtpmail-send-it)                          ;; use smtpmail-send-it to send mail
+   (setq mu4e-view-prefer-html t)                                               ;; whether to base the body display on the html-version.
+   ;;(setq mu4e-view-use-gnus 't)                                                 ;; use gnu article mode for view
+   (setq mu4e-view-show-images 't)                                             ;; show images in email
   (add-to-list 'mu4e-view-actions
                '("xViewXWidget" . my-mu4e-action-view-with-xwidget) t)
 
@@ -52,7 +51,7 @@
         mu4e-headers-attach-mark '("a" . "")
         mu4e-headers-encrypted-mark '("x" . "")
         mu4e-headers-signed-mark '("s" . "")
-        mu4e-headers-unread-mark '("u" . ""))  )
+        mu4e-headers-unread-mark '("u" . "")))
 
 ;; Wrap text in messages
 ;;(add-hook 'mu4e-view-mode-hook truncate-lines nil)

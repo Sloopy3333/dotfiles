@@ -1,0 +1,22 @@
+configuration {
+              modi: "window,drun,ssh,combi";
+              modi: "window,drun,ssh,combi,run,file-browser";
+              width: 100;
+              lines: 15;
+              columns: 1;
+              font: "IBM Plex Mono Semi-bold 11";
+              theme: "gruvbox-dark-soft";
+              bw: 0;
+              location: 1;
+              fixed-num-lines: false;
+              show-icons: false;
+              window-match-fields: "all";
+              disable-history: false;
+              sort: true;
+              sorting-method: "fzf";
+     	      case-sensitive: false;
+              matching: "fuzzy";
+              hide-scrollbar: true;
+	          scrollbar-width: 0;
+     	      window-thumbnail: true;
+}

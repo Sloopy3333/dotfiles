@@ -35,15 +35,18 @@
 (setq package-enable-at-startup nil)
 (fset #'package--ensure-init-file #'ignore)
 
-;; set some important directories for emacs
+
+;; user emacs dir
 (setq user-emacs-directory "~/.local/share/emacs")
-(setq custom-file "~/.config/emacs/custom.el")
+;; move custom file to tmp
+(setq custom-file
+      (if (boundp 'server-socket-dir)
+          (expand-file-name "custom.el" server-socket-dir)
+        (expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
+(load custom-file t)
+;; eln-cache
+(add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory))
 
-;; fonts
-;; not necessary to put in early-init
-;; this sets fonts before frame starts so i dont have to stare at default fonts while not running daemon
-(add-to-list 'default-frame-alist
-             '(font . "Hack Nerd Font Mono-11"))
-
-(set-frame-parameter (selected-frame) 'alpha '(95 95))
-(add-to-list 'default-frame-alist '(alpha 95 95))
+;; alpha
+;;(set-frame-parameter (selected-frame) 'alpha '(95 95))
+;;(add-to-list 'default-frame-alist '(alpha 95 95))

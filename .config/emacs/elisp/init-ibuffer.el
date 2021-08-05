@@ -13,5 +13,4 @@
   (setq ibuffer-default-sorting-mode 'filename/process)
   ;; display a header line containing current filters.
   (setq ibuffer-use-header-line t)
-  ;;(setq x  )
   )

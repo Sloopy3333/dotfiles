@@ -23,8 +23,8 @@ email = "emacsclient -c -a '' --eval '(mu4e)'"
 musicplayer = "st -e ncmpcpp"
 rss = "emacsclient -c -a '' --eval '(elfeed)'"
 
-#colors
 
+#colors
 bar_colors = {
     "black": "#282a36",  # black
     "red": "#ff5555",  # red
@@ -56,8 +56,8 @@ keys = [
     Key([mod,"shift"],              "b",                        lazy.spawn(browser_alt),                             desc="Launch alternative browser"),
     Key([mod,],                     "m",                        lazy.spawn(email),                                   desc="Launch neomutt"),
     Key([mod,"shift"],              "m",                        lazy.spawn(musicplayer),                             desc="Launch musicplayer"),
-    Key([mod],                      "e",                        lazy.spawn(ide),                                     desc="Launch doom emacs"),
-    Key([mod],                      "r",                        lazy.spawn(rss),                                     desc="Launch doom emacs"),
+    Key([mod],                      "e",                        lazy.spawn(ide),                                     desc="Launch emacs"),
+    Key([mod],                      "r",                        lazy.spawn(rss),                                     desc="Launch elfeed"),
     Key([mod],                      "q",                        lazy.window.kill(),                                  desc="Kill focused window"),
 
     # qtile commands
@@ -97,7 +97,7 @@ keys = [
     Key( [mod, "control"],          "Print",                    lazy.spawn(expanduser("~/scripts/sc -cs")),          desc="Cpoy selected area to clipboard"),
 
     # run prompts and menu           return
-    Key([mod],                      "space",                    lazy.spawn("dmenu_run"),                             desc="run dmenu"),
+    Key([mod],                      "space",                    lazy.spawn("rofi -show run"),                        desc="run dmenu"),
 
     # brightness
     Key([],                         "XF86MonBrightnessUp",      lazy.spawn("xbacklight -inc +5"),                    desc="Increase backlight by 5%"),

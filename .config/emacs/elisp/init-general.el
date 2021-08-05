@@ -20,7 +20,7 @@
   (interactive)
   (if(> (count-windows) 1)
       (other-window 1)
-    (sam/switch-to-next-buffer)
+    (next-buffer)
     ))
 
 (defun sam/switch-prev-buffer-or-window ()
@@ -28,7 +28,7 @@
   (interactive)
   (if(> (count-windows) 1)
       (other-window -1)
-    (sam/switch-to-prev-buffer)
+    (previous-buffer)
     ))
 
 (defun sam/split-window-right ()
@@ -37,8 +37,9 @@
   (progn
     (split-window-right)
     (windmove-right)
-    (let (($buf (generate-new-buffer "untitled")))
-      (switch-to-buffer $buf))))
+    (switch-to-buffer "scratch")))
+    ;;(let (($buf (generate-new-buffer "untitled")))
+    ;;  (switch-to-buffer $buf))))
 
 
 (defun sam/split-window-below ()
@@ -47,8 +48,9 @@
   (progn
     (split-window-below)
     (windmove-down)
-    (let (($buf (generate-new-buffer "untitled")))
-      (switch-to-buffer $buf))))
+    (switch-to-buffer "scratch")))
+    ;;(let (($buf (generate-new-buffer "untitled")))
+    ;;  (switch-to-buffer $buf))))
 
 
 (defun sam/toggle-side-tree()
@@ -84,13 +86,63 @@
     (kill-buffer-and-window)
     (kill-this-buffer)))
 
+
+(defun sam/toggle-single-window ()
+  "delete other windows if more than one window exists
+or restore previous layout if a single window exists"
+  (interactive)
+  (if (= (count-windows) 1)
+      (when single-window--last-configuration
+	(set-window-configuration single-window--last-configuration))
+    (setq single-window--last-configuration (current-window-configuration))
+    (delete-other-windows)))
+
+(defun sam/toggle-window-split ()
+  "switch between vertical and horizontal split only works for 2 windows"
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
+
+(defun delete-enclosing-parentheses (&optional arg)
+  "Delete the innermost enclosing parentheses around point.
+With a prefix argument N, delete the Nth level of enclosing parentheses,
+where 1 is the innermost level."
+  (interactive "*p")
+  (save-excursion
+    (backward-up-list arg)
+    (let ((beg (point)))
+      (forward-list)
+      (delete-backward-char 1)
+      (goto-char beg)
+      (delete-char 1))))
+
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (use-package general
   :after evil
   :config
   ;; evil
-  (general-def 'motion
+  (general-def 'normal
     "j" 'evil-next-visual-line
     "k" 'evil-previous-visual-line)
 
@@ -102,10 +154,8 @@
 
   ;; buffers
   (general-define-key
-   "M-<tab>" 'sam/switch-to-next-buffer
-   "M-<iso-lefttab>" 'sam/switch-to-prev-buffer
-   "M-b" 'consult-buffer
-   "M-B" 'ibuffer
+   "M-<tab>" 'switch-to-buffer
+   "M-<iso-lefttab>" 'ibuffer
    "M-q" 'kill-buffer-and-window
    "M-Q" 'delete-window
    "M-C-b" 'switch-to-buffer-other-window
@@ -113,10 +163,8 @@
 
   ;; window
   (general-def 'normal
-    "M-s" 'sam/split-window-right
-    "M-v" 'sam/split-window-below
-    ;;"M-j" 'windmove-down
-    ;;"M-k" 'windmove-up
+    "M-\\" 'sam/split-window-right
+    "M-|" 'sam/split-window-below
     "M-j" 'sam/switch-next-buffer-or-window
     "M-k" 'sam/switch-prev-buffer-or-window
     "M-l" 'windmove-right
@@ -129,6 +177,8 @@
     "M-C-k" 'shrink-window
     "M-C-l" 'enlarge-window-horizontally
     "M-C-h" 'shrink-window-horizontally
+    "M-n" 'sam/toggle-single-window
+    "M-N" 'sam/toggle-window-split
     )
 
   ;; prefix
