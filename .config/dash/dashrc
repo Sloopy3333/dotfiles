@@ -46,3 +46,11 @@ export GHCUP_BIN="$XDG_BIN_HOME"
 export CABAL_CONFIG="$XDG_CONFIG_HOME/cabal/conf"
 export CABAL_DIR="$XDG_DATA_HOME/cabal"
 export GHCUP_USE_XDG_DIRS="YES"
+
+alias ls='lsd'
+
+# grep
+alias grep="grep --color=auto"
+
+# dot file repo
+alias dot="git --git-dir=$HOME/.dotfiles/ --work-tree=

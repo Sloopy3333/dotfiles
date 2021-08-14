@@ -17,7 +17,7 @@
   (sam/set-font))
 
 ;; moderate font-lock decoration
-(setq font-lock-maximum-decoration nil)
+(setq font-lock-maximum-decoration t)
 
 ;; Scroll
 ;; minimum distance in lines between the cursor and window before scroll starts
@@ -87,7 +87,7 @@
 (setq window-resize-pixelwise nil)
 
 ;; disable pop-up and `display-buffer' should make new window
-(setq pop-up-windows nil)
+(setq pop-up-windows t)
 
 ;; The native border "consumes" a pixel of the fringe on righter-most splits,
 ;; `window-divider' does not
@@ -104,11 +104,7 @@
 
 ;; Print time took to load emacs in messages buffer
 (defun sam/display-startup-time ()
-  (message "Emacs loaded in %s with %d garbage collections."
-           (format "%.2f seconds"
-                   (float-time
-                    (time-subtract after-init-time before-init-time)))
-           gcs-done))
+  (message "Emacs loaded in %s with %d garbage collections." (emacs-init-time) gcs-done))
 (add-hook 'emacs-startup-hook #'sam/display-startup-time)
 
 (setq-default frame-title-format

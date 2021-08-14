@@ -32,12 +32,17 @@
   (interactive)
   (if (file-directory-p (dired-get-filename))
       (dired-find-alternate-file)
-    (dired-find-file)
-    ))
+    (dired-find-file)))
+
+(defun sam/dired-rename-buffer ()
+  "rename dired buffer name to unique name Dired:`dired-current-directory'"
+  (let (($buf (generate-new-buffer-name (concat "Dired:" (dired-current-directory)))))
+    (rename-buffer $buf)))
 
 (use-package dired
   :straight nil
   :config
+  (add-hook 'dired-after-readin-hook 'sam/dired-rename-buffer)
   (put 'dired-find-alternate-file 'disabled nil)
   (setq dired-listing-switches "-lhDA --group-directories-first")
   (setq ls-lisp-dirs-first t)

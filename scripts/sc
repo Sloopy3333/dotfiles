@@ -2,7 +2,7 @@
 
 SC_DIR=~/external/hdd2/screenshots/
 NAME="$(date +%d-%m-%Y-%I:%M:%p).png"
-[ $1 = "-r" ] && NAME="$(echo "" | dmenu -p 'name :').png"
+[ $1 = "-r" ] && NAME="$(echo "" | rofi -dmenu -p 'name :').png"
 
 case $2 in
       # screenshots select

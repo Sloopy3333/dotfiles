@@ -33,4 +33,4 @@ echo "
 |  $bat_status $cap ($estimated)  \
 |  $date  \
 |"\
-| dzen2 -p 5 -h '30' -w 900 -x 500
+| dzen2 -p 5 -h '20' -w 900 -x 500

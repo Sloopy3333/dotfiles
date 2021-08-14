@@ -131,3 +131,4 @@ dot
 /.config/X11/#Xinitrc#
 /scripts/bare.sh
 ~/,config/emacs/elisp/history
+/.config/i3/

@@ -1,5 +1,5 @@
 ! hard contrast: *background: #1d2021
-*background: #282828
+*background: #32302f
 ! soft contrast: *background: #32302f
 *foreground: #ebdbb2
 ! Black + DarkGrey
@@ -65,4 +65,4 @@ xterm*VT100.Translations: #override \
 
 
 ! dzen
-dzen2.font: xft:IBM Plex Mono:bold:size=12:antialias=true:hinting=true
+dzen2.font: xft:IBM Plex Mono:bold:size=11:antialias=true:hinting=true

@@ -113,8 +113,8 @@ full =
         Full
 
 myLayout =
-  avoidStruts $ smartBorders myDefaultLayout
-  --smartBorders myDefaultLayout
+  --avoidStruts $ smartBorders myDefaultLayout
+  smartBorders myDefaultLayout
   where
     myDefaultLayout = full ||| tall
 
@@ -129,7 +129,8 @@ myPromptList = [(xK_p, "dmenu_power.sh"),
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Scratchpad
 myScratchPads =
-  [ NS "htop" spawnHtop findHtop manageHtop]
+  [NS "htop" spawnHtop findHtop manageHtop,
+    NS "connman" spawnConnman findConnman manageConnman]
   where
     spawnHtop = myTerminal ++ " -e htop"
     findHtop = title =? "htop"
@@ -139,9 +140,18 @@ myScratchPads =
         w = 0.95
         t = (1 - h) / 2
         l = (1 - w) / 2
+    spawnConnman = "connman-gtk"
+    findConnman = className =? "Connman-gtk"
+    manageConnman = customFloating $ W.RationalRect l t w h
+      where
+        h = 0.90
+        w = 0.95
+        t = (1 - h) / 2
+        l = (1 - w) / 2
 
 myScratchPadList :: [(KeySym, String)]
-myScratchPadList = [(xK_h, "htop")]
+myScratchPadList = [(xK_h, "htop"),
+                    (xK_i, "connman")]
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --managehook
@@ -212,6 +222,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm, xK_space),                 spawn "rofi -show run"),
       ((modm, xK_Tab),                   spawn "rofi -show window"),
       ((modm .|. shiftMask, xK_space),   spawn "rofi -show windowcd"),
+      ((modm, xK_i),                     spawn "~/.config/xmonad/scripts/sysinfo.sh"),
 
 
       -- kill compile exit lock
@@ -299,11 +310,11 @@ clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>
   where
     i = fromJust $ M.lookup ws myWorkspaceIndices
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --Main
 main :: IO ()
 main = do
-  myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
+  --myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
   xmonad $ docks $ ewmh def
         { terminal           = myTerminal,
           focusFollowsMouse  = myFocusFollowsMouse,
@@ -317,6 +328,6 @@ main = do
           layoutHook         = myLayout,
           manageHook         = myManageHook,
           handleEventHook    = myEventHook,
-          logHook            = dynamicLogWithPP $ myXmobarPP myXmobar,
+          --logHook            = dynamicLogWithPP $ myXmobarPP myXmobar,
           startupHook        = myStartupHook
         }

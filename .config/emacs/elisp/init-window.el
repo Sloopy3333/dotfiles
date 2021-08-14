@@ -11,7 +11,7 @@
   (setq window-resize-pixelwise nil)
   :custom
   (display-buffer-alist
-   '(("\\*ansi-term\\*"
+   '(("\\*ansi-term\\*"                 ;
       (display-buffer-in-side-window)
       (side . bottom)
       (slot . -1)

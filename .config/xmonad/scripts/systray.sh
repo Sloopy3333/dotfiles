@@ -1,7 +1,7 @@
 #! /bin/sh
 
 sleep 1 && killall trayer
-trayer --edge top\
+trayer --edge bottom\
        --align right\
        --SetDockType true\
        --SetPartialStrut true\

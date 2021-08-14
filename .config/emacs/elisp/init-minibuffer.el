@@ -32,6 +32,8 @@
   (setq read-buffer-completion-ignore-case t)
   (setq resize-mini-windows nil)
   (file-name-shadow-mode 1)
-  (minibuffer-depth-indicate-mode 1))
+  ;;(setq enable-recursive-minibuffers t)
+  ;;(minibuffer-depth-indicate-mode 1)
+  )
 
 (provide 'init-minibuffer.el)

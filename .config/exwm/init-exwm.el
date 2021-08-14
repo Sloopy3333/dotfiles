@@ -34,8 +34,7 @@
                               '(:eval
                                 (propertize
                                  (format-time-string "%a, %b %d %I:%M %p") 'face '(:inherit font-lock-preprocessor-face :weight bold)))
-                              ))
-                            ))))
+                              ))))))
     (redraw-modeline)))
 
 ;; function to spawn applications
@@ -47,6 +46,13 @@
   (let ((command-parts (split-string command "[ ]+")))
     (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
 
+(defun sam/exwm-toggle-minibuffer ()
+  "Toggle visibility of echo area at the bottom of the screen"
+  (interactive)
+  (if (equal (frame-pixel-height) (x-display-pixel-height))
+      (set-frame-height nil (+ (x-display-pixel-height) (frame-char-height)) nil t)
+    (set-frame-height nil (x-display-pixel-height) nil t)))
+
 ;; window and buffer management
 (defun sam/exwm-split-window-right ()
   "split window right switch to window and switch to scratch buffer"
@@ -55,8 +61,6 @@
     (split-window-right)
     (windmove-right)
     (switch-to-buffer "scratch")))
-;; (let (($buf (generate-new-buffer "untitled")))
-;;   (switch-to-buffer $buf))))
 
 (defun sam/exwm-split-window-below ()
   "split window below switch to window and switch to scratch buffer"
@@ -65,22 +69,6 @@
     (split-window-below)
     (windmove-down)
     (switch-to-buffer "scratch")))
-;;(let (($buf (generate-new-buffer "untitled")))
-;;  (switch-to-buffer $buf))))
-
-(defun sam/exwm-switch-to-next-buffer ()
-  "similar to `switch-to-next-buffer' but ignores special buffers"
-  (interactive)
-  (next-buffer)
-  (while (string-match-p "^*" (buffer-name))
-    (next-buffer)))
-
-(defun sam/exwm-switch-to-prev-buffer ()
-  "similar to `switch-to-prev-buffer' but ignores special buffers"
-  (interactive)
-  (previous-buffer)
-  (while (string-match-p "^*" (buffer-name))
-    (previous-buffer)))
 
 (defun sam/exwm-switch-next-buffer-or-window ()
   "move focus to next window if exist or cycle through the buffer list"
@@ -150,25 +138,20 @@ or restore previous layout if a single window exists"
   (message "Backlight is %-1.1s" (shell-command-to-string "xbacklight -get")))
 
 ;; screenshot
-(defun sam/exwm-screenshot-full (&optional rename)
+(defun sam/exwm-screenshot (&optional rename select)
+  "takes screenshot with maim
+when rename is non-nil asks for a screenshot name
+when seelct is non-nil does a screenshot of selected part"
   (interactive)
   (let ((path
          (concat "~/external/hdd2/screenshots/"
                  (if rename
                      (concat (read-string "Screenshot name: ") ".png")
                    (concat (format-time-string "%y-%m-%d,%H:%M:%S") ".png")))))
-    (start-process-shell-command "maim" nil (concat "maim " path))
+    (if select
+        (start-process-shell-command "maim" nil (concat "maim -s " path))
+      (start-process-shell-command "maim" nil (concat "maim " path)))
     (sit-for 1)
-    (message "screenshot saved at %s" path)))
-
-(defun sam/exwm-screenshot-select (&optional rename)
-  (interactive)
-  (let ((path
-         (concat "~/external/hdd2/screenshots/"
-                 (if rename
-                     (concat (read-string "Screenshot name: ") ".png")
-                   (concat (format-time-string "%y-%m-%d,%H:%M:%S") ".png")))))
-    (start-process-shell-command "maim" nil (concat "maim -s " path))
     (message "screenshot saved at %s" path)))
 
 ;; Prompts
@@ -234,8 +217,8 @@ or restore previous layout if a single window exists"
   (require 'exwm-systemtray)
   (exwm-systemtray-enable)
 
-  ;; startup applications
-  ;;(sam/exwm-spawn-in-background "connman-gtk")
+  ;; hide minibuffer when not in use
+  (setq exwm-workspace-minibuffer-position 'bottom)
 
   ;; setup modeline for exwm
   (sam/exwm-set-modeline)
@@ -243,9 +226,11 @@ or restore previous layout if a single window exists"
   (setq exwm-layout-show-all-buffers nil)
   (setq exwm-workspace-show-all-buffers nil)
 
-  ;; hide modeline for floating windows
+  ;; hide modeline for floating windows and X11 windows
   (add-hook 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
   (add-hook 'exwm-floating-exit-hook #'exwm-layout-show-mode-line)
+  (add-hook 'exwm-manage-finish-hook #'exwm-layout-hide-mode-line)
+  ;;(add-hook 'exwm-manage-finish-hook #'sam/exwm-hide-modeline-and-minibuffer)
 
   ;; rename buffers
   (add-hook 'exwm-update-class-hook #'sam/exwm-rename-buffer)
@@ -254,15 +239,13 @@ or restore previous layout if a single window exists"
   ;; window rules
   (add-hook 'exwm-manage-finish-hook 'sam/exwm-window-rules)
 
+
   ;; mouse folow window
   (setq mouse-autoselect-window t)
   (setq focus-follows-mouse t)
 
   ;; set defualt mode to char mode
   (setq exwm-manage-configurations '((t char-mode t)))
-
-  ;; hide the minibuffer and echo area when they're not used, by
-  (setq exwm-workspace-minibuffer-position 'bottom)
 
   ;; initial number of workspaces
   (setq exwm-workspace-number 4)
@@ -290,19 +273,17 @@ or restore previous layout if a single window exists"
                print))
     (cl-pushnew k exwm-input-prefix-keys))
 
-  ;; switch to ith worspace with s-i
+  ;; switch to ith worspace with s-i and move window to workspace
   (dotimes (i 10)
     (exwm-input-set-key (kbd (format "s-%d" i))
                         `(lambda ()
                            (interactive)
                            (exwm-workspace-switch-create (1-, i)))))
-
   (exwm-input-set-key (kbd "s-w")  #'exwm-workspace-switch)
   (exwm-input-set-key (kbd "s-W")  #'exwm-workspace-move-window)
 
   ;; execute commnds
   (exwm-input-set-key (kbd "s-x")  #'execute-extended-command)
-  (exwm-input-set-key (kbd "M-x")  #'execute-extended-command)
   (exwm-input-set-key (kbd "s-;")  #'eval-expression)
 
   ;; kill restart reset
@@ -310,18 +291,21 @@ or restore previous layout if a single window exists"
   (exwm-input-set-key (kbd "s-C") #'kill-emacs)
   (exwm-input-set-key (kbd "s-R") #'exwm-reset)
 
-  ;; input methods
+  ;; edit exwm config
+  (exwm-input-set-key (kbd "s-e") #'(lambda () (interactive) (find-file (expand-file-name "~/.config/exwm/init-exwm.el"))))
+
+  ;; change input methods
   (exwm-input-set-key (kbd "s-i") #'exwm-input--next-key)
-  (exwm-input-set-key (kbd "s-I") #'exwm-input-toggle-keyboard)
+
+  ;; delete, burry buffer and window
+  (exwm-input-set-key (kbd "s-q") #'kill-this-buffer)
+  (exwm-input-set-key (kbd "s-Q") #'delete-window)
+  (exwm-input-set-key (kbd "s-C-q") #'bury-buffer)
+  (exwm-input-set-key (kbd "s-d") (lambda () (interactive) (kill-matching-buffers "\\*.*\\*" t t)))
 
   ;; buffer switching
   (exwm-input-set-key (kbd "s-<tab>") #'switch-to-buffer)
   (exwm-input-set-key (kbd "s-<iso-lefttab>") #'ibuffer)
-
-  ;; delete buffer
-  (exwm-input-set-key (kbd "s-q") #'kill-buffer-and-window)
-  (exwm-input-set-key (kbd "s-Q") #'delete-window)
-  (exwm-input-set-key (kbd "s-C-Q") #'bury-buffer)
 
   ;; window split
   (exwm-input-set-key (kbd "s-\\") #'sam/exwm-split-window-right)
@@ -330,17 +314,13 @@ or restore previous layout if a single window exists"
   (exwm-input-set-key (kbd "s-n") #'sam/exwm-toggle-single-window)
   (exwm-input-set-key (kbd "s-N") #'sam/exwm-toggle-window-split)
 
-  ;; winner mode
-  (exwm-input-set-key (kbd "s-u") #' winner-undo)
-  (exwm-input-set-key (kbd "s-U")  #' winner-redo)
-
-  ;; window focus
+  ;; window focus switching
   (exwm-input-set-key (kbd "s-j") #'sam/exwm-switch-next-buffer-or-window)
   (exwm-input-set-key (kbd "s-k") #'sam/exwm-switch-prev-buffer-or-window)
   (exwm-input-set-key (kbd "s-h") #'windmove-left)
   (exwm-input-set-key (kbd "s-l") #'windmove-right)
 
-  ;; window movement
+  ;; window moving
   (exwm-input-set-key (kbd "s-J") #'windmove-swap-states-down)
   (exwm-input-set-key (kbd "s-K") #'windmove-swap-states-up)
   (exwm-input-set-key (kbd "s-L") #'windmove-swap-states-right)
@@ -352,10 +332,15 @@ or restore previous layout if a single window exists"
   (exwm-input-set-key (kbd "s-C-l") #'enlarge-window-horizontally)
   (exwm-input-set-key (kbd "s-C-h") #'shrink-window-horizontally)
 
-  ;; floating and fullscreen
+  ;; toggle floating, fullscreen and modeline
   (exwm-input-set-key (kbd "s-C-t") #'exwm-floating-toggle-floating)
   (exwm-input-set-key (kbd "s-C-f") #'exwm-layout-toggle-fullscreen)
   (exwm-input-set-key (kbd "s-C-m") #'exwm-layout-toggle-mode-line)
+  (exwm-input-set-key (kbd "s-M") #'sam/exwm-toggle-minibuffer)
+
+  ;; winner mode
+  (exwm-input-set-key (kbd "s-u") #' winner-undo)
+  (exwm-input-set-key (kbd "s-U")  #' winner-redo)
 
   ;; spawn applications
   (exwm-input-set-key (kbd "s-t") #'eshell)
@@ -369,17 +354,20 @@ or restore previous layout if a single window exists"
 
   ;; application launcher
   (exwm-input-set-key (kbd "s-SPC") #'sam/exwm-run-prompt)
-  ;; passwords
+
+  ;; password prompt
   (exwm-input-set-key (kbd "s-p P") #'pass)
   (exwm-input-set-key (kbd "s-p c") #'password-store-clear)
   (exwm-input-set-key (kbd "s-p e") #'password-store-edit)
   (exwm-input-set-key (kbd "s-p p") #'password-store-copy)
   (exwm-input-set-key (kbd "s-p u") #'password-store-copy-field)
-  ;; system
+
+  ;; system prompts
   (exwm-input-set-key (kbd "s-s p") #'sam/exwm-power-prompt)
   (exwm-input-set-key (kbd "s-s m") #'man)
   (exwm-input-set-key (kbd "s-s h") #'proced)
-  ;; pacman
+
+  ;; pacman prompts
   (exwm-input-set-key (kbd "s-P i") #'sam/exwm-pacman-install-prompt)
   (exwm-input-set-key (kbd "s-P r") #'sam/exwm-pacman-uninstall-prompt)
   (exwm-input-set-key (kbd "s-P u") (lambda() (interactive) (start-process-shell-command "pacman update" nil "xterm -e sudo pacman -Syu")))
@@ -395,11 +383,11 @@ or restore previous layout if a single window exists"
   (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive) (sam/exwm-backlight-ctl "-dec +2")))
 
   ;;screenshot
-  (exwm-input--set-key (kbd "<print>") #'sam/exwm-screenshot-full)
-  (exwm-input--set-key (kbd "S-<print>") #'sam/exwm-screenshot-select)
-  (exwm-input--set-key (kbd "s-<print>") (lambda () (interactive) (sam/exwm-screenshot-full t)))
-  (exwm-input--set-key (kbd "s-S-<print>") (lambda () (interactive) (sam/exwm-screenshot-select t)))
+  (exwm-input--set-key (kbd "<print>") (lambda () (interactive) (sam/exwm-screenshot nil nil)))
+  (exwm-input--set-key (kbd "S-<print>") (lambda () (interactive) (sam/exwm-screenshot nil t)))
+  (exwm-input--set-key (kbd "s-<print>") (lambda () (interactive) (sam/exwm-screenshot t nil)))
+  (exwm-input--set-key (kbd "s-S-<print>") (lambda () (interactive) (sam/exwm-screenshot t t)))
 
   (exwm-enable))
 
-(provide 'init.exwm.el)
+;;(provide 'init.exwm.el)

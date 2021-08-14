@@ -13,4 +13,6 @@
   (setq ibuffer-default-sorting-mode 'filename/process)
   ;; display a header line containing current filters.
   (setq ibuffer-use-header-line t)
+  ;; case insensitive search
+  (setq ibuffer-case-fold-search t)
   )

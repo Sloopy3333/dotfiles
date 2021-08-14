@@ -4,9 +4,10 @@
 
 ;; Mu4E
 (use-package mu4e
+  :defer 5
   :commands mu4e
   :config
-  (setq mu4e-completing-read-function 'completing-read)                        ;; use buffer minibuffer
+  (setq mu4e-completing-read-function 'completing-read)                         ;; use buffer minibuffer
    (setq mu4e-split-view 'vertical)                                             ;; use vertical split
    (setq message-kill-buffer-on-exit t)                                         ;; kill message after exit
    (setq mu4e-context-policy 'pick-first)                                       ;; always pick first context

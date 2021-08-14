@@ -11,7 +11,7 @@
 ;;(load-library "init-gcmh")
 (load-library "init-helpful")
 
-;;;; ui and themes
+;; ui and themes
 (load-library "init-ui")
 ;;(load-library "init-solarized")
 (load-library "init-base16-theme")
@@ -59,32 +59,22 @@
 
 ;; version control
 (load-library "init-magit")
-
 ;; languages
 (load-library "init-haskell-mode")
-
+(load-library "init-lua-mode")
 ;; shells
 (load-library "init-eshell")
-
-
 ;; chat
 (load-library "init-erc")
-
 ;; media
 (load-library "init-emms")
-
-
 ;; mail
 (load-library "init-mu4e")
-
 ;; org
 (load-library "init-org-mode")
-
 ;; rss
 (load-library "init-elfeed")
-
 ;; password
 (load-library "init-pass")
-
 ;;proced
 (load-library "init-proced")

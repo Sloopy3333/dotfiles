@@ -14,15 +14,15 @@ alias commit="dot commit -m"
 alias push="dot push origin master"
 
 # network
-alias scwifi="nmcli d wifi list --rescan yes"
-alias cntwifi="nmcli --ask device wifi connect"
-alias wifion="nmcli radio wifi on"
-alias wifioff="nmcli radio wifi off"
+#alias scwifi="nmcli d wifi list --rescan yes"
+#alias cntwifi="nmcli --ask device wifi connect"
+#alias wifion="nmcli radio wifi on"
+#alias wifioff="nmcli radio wifi off"
 
 # misc
 alias vi='nvim'
 alias vim='nvim'
-alias build='sudo make clean install'
+alias sucb='sudo make clean install'
 alias mbsync='mbsync -c "$XDG_CONFIG_HOME"/isync/mbsyncrc'
 alias aw='wiki-search'
 #alias cat='bat'
