@@ -1,22 +1,15 @@
 configuration {
-              modi: "window,drun,ssh,combi";
-              modi: "window,drun,ssh,combi,run,file-browser";
-              width: 100;
-              lines: 15;
-              columns: 1;
+              modi: "window,drun,ssh,combi,run";
               font: "IBM Plex Mono Semi-bold 11";
-              theme: "gruvbox-dark-soft";
-              bw: 0;
               location: 1;
               fixed-num-lines: false;
+              theme: "~/.config/rofi/themes/solarized-dark";
               show-icons: false;
               window-match-fields: "all";
               disable-history: false;
               sort: true;
-              sorting-method: "fzf";
+              method: "fzf";
      	      case-sensitive: false;
               matching: "fuzzy";
-              hide-scrollbar: true;
-	          scrollbar-width: 0;
      	      window-thumbnail: true;
 }

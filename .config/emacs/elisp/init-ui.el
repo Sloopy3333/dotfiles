@@ -17,7 +17,7 @@
   (sam/set-font))
 
 ;; moderate font-lock decoration
-(setq font-lock-maximum-decoration t)
+;;(setq font-lock-maximum-decoration nil)
 
 ;; Scroll
 ;; minimum distance in lines between the cursor and window before scroll starts

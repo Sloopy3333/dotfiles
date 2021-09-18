@@ -1,5 +1,6 @@
+
 ! hard contrast: *background: #1d2021
-*background: #32302f
+*background: #282828
 ! soft contrast: *background: #32302f
 *foreground: #ebdbb2
 ! Black + DarkGrey

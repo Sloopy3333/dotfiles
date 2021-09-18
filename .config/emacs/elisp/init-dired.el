@@ -36,8 +36,8 @@
 
 (defun sam/dired-rename-buffer ()
   "rename dired buffer name to unique name Dired:`dired-current-directory'"
-  (let (($buf (generate-new-buffer-name (concat "Dired:" (dired-current-directory)))))
-    (rename-buffer $buf)))
+  (let ((name (generate-new-buffer-name (concat "Dired:" (dired-current-directory)))))
+    (rename-buffer name)))
 
 (use-package dired
   :straight nil

@@ -85,6 +85,7 @@
   (setq eshell-scroll-to-bottom-on-input t)
   (setq eshell-prefer-lisp-functions nil)
   (setq eshell-banner-message "")
+  (setq eshell-cmpl-cycle-completions nil)
   (sam/eshell-bind-key)
   ;; alias
   (defalias 'cl 'sam/eshell-clean)

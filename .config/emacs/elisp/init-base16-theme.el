@@ -1,27 +1,18 @@
 ;; -*- lexical-binding: t; -*-
 
-(defvar quick-switch-themes
-  (let ((themes-list (list 'base16-gruvbox-dark-soft
-                           'base16-gruvbox-light-soft
-                           )))
-    (nconc themes-list themes-list)))
-
-(defun quick-switch-themes ()
-  "cycle between dark and light theme"
+(defun sam/toggle-themes ()
   (interactive)
-  (if-let* ((next-theme (cadr quick-switch-themes)))
-      (progn (when-let* ((current-theme (car quick-switch-themes)))
-               (disable-theme (car quick-switch-themes)))
-             (load-theme next-theme t)
-             (message "Loaded theme: %s" next-theme))
-    ;; Always have the dark mode-line theme
-    (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
-  (setq quick-switch-themes (cdr quick-switch-themes)))
+  (let ((current-theme (car custom-enabled-themes)))
+  (pcase current-theme
+    ('base16-gruvbox-light-soft (load-theme 'base16-gruvbox-dark-soft t))
+    ('base16-gruvbox-dark-soft (load-theme 'base16-gruvbox-light-soft t))
+    (_ (error "base16-theme not found")))))
 
 (use-package base16-theme
+  :bind ("M-<f5>" . 'sam/toggle-themes)
   :config
   (setq base16-distinct-fringe-background nil)
   (setq base16-highlight-mode-line nil)
-  (load-theme 'base16-gruvbox-dark-soft t))
+  (load-theme 'base16-gruvbox-light-soft t))
 
 (provide 'init-base16-theme.el)

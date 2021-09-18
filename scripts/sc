@@ -3,8 +3,9 @@
 SC_DIR=~/external/hdd2/screenshots/
 NAME="$(date +%d-%m-%Y-%I:%M:%p).png"
 [ $1 = "-r" ] && NAME="$(echo "" | rofi -dmenu -p 'name :').png"
+[ $2 = "-r" ] && NAME="$(echo "" | rofi -dmenu -p 'name :').png"
 
-case $2 in
+case $1 in
       # screenshots select
      -s)
 	maim -s $SC_DIR/$NAME
@@ -24,10 +25,6 @@ case $2 in
       # copies selected window to clipboard
      -cs)
 	maim -s | xclip -selection clipboard -t image/png
-	;;
-      # gives rgb values of select pixel
-     -r)
-	maim -st 0 | convert - -resize 1x1\! -format '%[pixel:p{0,0}]' info:-
 	;;
       # full screenshots
      *)

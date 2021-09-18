@@ -7,7 +7,8 @@
   (let* ((available-width (- (window-width) (length left) 2)))
     (format (format " %%s %%%ds " available-width) left right)))
 
-(require 'battery)
+;;(require 'battery)
+(when (not (frame-parameter (selected-frame) 'exwm-active))
 (setq-default mode-line-format
               '((:eval (simple-mode-line-render
                         ;; left
@@ -30,6 +31,6 @@
                           "" vc-mode
                           "]"
                           ))
-                        ))))
+                        )))))
 
 (provide 'init-modeline.el)

@@ -113,8 +113,8 @@ full =
         Full
 
 myLayout =
-  --avoidStruts $ smartBorders myDefaultLayout
-  smartBorders myDefaultLayout
+  avoidStruts $ smartBorders myDefaultLayout
+  --smartBorders myDefaultLayout
   where
     myDefaultLayout = full ||| tall
 
@@ -199,7 +199,7 @@ myStartupHook = do
   --spawn "~/.config/xmonad/scripts/pipes.sh &"
   --spawn "~/.config/xmonad/scripts/volume-pipe.sh &"
   --spawn "~/.config/xmonad/scripts/backlight-pipe.sh &"
-  spawn "~/.config/xmonad/scripts/systray.sh &"
+   spawn "~/.config/xmonad/scripts/systray.sh &"
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- keybidings and keychords
@@ -272,8 +272,10 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((0, xF86XK_AudioLowerVolume),     spawn "~/.config/xmonad/scripts/volume.sh down"),
 
       -- backlight
-      ((0, xF86XK_MonBrightnessUp),      spawn "~/.config/xmonad/scripts/backlight.sh up"),
-      ((0, xF86XK_MonBrightnessDown),    spawn "~/.config/xmonad/scripts/backlight.sh down")
+
+      ((0, xF86XK_MonBrightnessUp),      spawn "xbacklight -inc +2"),
+      ((0, xF86XK_MonBrightnessDown),    spawn "xbacklight -dec +2-")
+
     ]
       ++
       --change workspace
@@ -314,7 +316,7 @@ clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>
 --Main
 main :: IO ()
 main = do
-  --myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
+  myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
   xmonad $ docks $ ewmh def
         { terminal           = myTerminal,
           focusFollowsMouse  = myFocusFollowsMouse,
@@ -328,6 +330,6 @@ main = do
           layoutHook         = myLayout,
           manageHook         = myManageHook,
           handleEventHook    = myEventHook,
-          --logHook            = dynamicLogWithPP $ myXmobarPP myXmobar,
+          logHook            = dynamicLogWithPP $ myXmobarPP myXmobar,
           startupHook        = myStartupHook
         }

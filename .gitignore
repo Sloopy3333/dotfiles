@@ -132,3 +132,8 @@ dot
 /scripts/bare.sh
 ~/,config/emacs/elisp/history
 /.config/i3/
+/.android/
+/.gtkrc-2.0
+/.icons/
+/.viminfo
+/quicklisp/

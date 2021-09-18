@@ -9,5 +9,5 @@
   (modus-themes-load-themes)
   :config
   ;; Load the theme of your choice:
-  (modus-themes-load-vivendi)
+  (modus-themes-load-operandi)
   :bind ("M-<f5>" . modus-themes-toggle))

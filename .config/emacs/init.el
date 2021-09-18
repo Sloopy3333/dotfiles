@@ -13,8 +13,9 @@
 
 ;; ui and themes
 (load-library "init-ui")
-;;(load-library "init-solarized")
-(load-library "init-base16-theme")
+(load-library "init-solarized")
+;;(load-library "init-base16-theme")
+;;(load-library "init-modus-theme")
 (load-library "init-modeline")
 (load-library "init-all-the-icons")
 
@@ -34,6 +35,7 @@
 (load-library "init-minibuffer")
 ;;(load-library "init-icomplete")
 (load-library "init-vertico")
+;;(load-library "init-selectrum")
 (load-library "init-consult")
 (load-library "init-marginalia")
 
@@ -78,3 +80,6 @@
 (load-library "init-pass")
 ;;proced
 (load-library "init-proced")
+;;browser
+(load-library "init-eww")
+(load-library "init-webjump")

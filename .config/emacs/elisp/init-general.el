@@ -1,26 +1,40 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; General
-(defun sam/switch-to-next-buffer ()
-  "similar to `switch-to-next-buffer' but ignores special buffers"
-  (interactive)
-  (next-buffer)
-  (while (string-match-p "^\\*" (buffer-name))
-    (next-buffer)))
+(defcustom sam/skippable-buffer-regexp
+  (rx bos (or "*Messages*" "*Help*" "*Backtrace*") eos)
+  "Matching buffer names are ignored by `sam/next-buffer'
+and `sam/previous-buffer'."
+  :type 'regexp)
 
-(defun sam/switch-to-prev-buffer ()
-  "similar to `switch-to-prev-buffer' but ignores special buffers"
+(defun sam/change-buffer (change-buffer)
+  "Call CHANGE-BUFFER until `sam/skippable-buffer-regexp' doesn't match."
+  (let ((initial (current-buffer)))
+    (funcall change-buffer)
+    (let ((first-change (current-buffer)))
+      (catch 'loop
+        (while (string-match-p sam/skippable-buffer-regexp (buffer-name))
+          (funcall change-buffer)
+          (when (eq (current-buffer) first-change)
+            (switch-to-buffer initial)
+            (throw 'loop t)))))))
+
+(defun sam/next-buffer ()
+  "Variant of `next-buffer' that skips `sam/skippable-buffer-regexp'."
   (interactive)
-  (previous-buffer)
-  (while (string-match-p "^\*" (buffer-name))
-    (previous-buffer)))
+  (sam/change-buffer 'next-buffer))
+
+(defun sam/prev-buffer ()
+  "Variant of `previous-buffer' that skips `sam/skippable-buffer-regexp'."
+  (interactive)
+  (sam/change-buffer 'previous-buffer))
 
 (defun sam/switch-next-buffer-or-window ()
   "move focus to next window if exist or cycle forward through the buffer list"
   (interactive)
   (if(> (count-windows) 1)
       (other-window 1)
-    (next-buffer)
+    (sam/next-buffer)
     ))
 
 (defun sam/switch-prev-buffer-or-window ()
@@ -28,7 +42,7 @@
   (interactive)
   (if(> (count-windows) 1)
       (other-window -1)
-    (previous-buffer)
+    (sam/prev-buffer)
     ))
 
 (defun sam/split-window-right ()
@@ -38,9 +52,6 @@
     (split-window-right)
     (windmove-right)
     (switch-to-buffer "scratch")))
-    ;;(let (($buf (generate-new-buffer "untitled")))
-    ;;  (switch-to-buffer $buf))))
-
 
 (defun sam/split-window-below ()
   "split window below switch to window and rename create new buffer named untitled$"
@@ -49,34 +60,6 @@
     (split-window-below)
     (windmove-down)
     (switch-to-buffer "scratch")))
-    ;;(let (($buf (generate-new-buffer "untitled")))
-    ;;  (switch-to-buffer $buf))))
-
-
-(defun sam/toggle-side-tree()
-  (interactive)
-  (if (get-buffer "Side-tree")
-      (kill-buffer "Side-tree")
-    (let ((dir (if (eq (vc-root-dir) nil)
-                   (dired-noselect default-directory)
-                 (dired-noselect (vc-root-dir)))))
-      (display-buffer-in-side-window
-       dir `((side . left)
-             (slot . 0)
-             (window-width . 0.15)
-             (window-parameters . ((no-other-window . nil)
-                                   (no-delete-other-window . t)
-                                   (mode-line-format . (" " "%b"))))))
-      (with-current-buffer dir
-        (rename-buffer "Side-tree")))))
-
-(defun sam/toggle-term()
-  "toggle ansi term"
-  (interactive)
-  (if (get-buffer "*terminal*")
-      (kill-buffer "*terminal*")
-    (term)))
-
 
 ;; not usefull anymore
 (defun sam/kill-buffer-or-window ()
@@ -144,25 +127,19 @@ where 1 is the innermost level."
   ;; evil
   (general-def 'normal
     "j" 'evil-next-visual-line
-    "k" 'evil-previous-visual-line)
-
-  ;;utils
-  (general-define-key
-   "M-t"  'ansi-term
-   ;; "M-SPC" 'sam/toggle-side-tree
-   )
-
-  ;; buffers
-  (general-define-key
-   "M-<tab>" 'switch-to-buffer
-   "M-<iso-lefttab>" 'ibuffer
-   "M-q" 'kill-buffer-and-window
-   "M-Q" 'delete-window
-   "M-C-b" 'switch-to-buffer-other-window
-   "M-C-B" 'switch-to-buffer-other-frame)
-
-  ;; window
-  (general-def 'normal
+    "k" 'evil-previous-visual-line
+    ;;utils
+    "M-t"  'eshell
+    "M-b"  'eww
+    "M-w"  'webjump
+    ;; buffers
+    "M-<tab>" 'switch-to-buffer
+    "M-<iso-lefttab>" 'ibuffer
+    "M-q" 'kill-this-buffer
+    "M-Q" 'delete-window
+    "M-C-b" 'switch-to-buffer-other-window
+    "M-C-B" 'switch-to-buffer-other-frame
+    ;; window
     "M-\\" 'sam/split-window-right
     "M-|" 'sam/split-window-below
     "M-j" 'sam/switch-next-buffer-or-window
