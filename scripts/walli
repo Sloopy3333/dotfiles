@@ -2,7 +2,7 @@
 
 data_dir=$XDG_DATA_DIR
 data_file="$XDG_DATA_HOME/wallpaper"
-wall_dir=~/external/hdd2/walls
+wall_dir=~/external/walls
 
 #[ ! -d $data_dir ] && mkdir /home/$USER/.config/walli
 [ ! -f $data_file ] && touch $data_file

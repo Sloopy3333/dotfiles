@@ -71,7 +71,7 @@
 ;; media
 (load-library "init-emms")
 ;; mail
-(load-library "init-mu4e")
+;;(load-library "init-mu4e")
 ;; org
 (load-library "init-org-mode")
 ;; rss

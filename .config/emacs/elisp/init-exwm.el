@@ -145,17 +145,17 @@ when seelct is non-nil does a screenshot of selected part"
 (defun sam/exwm-pacman-install-prompt (command)
   "a prompt to install packages"
   (interactive (list (completing-read "Pacman Install: " (split-string(shell-command-to-string "pacman -Slq")))))
-  (start-process-shell-command (concat "pacman install" command) nil (concat " xterm -e sudo pacman -S " command)))
+  (start-process-shell-command (concat "pacman install" command) nil (concat " st -e sudo pacman -S " command)))
 
 (defun sam/exwm-pacman-uninstall-prompt (command)
   "a prompt to uninstall packages"
   (interactive (list(completing-read "Pacman Uninstall: " (split-string(shell-command-to-string "pacman -Q")))))
-  (start-process-shell-command (concat "Pacman uninstall" command) nil (concat "xterm -e sudo pacman -Rns " command)))
+  (start-process-shell-command (concat "Pacman uninstall" command) nil (concat "st -e sudo pacman -Rns " command)))
 
 (defun sam/exwm-paru-install-prompt (command)
   "a prompt to install packages"
   (interactive (list(completing-read "Paru Install: " (split-string(shell-command-to-string "paru -Slq")))))
-  (start-process-shell-command (concat "paru install" command) nil (concat " xterm -e paru -S " command)))
+  (start-process-shell-command (concat "paru install" command) nil (concat " st -e paru -S " command)))
 
 ;; window rules
 (defun sam/exwm-window-rules ()
@@ -313,10 +313,10 @@ when seelct is non-nil does a screenshot of selected part"
   (exwm-input-set-key (kbd "s-m") #'mu4e)
   (exwm-input-set-key (kbd "s-r") #'elfeed)
   (exwm-input-set-key (kbd "s-F") (lambda() (interactive) (sam/exwm-spawn "pcmanfm" "pcmanfm")))
-  (exwm-input-set-key (kbd "s-T") (lambda() (interactive) (sam/exwm-spawn "xterm" "xterm")))
+  (exwm-input-set-key (kbd "s-T") (lambda() (interactive) (sam/exwm-spawn "st" "st")))
   ;;(exwm-input-set-key (kbd "s-b") #'eww)
-  (exwm-input-set-key (kbd "s-b") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --disable-software-rasterizer --profile-directory='Profile 1'")))
-  (exwm-input-set-key (kbd "s-B") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --disable-software-rasterizer --profile-directory='Profile 2'")))
+  (exwm-input-set-key (kbd "s-b") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --profile-directory='Profile 1'")))
+  (exwm-input-set-key (kbd "s-B") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --profile-directory='Profile 2'")))
 
   ;; application launcher
   (exwm-input-set-key (kbd "s-SPC") #'sam/exwm-run-prompt)
@@ -338,7 +338,7 @@ when seelct is non-nil does a screenshot of selected part"
   ;; pacman prompts
   (exwm-input-set-key (kbd "s-P i") #'sam/exwm-pacman-install-prompt)
   (exwm-input-set-key (kbd "s-P r") #'sam/exwm-pacman-uninstall-prompt)
-  (exwm-input-set-key (kbd "s-P u") (lambda() (interactive) (start-process-shell-command "pacman update" nil "xterm -e sudo pacman -Syu")))
+  (exwm-input-set-key (kbd "s-P u") (lambda() (interactive) (start-process-shell-command "pacman update" nil "st -e sudo pacman -Syu")))
   (exwm-input-set-key (kbd "s-P y") #'sam/exwm-paru-install-prompt)
 
   ;; volume control

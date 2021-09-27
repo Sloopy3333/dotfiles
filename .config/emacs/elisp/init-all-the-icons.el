@@ -13,7 +13,6 @@
 ;; All-the-icons-dired
 ;; adds icons to dired
 (use-package all-the-icons-dired
-  ;;:after (:any dired dired-jump dired-noselect)
   :hook (dired-mode . all-the-icons-dired-mode))
 
 (provide 'init-all-the-icons.el)

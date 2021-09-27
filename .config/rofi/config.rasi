@@ -1,9 +1,9 @@
 configuration {
               modi: "window,drun,ssh,combi,run";
-              font: "IBM Plex Mono Semi-bold 11";
+              font: "IBM Plex Mono Medium 12";
               location: 1;
               fixed-num-lines: false;
-              theme: "~/.config/rofi/themes/solarized-dark";
+              theme: "~/.config/rofi/themes/solarized-light";
               show-icons: false;
               window-match-fields: "all";
               disable-history: false;

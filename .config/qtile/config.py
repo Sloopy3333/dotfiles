@@ -24,7 +24,7 @@ my_gruvbox_dark = {
 }
 
 my_gruvbox_light = {
-    "background"  : "#fbf1c7",
+    "background"  : "#eee8d5",
     "foreground"  : "#3c3836",
     "gray"        : "#7c6f64",
     "yellow"      : "#b57614",
@@ -51,7 +51,7 @@ my_solarized_dark = {
 
 my_solarized_light = {
     "background"  : "#fdf6e3",
-    "foreground"  : "#002b36",
+    "foreground"  : "#657b83",
     "gray"        : "#073642",
     "yellow"      : "#b58900",
     "orange"      : "#cb4b16",
@@ -64,14 +64,13 @@ my_solarized_light = {
 
 # user variables
 my_mod            = "mod4"
-my_colors         = my_solarized_dark
+my_colors         = my_solarized_light
 my_terminal       = "st"
 my_terminalalt    = "emacsclient -c -a '' --eval '(eshell)'"
-my_browser        = "chromium --disable-software-rasterizer --profile-directory='Profile 1'"
-my_browseralt     = "chromium --disable-software-rasterizer --profile-directory='Profile 2'"
-my_browserwork     = "chromium --disable-software-rasterizer --profile-directory='Profile 2'"
+my_browser        = "chromium --profile-directory='Profile 1'"
+my_browseralt     = "chromium --profile-directory='Profile 2'"
 my_filemanager    = "emacsclient -c -a '' --eval '(dired nil)'"
-my_filemanageralt = "pcmanfm"
+my_filemanageralt = "thunar"
 my_editor         = "emacsclient -c -a emacs"
 my_email          = "emacsclient -c -a '' --eval '(mu4e)'"
 my_rss            = "emacsclient -c -a '' --eval '(elfeed)'"
@@ -96,6 +95,7 @@ keys = [
     Key([my_mod,],                     "m",                        lazy.spawn(my_email)),
     Key([my_mod],                      "e",                        lazy.spawn(my_editor)),
     Key([my_mod],                      "r",                        lazy.spawn(my_rss)),
+    Key([my_mod],                      "v",                        lazy.spawn("virt-manager")),
 
     # qtile commands
     Key([my_mod],                      "c",                        lazy.restart()),
@@ -129,11 +129,11 @@ keys = [
     Key([my_mod, "control"],           "t",                        lazy.window.toggle_floating()),
 
     # screenshots
-    Key( [my_mod],                     "Print",                    lazy.spawn(expanduser("sc"))),
+    Key( [my_mod],                     "Print",                    lazy.spawn(expanduser("~/scripts/sc -f"))),
     Key( [my_mod, "shift"],            "Print",                    lazy.spawn(expanduser("~/scripts/sc -s"))),
-    Key( ["mod1",],                    "Print",                    lazy.spawn(expanduser("sc -r"))),
+    Key( [my_mod, "control"],          "Print",                    lazy.spawn(expanduser("~/scripts/sc -cs"))),
+    Key( ["mod1",],                    "Print",                    lazy.spawn(expanduser("~/scripts/sc -f -r"))),
     Key( ["mod1", "shift"],            "Print",                    lazy.spawn(expanduser("~/scripts/sc -s -r"))),
-    Key( ["mod1", "control"],          "Print",                    lazy.spawn(expanduser("~/scripts/sc -cs -r"))),
 
     # run prompts and menu
     Key([my_mod],                      "space",                    lazy.spawn("rofi -show run")),
@@ -216,7 +216,7 @@ my_sctarchpads = ScratchPad("scratchpad", [
     DropDown("term", "st",
              x=0.05, y=0.05, width=0.9, height=0.9, opacity=1,
              on_focus_lost_hide=True),
-    DropDown("htop", "st --hold -e htop",
+    DropDown("htop", "st -e htop",
              x=0.05, y=0.05, width=0.9, height=0.9, opacity=1,
              on_focus_lost_hide=True),
 ])
@@ -264,7 +264,7 @@ screens = [
                 widget.WindowName(),
                 widget.TextBox(text="|",),
                 widget.CPU(format = 'CPU: {load_percent}% {freq_current}GHz'),
-                widget.ThermalSensor(threshold=70, foreground_alert=my_colors["red"],foreground=my_colors["foreground"]),
+                widget.ThermalSensor(tag_sensor="temp1", threshold=70, foreground_alert=my_colors["red"],foreground=my_colors["foreground"]),
                 widget.TextBox(text="|",),
                 widget.Memory(format = 'MEM: {MemUsed:.0f}{mm}', measure_mem = 'M'),
                 widget.TextBox(text="|",),
@@ -283,7 +283,7 @@ screens = [
                 widget.TextBox(text="|",),
                 widget.Systray()
             ],
-            size=20,
+            size=22,
             opacity=1.0,
             margin=[0,0,0,0]
         ),

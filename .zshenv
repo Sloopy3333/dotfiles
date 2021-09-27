@@ -19,8 +19,7 @@ export PAGER=less
 # History in cache directory:
 HISTSIZE=10000
 SAVEHIST=10000
-HISTFILE=~/.cache/zsh/history
-export HISTFILE="$XDG_DATA_HOME"/zsh/history
+export HISTFILE="$XDG_CACHE_HOME"/zsh/history
 export LESSHISTFILE='-'
 
 export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority

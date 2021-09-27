@@ -1,33 +1,35 @@
 #!/bin/sh
 
-SC_DIR=~/external/hdd2/screenshots/
+SC_DIR=~/external/screenshots/
 NAME="$(date +%d-%m-%Y-%I:%M:%p).png"
-[ $1 = "-r" ] && NAME="$(echo "" | rofi -dmenu -p 'name :').png"
-[ $2 = "-r" ] && NAME="$(echo "" | rofi -dmenu -p 'name :').png"
+[ $2 = "-r" ] && NAME="$(echo '' | rofi -dmenu -p 'name :').png"
 
 case $1 in
-      # screenshots select
-     -s)
-	maim -s $SC_DIR/$NAME
-	;;
-      # screenshots focused window
-     -w)
-     maim -i $(xdotool getactivewindow) $SC_DIR/$NAME
-	;;
-      # copies entire screen
-     -c)
-	maim | xclip -selection clipboard -t image/png
-	;;
-      # copies focused window to clipboard
-     -cw)
-	maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
-	;;
-      # copies selected window to clipboard
-     -cs)
-	maim -s | xclip -selection clipboard -t image/png
-	;;
-      # full screenshots
-     *)
-	maim $SC_DIR/$NAME
-	;;
+    # full screenshots
+    -f)
+	    maim $SC_DIR/$NAME
+	    ;;
+    # screenshots select
+    -s)
+	    maim -s $SC_DIR/$NAME
+	    ;;
+    # screenshots focused window
+    -w)
+        maim -i $(xdotool getactivewindow) $SC_DIR/$NAME
+	    ;;
+    # copies entire screen
+    -c)
+	    maim | xclip -selection clipboard -t image/png
+	    ;;
+    # copies focused window to clipboard
+    -cw)
+	    maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
+	    ;;
+    # copies selected window to clipboard
+    -cs)
+	    maim -s | xclip -selection clipboard -t image/png
+	    ;;
+    *)
+        exit
+        ;;
 esac
