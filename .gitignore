@@ -137,3 +137,5 @@ dot
 /.icons/
 /.viminfo
 /quicklisp/
+/.config/evolution/
+/.config/qimgv/
