@@ -162,7 +162,11 @@ when seelct is non-nil does a screenshot of selected part"
   "window rules for exwm"
   (interactive)
   (pcase exwm-class-name
-    ("mpv" (exwm-floating-toggle-floating))))
+    ("mpv" (exwm-floating-toggle-floating))
+    ("Firefox" (exwm-workspace-move-window 2))
+    ("Steam" (exwm-workspace-move-window 8))
+    ("csgo_linux64" (exwm-workspace-move-window 9))
+     ))
 
 (defun sam/exwm-rename-buffer()
   "rename exwm buffers to more meaningful name classname:title"
@@ -200,7 +204,6 @@ when seelct is non-nil does a screenshot of selected part"
 
   ;; window rules
   (add-hook 'exwm-manage-finish-hook 'sam/exwm-window-rules)
-
 
   ;; mouse folow window
   (setq mouse-autoselect-window t)
@@ -255,8 +258,7 @@ when seelct is non-nil does a screenshot of selected part"
   (exwm-input-set-key (kbd "s-R") #'exwm-reset)
 
   ;; edit config
-  (exwm-input-set-key (kbd "s-e") #'(lambda () (interactive) (find-file (expand-file-name "~/.config/emacs/elisp/init-exwm.el"))))
-  (exwm-input-set-key (kbd "s-E") #'(lambda () (interactive) (find-file (expand-file-name "~/.config/emacs"))))
+  (exwm-input-set-key (kbd "s-E") #'(lambda () (interactive) (find-file (expand-file-name "~/.config/emacs/elisp/init-exwm.el"))))
 
   ;; change input methods
   ;;(exwm-input-set-key (kbd "s-i") #'exwm-input--next-key)
@@ -308,6 +310,7 @@ when seelct is non-nil does a screenshot of selected part"
   (exwm-input-set-key (kbd "s-U")  #' winner-redo)
 
   ;; spawn applications
+  (exwm-input-set-key (kbd "s-e") (lambda() (interactive) (sam/exwm-spawn "emacs" "emacs")))
   (exwm-input-set-key (kbd "s-t") #'eshell)
   (exwm-input-set-key (kbd "s-f") #'dired-jump)
   (exwm-input-set-key (kbd "s-m") #'mu4e)
@@ -315,8 +318,8 @@ when seelct is non-nil does a screenshot of selected part"
   (exwm-input-set-key (kbd "s-F") (lambda() (interactive) (sam/exwm-spawn "pcmanfm" "pcmanfm")))
   (exwm-input-set-key (kbd "s-T") (lambda() (interactive) (sam/exwm-spawn "st" "st")))
   ;;(exwm-input-set-key (kbd "s-b") #'eww)
-  (exwm-input-set-key (kbd "s-b") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --profile-directory='Profile 1'")))
-  (exwm-input-set-key (kbd "s-B") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --profile-directory='Profile 2'")))
+  (exwm-input-set-key (kbd "s-b") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --disable-software-rasterizer --profile-directory='Profile 1'")))
+  (exwm-input-set-key (kbd "s-B") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --disable-software-rasterizer --profile-directory='Profile 2'")))
 
   ;; application launcher
   (exwm-input-set-key (kbd "s-SPC") #'sam/exwm-run-prompt)
@@ -347,8 +350,8 @@ when seelct is non-nil does a screenshot of selected part"
   (exwm-input-set-key (kbd "<XF86AudioMute>")        (lambda () (interactive) (sam/exwm-volume-ctl "toggle")))
 
   ;; backlight control
-  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")   (lambda () (interactive) (sam/exwm-backlight-ctl "-inc +2")))
-  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive) (sam/exwm-backlight-ctl "-dec +2")))
+  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")   (lambda () (interactive) (sam/exwm-backlight-ctl "-inc +5")))
+  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive) (sam/exwm-backlight-ctl "-dec +5")))
 
   ;;screenshot
   (exwm-input--set-key (kbd "<print>") (lambda () (interactive) (sam/exwm-screenshot nil nil)))

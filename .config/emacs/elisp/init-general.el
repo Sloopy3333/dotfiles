@@ -132,6 +132,9 @@ where 1 is the innermost level."
     "M-t"  'eshell
     "M-b"  'eww
     "M-w"  'webjump
+    "C-=" 'text-scale-increase
+    "C--" 'text-scale-decrease
+    "C-+" 'text-scale-adjust
     ;; buffers
     "M-<tab>" 'switch-to-buffer
     "M-<iso-lefttab>" 'ibuffer
@@ -139,6 +142,7 @@ where 1 is the innermost level."
     "M-Q" 'delete-window
     "M-C-b" 'switch-to-buffer-other-window
     "M-C-B" 'switch-to-buffer-other-frame
+    "M-d" (lambda () (interactive) (kill-matching-buffers "\\*.*\\*" t t))
     ;; window
     "M-\\" 'sam/split-window-right
     "M-|" 'sam/split-window-below
@@ -155,8 +159,7 @@ where 1 is the innermost level."
     "M-C-l" 'enlarge-window-horizontally
     "M-C-h" 'shrink-window-horizontally
     "M-n" 'sam/toggle-single-window
-    "M-N" 'sam/toggle-window-split
-    )
+    "M-N" 'sam/toggle-window-)
 
   ;; prefix
   (general-create-definer sam/leader-keys

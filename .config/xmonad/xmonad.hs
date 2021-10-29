@@ -81,12 +81,12 @@ myColor                = mySolarized                                            
 myFocusedBorderColor   = white myColor                                                            :: String
 myUnFocusedBorderColor = black myColor                                                            :: String
 myFont                 = "xft:Hack Nerd Font:regular:size=12:antialias=true:hinting=true"         :: String
-myTerminal             = "xterm"                                                                  :: String
+myTerminal             = "st"                                                                  :: String
 myTerminalAlt          = "emacsclient -c -a '' --eval '(eshell nil)'"                             :: String
 myFilemanager          = "emacsclient -c -a '' --eval '(dired nil)'"                              :: String
 myFilemanagerAlt       = "pcmanfm"                                                                :: String
-myBrowser              = "chromium --disable-software-rasterizer --profile-directory='Profile 1'" :: String
-myBrowserAlt           = "chromium --disable-software-rasterizer --profile-directory='Profile 2'" :: String
+myBrowser              = "brave --profile-directory='Default'" :: String
+myBrowserAlt           = "brave --profile-directory='Profile 1'" :: String
 myMail                 = "emacsclient -c -a '' --eval '(mu4e)'"                                   :: String
 myMusicplayer          = myTerminal ++ " -e ncmpcpp"                                              :: String
 myRssreader            = "emacsclient -c -a '' --eval '(elfeed)'"                                 :: String
@@ -130,7 +130,9 @@ myPromptList = [(xK_p, "dmenu_power.sh"),
 -- Scratchpad
 myScratchPads =
   [NS "htop" spawnHtop findHtop manageHtop,
-    NS "connman" spawnConnman findConnman manageConnman]
+    NS "term" spawnTerm findTerm manageTerm,
+    NS "connman" spawnConnman findConnman manageConnman
+  ]
   where
     spawnHtop = myTerminal ++ " -e htop"
     findHtop = title =? "htop"
@@ -140,8 +142,16 @@ myScratchPads =
         w = 0.95
         t = (1 - h) / 2
         l = (1 - w) / 2
-    spawnConnman = "connman-gtk"
-    findConnman = className =? "Connman-gtk"
+    spawnTerm = "st -T st-nsp"
+    findTerm = title =? "st-nsp"
+    manageTerm = customFloating $ W.RationalRect l t w h
+      where
+        h = 0.90
+        w = 0.95
+        t = (1 - h) / 2
+        l = (1 - w) / 2
+    spawnConnman = "connman-gtk --class Connman-gtk-nsp"
+    findConnman = className =? "Connman-gtk-nsp"
     manageConnman = customFloating $ W.RationalRect l t w h
       where
         h = 0.90
@@ -151,7 +161,9 @@ myScratchPads =
 
 myScratchPadList :: [(KeySym, String)]
 myScratchPadList = [(xK_h, "htop"),
-                    (xK_i, "connman")]
+                    (xK_t, "term"),
+                    (xK_c, "connman")
+                   ]
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --managehook
@@ -164,8 +176,8 @@ myManageHook =
       title     =? "Picture in Picture" --> doFloat,
       className =? "Freetube" --> doFloat,
       className =? "VirtualBox Manager" --> doFloat,
-      className =? "Steam" --> doShift (myWorkspaces !! 2),
-      className =? "csgo_linux64" --> doShift (myWorkspaces !! 3)
+      className =? "Steam" --> doShift (myWorkspaces !! 7),
+      className =? "csgo_linux64" --> doShift (myWorkspaces !! 8)
     ]
     <+> namedScratchpadManageHook myScratchPads
 
@@ -184,7 +196,7 @@ myXmobarPP h =
       ppVisible         = xmobarColor (white myColor) "" . wrap "" "" . clickable,
       ppHidden          = xmobarColor (yellow myColor) "" . wrap "" "" . clickable,
       ppHiddenNoWindows = xmobarColor (white myColor) "" . clickable,
-      ppSep             = "<fc=fg> | </fc>",
+      ppSep             = " | ",
       ppTitle           = xmobarColor (white myColor) "" . shorten 60,
       ppLayout          = xmobarColor  (white myColor) "",
       ppOutput          = hPutStrLn h,
@@ -262,19 +274,28 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm .|. controlMask, xK_f),     sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled]),
 
       -- screenshots
-      ((modm, xK_Print),                 spawn "~/scripts/sc"),
-      ((modm .|. shiftMask, xK_Print),   spawn "~/scripts/sc -s"),
-      ((modm .|. controlMask, xK_Print), spawn "~/scripts/sc -cs"),
+      ((modm, xK_Print),                   spawn "~/scripts/sc -f"),
+      ((modm .|. shiftMask, xK_Print),     spawn "~/scripts/sc -s"),
+      ((modm .|. controlMask, xK_Print),   spawn "~/scripts/sc -cs"),
+      ((mod1Mask, xK_Print),               spawn "~/scripts/sc -f -r"),
+      ((mod1Mask .|. shiftMask, xK_Print), spawn "~/scripts/sc -s -r"),
+
+      ((modm, xK_p),                   spawn "~/scripts/sc -f"),
+      ((modm .|. shiftMask, xK_p),     spawn "~/scripts/sc -s"),
+      ((modm .|. controlMask, xK_p),   spawn "~/scripts/sc -cs"),
+      ((mod1Mask, xK_p),               spawn "~/scripts/sc -f -r"),
+      ((mod1Mask .|. shiftMask, xK_p), spawn "~/scripts/sc -s -r"),
 
       --volume
-      ((0, xF86XK_AudioMute),            spawn "~/.config/xmonad/scripts/volume.sh toggle"),
-      ((0, xF86XK_AudioRaiseVolume),     spawn "~/.config/xmonad/scripts/volume.sh up"),
-      ((0, xF86XK_AudioLowerVolume),     spawn "~/.config/xmonad/scripts/volume.sh down"),
+      ((0, xF86XK_AudioMute),            spawn "amixer set Master 5%+"),
+      ((0, xF86XK_AudioRaiseVolume),     spawn "amixer set Master 5%-"),
+      ((0, xF86XK_AudioLowerVolume),     spawn "amixer set Master 'toggle'"),
 
       -- backlight
-
-      ((0, xF86XK_MonBrightnessUp),      spawn "xbacklight -inc +2"),
-      ((0, xF86XK_MonBrightnessDown),    spawn "xbacklight -dec +2-")
+      ((0, xF86XK_MonBrightnessUp),      spawn "xbacklight -inc 5"),
+      ((0, xF86XK_MonBrightnessDown),    spawn "xbacklight -dec 5"),
+      ((modm, xK_Right),      spawn "xbacklight -inc 5"),
+      ((modm, xK_Left),       spawn "xbacklight -dec 5")
 
     ]
       ++

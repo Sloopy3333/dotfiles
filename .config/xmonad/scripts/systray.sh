@@ -7,11 +7,11 @@ trayer --edge bottom\
        --SetPartialStrut true\
        --expand true\
        --height 20\
-       --distance 2\
+       --distance 4\
        --distancefrom right\
        --transparent true\
        --alpha 0\
        --tint 0x002b36\
        --widthtype request\
        --monitor 0\
-       --margin 0
+       --margin 0\

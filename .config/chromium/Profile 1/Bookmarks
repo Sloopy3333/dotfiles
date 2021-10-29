@@ -1,0 +1,150 @@
+{
+   "checksum": "baab349b60d84e839f91fff4394dda58",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13279126610137090",
+            "guid": "cd8ce4be-d05a-40e5-bf27-1ffadaf92564",
+            "id": "5",
+            "name": "Cups",
+            "type": "url",
+            "url": "http://localhost:631/admin"
+         }, {
+            "children": [ {
+               "date_added": "13279952180000000",
+               "guid": "ee5ae7cc-c6b1-4ba7-a0c9-76c2c7074ec3",
+               "id": "10",
+               "name": "Odysee",
+               "type": "url",
+               "url": "https://odysee.com/"
+            }, {
+               "date_added": "13279952199000000",
+               "guid": "82c313ae-5aee-442c-a727-bf2be57337b5",
+               "id": "11",
+               "name": "YouTube",
+               "type": "url",
+               "url": "https://www.youtube.com/"
+            }, {
+               "date_added": "13279952208000000",
+               "guid": "1a8ad33b-f635-4ef9-b9c0-e52ea365ed2e",
+               "id": "12",
+               "name": "Invidious",
+               "type": "url",
+               "url": "https://yewtu.be/feed/subscriptions"
+            }, {
+               "date_added": "13279952186000000",
+               "guid": "8a0933a1-7457-463f-addc-9ef0b5c95902",
+               "id": "13",
+               "name": "Twitch",
+               "type": "url",
+               "url": "https://www.twitch.tv/"
+            } ],
+            "date_added": "13279952757942416",
+            "date_modified": "0",
+            "guid": "8daf8c04-453d-420c-bb79-7607c59abee8",
+            "id": "9",
+            "name": "Videos",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13279126610000000",
+               "guid": "cf1b3fc2-1759-4b12-bef1-f603ca59be9f",
+               "id": "15",
+               "name": "Cups",
+               "type": "url",
+               "url": "http://localhost:631/admin"
+            } ],
+            "date_added": "13279952757942527",
+            "date_modified": "0",
+            "guid": "06fb827c-e19a-42d3-a656-b40629f53e90",
+            "id": "14",
+            "name": "Local",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13279952160000000",
+               "guid": "6372c689-543f-4f5f-8124-d81d364bb7c1",
+               "id": "17",
+               "name": "ArchWiki",
+               "type": "url",
+               "url": "https://wiki.archlinux.org/title/Main_page"
+            }, {
+               "date_added": "13279952202000000",
+               "guid": "d4439b57-8081-4c24-9aab-75f72e1ed24a",
+               "id": "18",
+               "name": "areweanticheatyet.com",
+               "type": "url",
+               "url": "https://areweanticheatyet.com/"
+            } ],
+            "date_added": "13279952757942561",
+            "date_modified": "0",
+            "guid": "82d2759a-3bbf-480e-a846-8b8088de9367",
+            "id": "16",
+            "name": "Linux",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13279952190000000",
+               "guid": "4ec5c9e8-f63f-48ab-ace6-405fa277c26b",
+               "id": "20",
+               "name": "Reddit",
+               "type": "url",
+               "url": "https://www.reddit.com/"
+            } ],
+            "date_added": "13279952757942594",
+            "date_modified": "0",
+            "guid": "293f3c44-26f8-47ac-a4e1-81b78c90089e",
+            "id": "19",
+            "name": "Social",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13279952559000000",
+               "guid": "7a347c4e-4a0e-4ebc-a1b4-8da1cd066f1f",
+               "id": "22",
+               "name": "F1stream",
+               "type": "url",
+               "url": "https://f1stream.me/"
+            }, {
+               "date_added": "13279952586000000",
+               "guid": "20cbad9a-b192-4e94-952f-f6d46410a750",
+               "id": "23",
+               "name": "F1 - The Official Home of Formula 1® Racing",
+               "type": "url",
+               "url": "https://www.formula1.com/"
+            } ],
+            "date_added": "13279952757942610",
+            "date_modified": "0",
+            "guid": "6cbdf6a9-e970-4d28-bb19-407f31331443",
+            "id": "21",
+            "name": "Formula 1",
+            "type": "folder"
+         } ],
+         "date_added": "13279126560686490",
+         "date_modified": "13279952791435241",
+         "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
+         "id": "1",
+         "name": "Bookmarks bar",
+         "type": "folder"
+      },
+      "other": {
+         "children": [  ],
+         "date_added": "13279126560686492",
+         "date_modified": "0",
+         "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd",
+         "id": "2",
+         "name": "Other bookmarks",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13279126560686493",
+         "date_modified": "0",
+         "guid": "4cf2e351-0e85-532b-bb37-df045d8f8d0f",
+         "id": "3",
+         "name": "Mobile bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}

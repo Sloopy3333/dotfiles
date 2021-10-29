@@ -114,7 +114,6 @@ dot
 /.config/xmonad/xmonad-contrib/
 /.config/xmonad/.stack-work/
 /.config/xmonad/stack.yaml.lock
-/.config/chromium/
 /.config/emacs/myth-theme.el
 /.config/emacs/myth/
 /.config/exwm/scripts/
@@ -139,3 +138,9 @@ dot
 /quicklisp/
 /.config/evolution/
 /.config/qimgv/
+/.config/discord/
+/.config/heroic
+/.config/legendary/
+/.config/unity3d/
+/scripts/install.sh
+/.config/chromium/

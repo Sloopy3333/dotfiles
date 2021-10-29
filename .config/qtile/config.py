@@ -64,13 +64,13 @@ my_solarized_light = {
 
 # user variables
 my_mod            = "mod4"
-my_colors         = my_solarized_light
+my_colors         = my_solarized_dark
 my_terminal       = "st"
 my_terminalalt    = "emacsclient -c -a '' --eval '(eshell)'"
 my_browser        = "chromium --profile-directory='Profile 1'"
 my_browseralt     = "chromium --profile-directory='Profile 2'"
 my_filemanager    = "emacsclient -c -a '' --eval '(dired nil)'"
-my_filemanageralt = "thunar"
+my_filemanageralt = "pcmanfm"
 my_editor         = "emacsclient -c -a emacs"
 my_email          = "emacsclient -c -a '' --eval '(mu4e)'"
 my_rss            = "emacsclient -c -a '' --eval '(elfeed)'"
@@ -141,10 +141,10 @@ keys = [
     Key([my_mod, "shift"],             "Tab",                      lazy.spawn("rofi -show windowcd")),
 
     # brightness
-    Key([],                         "XF86MonBrightnessUp",        lazy.spawn("xbacklight -inc +1")),
-    Key([my_mod],                   "XF86MonBrightnessUp",        lazy.spawn("xbacklight -inc +5")),
-    Key([],                         "XF86MonBrightnessDown",      lazy.spawn("xbacklight -dec +1")),
-    Key([my_mod],                   "XF86MonBrightnessDown",      lazy.spawn("xbacklight -dec +5")),
+    Key([],                         "XF86MonBrightnessUp",        lazy.spawn("backlightctl.sh up")),
+    Key([],                         "XF86MonBrightnessDown",      lazy.spawn("backlightctl.sh down")),
+    Key([my_mod],                   "XF86MonBrightnessUp",        lazy.spawn("backlightctl.sh")),
+    Key([my_mod],                   "XF86MonBrightnessDown",      lazy.spawn("backlightctl.sh")),
 
     # Volume
     Key([],                         "XF86AudioMute",              lazy.spawn("amixer sset Master toggle")),
@@ -231,13 +231,13 @@ groups = [
     Group("5"),
     Group("6"),
     Group("7"),
-    Group("8"),
-    Group("9"),
+    Group("8", matches=[Match(wm_class=['Steam'])]),
+    Group("9", matches=[Match(wm_class=['csgo_linux64'])])
 ]
 #widgets
 widget_defaults = dict(
     font="IBM Plex Mono semibold",
-    fontsize=13,
+    fontsize=14,
     padding=2,
     foreground=my_colors["foreground"],
     background=my_colors["background"],
@@ -283,7 +283,7 @@ screens = [
                 widget.TextBox(text="|",),
                 widget.Systray()
             ],
-            size=22,
+            size=24,
             opacity=1.0,
             margin=[0,0,0,0]
         ),

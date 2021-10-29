@@ -3,7 +3,7 @@ configuration {
               font: "IBM Plex Mono Medium 12";
               location: 1;
               fixed-num-lines: false;
-              theme: "~/.config/rofi/themes/solarized-light";
+              theme: "solarized";
               show-icons: false;
               window-match-fields: "all";
               disable-history: false;

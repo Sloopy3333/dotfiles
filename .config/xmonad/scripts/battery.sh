@@ -14,4 +14,5 @@ if [ $status = "Discharging" ]; then
       # notify-send "battery $cap"
     #fi
 fi
-echo -e "$state $cap ($estimated)"
+#echo -e "$state $cap ($estimated)"
+printf "%d%% [%s (%s)]" "$cap" "$state" "$estimated"

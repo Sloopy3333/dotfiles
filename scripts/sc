@@ -1,33 +1,41 @@
 #!/bin/sh
 
-SC_DIR=~/external/screenshots/
+SC_DIR=~/external/Screenshots
 NAME="$(date +%d-%m-%Y-%I:%M:%p).png"
-[ $2 = "-r" ] && NAME="$(echo '' | rofi -dmenu -p 'name :').png"
+if [ $2 = "-r" ]; then
+    NAME="$(echo '' | rofi -dmenu -p 'name ').png"
+fi
 
 case $1 in
     # full screenshots
     -f)
 	    maim $SC_DIR/$NAME
+        notify-send "screenshot saved at $SC_DIR/$NAME"
 	    ;;
     # screenshots select
     -s)
 	    maim -s $SC_DIR/$NAME
+        notify-send "screenshot saved at $SC_DIR/$NAME"
 	    ;;
     # screenshots focused window
     -w)
         maim -i $(xdotool getactivewindow) $SC_DIR/$NAME
+        notify-send "screenshot saved at $SC_DIR/$NAME"
 	    ;;
     # copies entire screen
     -c)
 	    maim | xclip -selection clipboard -t image/png
+        notify-send "screenshot saved at $SC_DIR/$NAME"
 	    ;;
     # copies focused window to clipboard
     -cw)
 	    maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
+        notify-send "screenshot saved at $SC_DIR/$NAME"
 	    ;;
     # copies selected window to clipboard
     -cs)
 	    maim -s | xclip -selection clipboard -t image/png
+        notify-send "screenshot saved at $SC_DIR/$NAME"
 	    ;;
     *)
         exit

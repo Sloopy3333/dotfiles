@@ -1,25 +1,38 @@
+/******************************************************************************
+ * ROFI Color theme
+ * User: Rasi
+ * Copyright: Rasmus Steinke
+ ******************************************************************************/
 * {
-    background:                  rgba ( 253, 246, 227, 100 % );
-    foreground:                  rgba ( 101, 123, 131, 100 % );
+    selected-normal-foreground:  rgba ( 129, 147, 150, 100 % );
+    foreground:                  rgba ( 129, 147, 150, 100 % );
     normal-foreground:           @foreground;
-    normal-background:           @background;
-
-    selected-normal-foreground:  @background;
-    selected-normal-background:  @foreground;
-
-    selected-active-foreground:  @foreground;
-    selected-active-background:  @background;
-
+    alternate-normal-background: rgba ( 0, 43, 55, 100 % );
+    red:                         rgba ( 220, 50, 47, 100 % );
+    selected-urgent-foreground:  rgba ( 218, 66, 129, 100 % );
+    blue:                        rgba ( 38, 139, 210, 100 % );
+    urgent-foreground:           rgba ( 218, 66, 129, 100 % );
+    alternate-urgent-background: rgba ( 0, 43, 55, 100 % );
+    active-foreground:           rgba ( 0, 142, 212, 100 % );
+    lightbg:                     rgba ( 238, 232, 213, 100 % );
+    selected-active-foreground:  rgba ( 0, 142, 212, 100 % );
+    alternate-active-background: rgba ( 0, 43, 55, 100 % );
+    background:                  rgba ( 0, 43, 55, 100 % );
+    bordercolor:                 rgba ( 0, 43, 55, 100 % );
     alternate-normal-foreground: @foreground;
-    alternate-normal-background: @background;
-
-    alternate-active-foreground: @background;
-    alternate-active-background: @foreground;
-
-    bordercolor:                 @foreground;
+    normal-background:           rgba ( 0, 43, 55, 100 % );
+    lightfg:                     rgba ( 88, 104, 117, 100 % );
+    selected-normal-background:  rgba ( 0, 54, 66, 100 % );
     border-color:                @foreground;
-    background-color:            @background;
     spacing:                     2;
+    separatorcolor:              rgba ( 0, 54, 66, 100 % );
+    urgent-background:           rgba ( 0, 43, 55, 100 % );
+    selected-urgent-background:  rgba ( 0, 54, 66, 100 % );
+    alternate-urgent-foreground: @urgent-foreground;
+    background-color:            rgba ( 0, 0, 0, 0 % );
+    alternate-active-foreground: @active-foreground;
+    active-background:           rgba ( 0, 43, 55, 100 % );
+    selected-active-background:  rgba ( 0, 54, 66, 100 % );
 }
 window {
     background-color: @background;
@@ -70,6 +83,10 @@ element.normal.active {
 element.selected.normal {
     background-color: @selected-normal-background;
     text-color:       @selected-normal-foreground;
+}
+element.selected.urgent {
+    background-color: @selected-urgent-background;
+    text-color:       @selected-urgent-foreground;
 }
 element.selected.active {
     background-color: @selected-active-background;

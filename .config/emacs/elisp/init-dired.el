@@ -72,13 +72,27 @@
                   (evil-local-set-key 'normal (kbd "W")  'wdired-change-to-wdired-mode)
                   (evil-local-set-key 'normal (kbd "w")  'eshell)
                   (evil-local-set-key 'normal (kbd "r")  'revert-buffer)
+                  (evil-local-set-key 'normal (kbd "gh") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/"))))
                   (evil-local-set-key 'normal (kbd "gc") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/.config"))))
                   (evil-local-set-key 'normal (kbd "gd") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/downloads"))))
-                  (evil-local-set-key 'normal (kbd "gh") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/"))))
                   (evil-local-set-key 'normal (kbd "gp") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/projects"))))
                   (evil-local-set-key 'normal (kbd "gs") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/scripts"))))
+                  (evil-local-set-key 'normal (kbd "ge") '(lambda () (interactive)(find-alternate-file(expand-file-name "~/external"))))
                   (evil-local-set-key 'normal (kbd "Q")  'kill-this-buffer)
                   )))
 
+(use-package openwith
+  :config
+  (setq openwith-associations
+        (cond
+         ((string-equal system-type "darwin")
+          '(("\\.\\(dmg\\|doc\\|docs\\|xls\\|xlsx\\)$"
+             "open" (file))
+            ("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
+             "open" ("-a" "VLC" file))))
+         ((string-equal system-type "gnu/linux")
+          '(("\\.\\(mp4\\|mp3\\|webm\\|avi\\|flv\\|mov\\)$"
+             "mpv" (file))))))
+  (openwith-mode +1))
 
 (provide 'init-dired.el)

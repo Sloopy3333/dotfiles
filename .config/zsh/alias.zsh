@@ -20,8 +20,8 @@ alias wifion="nmcli radio wifi on"
 alias wifioff="nmcli radio wifi off"
 
 # misc
-#alias vi='nvim'
-#alias vim='nvim'
+alias vi='nvim'
+alias vim='nvim'
 alias sucb='sudo make clean install'
 alias mbsync='mbsync -c "$XDG_CONFIG_HOME"/isync/mbsyncrc'
 alias aw='wiki-search'
