@@ -39,3 +39,5 @@ export GHCUP_BIN="$XDG_BIN_HOME"
 export CABAL_CONFIG="$XDG_CONFIG_HOME/cabal/conf"
 export CABAL_DIR="$XDG_DATA_HOME/cabal"
 export GHCUP_USE_XDG_DIRS="YES"
+export TERMINFO="$XDG_DATA_HOME"/terminfo
+export TERMINFO_DIRS="$XDG_DATA_HOME"/terminfo:/usr/share/terminfo

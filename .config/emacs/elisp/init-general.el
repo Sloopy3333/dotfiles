@@ -159,7 +159,7 @@ where 1 is the innermost level."
     "M-C-l" 'enlarge-window-horizontally
     "M-C-h" 'shrink-window-horizontally
     "M-n" 'sam/toggle-single-window
-    "M-N" 'sam/toggle-window-)
+    "M-N" 'sam/toggle-window-split)
 
   ;; prefix
   (general-create-definer sam/leader-keys

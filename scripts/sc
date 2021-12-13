@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SC_DIR=~/external/Screenshots
+SC_DIR=~/external/screenshots
 NAME="$(date +%d-%m-%Y-%I:%M:%p).png"
 if [ $2 = "-r" ]; then
     NAME="$(echo '' | rofi -dmenu -p 'name ').png"

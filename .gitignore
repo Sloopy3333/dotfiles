@@ -144,3 +144,5 @@ dot
 /.config/unity3d/
 /scripts/install.sh
 /.config/chromium/
+/.config/stack.yaml
+/.slime/

@@ -3,7 +3,6 @@ configuration {
               font: "IBM Plex Mono Medium 12";
               location: 1;
               fixed-num-lines: false;
-              theme: "solarized";
               show-icons: false;
               window-match-fields: "all";
               disable-history: false;
@@ -13,3 +12,4 @@ configuration {
               matching: "fuzzy";
      	      window-thumbnail: true;
 }
+

@@ -85,7 +85,7 @@ myTerminal             = "st"                                                   
 myTerminalAlt          = "emacsclient -c -a '' --eval '(eshell nil)'"                             :: String
 myFilemanager          = "emacsclient -c -a '' --eval '(dired nil)'"                              :: String
 myFilemanagerAlt       = "pcmanfm"                                                                :: String
-myBrowser              = "brave --profile-directory='Default'" :: String
+myBrowser              = "firefox" :: String
 myBrowserAlt           = "brave --profile-directory='Profile 1'" :: String
 myMail                 = "emacsclient -c -a '' --eval '(mu4e)'"                                   :: String
 myMusicplayer          = myTerminal ++ " -e ncmpcpp"                                              :: String
@@ -113,8 +113,8 @@ full =
         Full
 
 myLayout =
-  avoidStruts $ smartBorders myDefaultLayout
-  --smartBorders myDefaultLayout
+  --avoidStruts $ smartBorders myDefaultLayout
+  smartBorders myDefaultLayout
   where
     myDefaultLayout = full ||| tall
 
@@ -287,9 +287,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((mod1Mask .|. shiftMask, xK_p), spawn "~/scripts/sc -s -r"),
 
       --volume
-      ((0, xF86XK_AudioMute),            spawn "amixer set Master 5%+"),
-      ((0, xF86XK_AudioRaiseVolume),     spawn "amixer set Master 5%-"),
-      ((0, xF86XK_AudioLowerVolume),     spawn "amixer set Master 'toggle'"),
+      ((0, xF86XK_AudioMute),            spawn "amixer set Master 'toggle'"),
+      ((0, xF86XK_AudioRaiseVolume),     spawn "amixer set Master 5%+"),
+      ((0, xF86XK_AudioLowerVolume),     spawn "amixer set Master 5%-"),
+      ((modm, xK_Up),     spawn "amixer set Master 5%+"),
+      ((modm, xK_Down),     spawn "amixer set Master 5%-"),
 
       -- backlight
       ((0, xF86XK_MonBrightnessUp),      spawn "xbacklight -inc 5"),
