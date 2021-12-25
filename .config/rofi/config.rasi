@@ -13,3 +13,8 @@ configuration {
      	      window-thumbnail: true;
 }
 
+@theme "gruvbox-dark"
+
+window {
+       width: 100%;
+}

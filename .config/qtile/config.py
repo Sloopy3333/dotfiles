@@ -1,4 +1,4 @@
-#lacImports
+# imports
 from libqtile import qtile
 from os.path import expanduser
 from libqtile import layout
@@ -6,7 +6,7 @@ from libqtile.bar import Bar
 from libqtile.lazy import lazy
 from libqtile import hook
 from libqtile.layout import MonadTall, MonadWide, Max, Floating
-from libqtile.config import Click, Drag, Group, Key, Screen, Match, KeyChord, ScratchPad, DropDown
+from libqtile.config import Click, Drag, Group, Key, Screen, Match, Rule, KeyChord, ScratchPad, DropDown
 from libqtile import widget
 
 # color schemes
@@ -64,22 +64,25 @@ my_solarized_light = {
 
 # user variables
 my_mod            = "mod4"
-my_colors         = my_solarized_dark
-my_terminal       = "st"
+my_colors         = my_gruvbox_dark
+my_terminal       = "alacritty"
 my_terminalalt    = "emacsclient -c -a '' --eval '(eshell)'"
-my_browser        = "chromium --profile-directory='Profile 1'"
+my_browser        = "firefox"
 my_browseralt     = "chromium --profile-directory='Profile 2'"
 my_filemanager    = "emacsclient -c -a '' --eval '(dired nil)'"
 my_filemanageralt = "pcmanfm"
 my_editor         = "emacsclient -c -a emacs"
-my_email          = "emacsclient -c -a '' --eval '(mu4e)'"
+#my_email          = "emacsclient -c -a '' --eval '(mu4e)'"
+my_email          = "thunderbird"
 my_rss            = "emacsclient -c -a '' --eval '(elfeed)'"
 
-# settings
+# prefrences
 follow_mouse_focus = True
 bring_front_click = True
 cursor_warp = False
-wmname = "Qtile"
+wmname = "LG3D"
+auto_fullscreen = True
+#focus_on_window_activation = "smart"
 
 
 # keybidings
@@ -129,11 +132,8 @@ keys = [
     Key([my_mod, "control"],           "t",                        lazy.window.toggle_floating()),
 
     # screenshots
-    Key( [my_mod],                     "Print",                    lazy.spawn(expanduser("~/scripts/sc -f"))),
-    Key( [my_mod, "shift"],            "Print",                    lazy.spawn(expanduser("~/scripts/sc -s"))),
-    Key( [my_mod, "control"],          "Print",                    lazy.spawn(expanduser("~/scripts/sc -cs"))),
-    Key( ["mod1",],                    "Print",                    lazy.spawn(expanduser("~/scripts/sc -f -r"))),
-    Key( ["mod1", "shift"],            "Print",                    lazy.spawn(expanduser("~/scripts/sc -s -r"))),
+    Key([],                            "Print",                    lazy.spawn("flameshot gui")),
+    Key([my_mod],                      "Print",                    lazy.spawn("flameshot screen -p ~/external/screenshots")),
 
     # run prompts and menu
     Key([my_mod],                      "space",                    lazy.spawn("rofi -show run")),
@@ -141,21 +141,23 @@ keys = [
     Key([my_mod, "shift"],             "Tab",                      lazy.spawn("rofi -show windowcd")),
 
     # brightness
-    Key([],                         "XF86MonBrightnessUp",        lazy.spawn("backlightctl.sh up")),
-    Key([],                         "XF86MonBrightnessDown",      lazy.spawn("backlightctl.sh down")),
-    Key([my_mod],                   "XF86MonBrightnessUp",        lazy.spawn("backlightctl.sh")),
-    Key([my_mod],                   "XF86MonBrightnessDown",      lazy.spawn("backlightctl.sh")),
+    Key([],                         "XF86MonBrightnessUp",        lazy.spawn("xbacklight -inc 5")),
+    Key([],                         "XF86MonBrightnessDown",      lazy.spawn("xbacklight -dec 5")),
+    Key([my_mod],                   "Up",                         lazy.spawn("xbacklight -inc 5")),
+    Key([my_mod],                   "Down",                       lazy.spawn("xbacklight -dec 5")),
 
     # Volume
-    Key([],                         "XF86AudioMute",              lazy.spawn("amixer sset Master toggle")),
-    Key([],                         "XF86AudioRaiseVolume",       lazy.spawn("amixer sset Master 5%+")),
-    Key([],                         "XF86AudioLowerVolume",       lazy.spawn("amixer sset Master 5%-")),
+    Key([],                         "XF86AudioMute",              lazy.spawn("pamixer -t")),
+    Key([],                         "XF86AudioRaiseVolume",       lazy.spawn("pamixer -i 5")),
+    Key([],                         "XF86AudioLowerVolume",       lazy.spawn("pamixer -d 5")),
+    Key([my_mod],                   "Right",                      lazy.spawn("pamixer -i 5")),
+    Key([my_mod],                   "Left",                       lazy.spawn("pamixer -d 5")),
 
     # prompt submaps
     KeyChord([my_mod], "s", [
-        Key([], "p", lazy.spawn(expanduser("~/scripts/dmenu_power.sh"))),
-        Key([], "k", lazy.spawn(expanduser("~/scripts/dmenu_kill.sh"))),
-        Key([], "m", lazy.spawn(expanduser("~/scripts/dmenu_man.sh")))
+        Key([], "p", lazy.spawn("dmenu_power.sh")),
+        Key([], "k", lazy.spawn("dmenu_kill.sh")),
+        Key([], "m", lazy.spawn("dmenu_man.sh"))
     ]),
 
     # scratchpad submaps
@@ -188,7 +190,8 @@ my_layout = {"border_focus" : my_colors["yellow"],
              "border_width" : 2,
              "margin" : 0,
              "single_border_width" : 0,
-             "single_margin" : 0,}
+             "single_margin" : 0
+             }
 
 layouts = [
     Max(**my_layout, name="Full"),
@@ -197,26 +200,19 @@ layouts = [
 
 # floating windows
 floating_layout = Floating(**my_layout, name = "Float",
-                           float_rules=[
-                               *layout.Floating.default_float_rules,
-                               Match(title='mpv'),
-                               Match(title='gimp'),
-                               Match(title='virt-manager'),
-                               Match(title='mpv')])
-
-@hook.subscribe.client_new
-def floating_dialogs(window):
-    dialog = window.window.get_wm_type() == 'dialog'
-    transient = window.window.get_wm_transient_for()
-    if dialog or transient:
-        window.floating = True
-
+                           float_rules=[*layout.Floating.default_float_rules,
+                                        Match(wm_class=['Mpv',
+                                                        'Gimp',
+                                                        'Virt-manager',
+                                                        'Pavucontrol',
+                                                        'Steam'
+                                                        ])])
 # scratchpads
 my_sctarchpads = ScratchPad("scratchpad", [
-    DropDown("term", "st",
+    DropDown("term", my_terminal,
              x=0.05, y=0.05, width=0.9, height=0.9, opacity=1,
              on_focus_lost_hide=True),
-    DropDown("htop", "st -e htop",
+    DropDown("htop", my_terminal + " -e htop",
              x=0.05, y=0.05, width=0.9, height=0.9, opacity=1,
              on_focus_lost_hide=True),
 ])
@@ -234,6 +230,7 @@ groups = [
     Group("8", matches=[Match(wm_class=['Steam'])]),
     Group("9", matches=[Match(wm_class=['csgo_linux64'])])
 ]
+
 #widgets
 widget_defaults = dict(
     font="IBM Plex Mono semibold",

@@ -6,7 +6,7 @@
   :bind (:map vertico-map
               ("C-j" . vertico-next)
               ("C-k" . vertico-previous)
-              ("C-y" . vertico-save)
+              ("C-y" . vertico-insert)
               )
   :config
   (setq vertico-count 15)

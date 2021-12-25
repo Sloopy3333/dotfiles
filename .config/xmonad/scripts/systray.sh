@@ -11,7 +11,7 @@ trayer --edge bottom\
        --distancefrom right\
        --transparent true\
        --alpha 0\
-       --tint 0x002b36\
+       --tint 0x282828\
        --widthtype request\
        --monitor 0\
        --margin 0\

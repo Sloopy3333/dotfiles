@@ -4,8 +4,8 @@
 (use-package org
   :straight nil
   :commands (org-capture org-agenda)
+  :hook (org-mode . org-indent-mode)
   :config
-  (org-indent-mode)
   (visual-line-mode 1)
   (setq org-ellipsis " ➜")
 

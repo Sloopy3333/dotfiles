@@ -1,5 +1,0 @@
-#!/bin/bash
-
-cur_bri="$(cat /sys/class/backlight/intel_backlight/actual_brightness)"
-bri_pct="$(expr $cur_bri \* 100 / 120000)"
-echo -e " $bri_pct"

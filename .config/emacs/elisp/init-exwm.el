@@ -69,9 +69,12 @@
     (redraw-modeline)))
 
 ;; function to spawn applications
-(defun sam/exwm-spawn(name command)
+(defun sam/exwm-spawn(command &optional name)
   (interactive)
-  (start-process-shell-command name nil command))
+  (if name
+      (start-process-shell-command name nil command)
+    (start-process-shell-command command nil command)
+    ))
 
 (defun sam/exwm-spawn-in-background (command)
   (let ((command-parts (split-string command "[ ]+")))
@@ -316,10 +319,10 @@ when seelct is non-nil does a screenshot of selected part"
   (exwm-input-set-key (kbd "s-m") #'mu4e)
   (exwm-input-set-key (kbd "s-r") #'elfeed)
   (exwm-input-set-key (kbd "s-F") (lambda() (interactive) (sam/exwm-spawn "pcmanfm" "pcmanfm")))
-  (exwm-input-set-key (kbd "s-T") (lambda() (interactive) (sam/exwm-spawn "st" "st")))
+  (exwm-input-set-key (kbd "s-T") (lambda() (interactive) (sam/exwm-spawn "alacritty" "alacritty")))
   ;;(exwm-input-set-key (kbd "s-b") #'eww)
-  (exwm-input-set-key (kbd "s-b") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --disable-software-rasterizer --profile-directory='Profile 1'")))
-  (exwm-input-set-key (kbd "s-B") (lambda() (interactive) (sam/exwm-spawn "chromium" "chromium --disable-software-rasterizer --profile-directory='Profile 2'")))
+  (exwm-input-set-key (kbd "s-b") (lambda() (interactive) (sam/exwm-spawn "firefox" "firefox")))
+  (exwm-input-set-key (kbd "s-B") (lambda() (interactive) (sam/exwm-spawn "firefox" "firefox")))
 
   ;; application launcher
   (exwm-input-set-key (kbd "s-SPC") #'sam/exwm-run-prompt)
@@ -345,19 +348,20 @@ when seelct is non-nil does a screenshot of selected part"
   (exwm-input-set-key (kbd "s-P y") #'sam/exwm-paru-install-prompt)
 
   ;; volume control
-  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (sam/exwm-volume-ctl "5%+")))
-  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (sam/exwm-volume-ctl "5%-")))
-  (exwm-input-set-key (kbd "<XF86AudioMute>")        (lambda () (interactive) (sam/exwm-volume-ctl "toggle")))
+  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (sam/exwm-spawn "pamixer -i 5")))
+  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (sam/exwm-spawn "pamixer -d 5")))
+  (exwm-input-set-key (kbd "<XF86AudioMute>")        (lambda () (interactive) (sam/exwm-spawn "pamixer -t")))
 
   ;; backlight control
-  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")   (lambda () (interactive) (sam/exwm-backlight-ctl "-inc +5")))
-  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive) (sam/exwm-backlight-ctl "-dec +5")))
+  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")   (lambda () (interactive) (sam/exwm-spawn "xbacklight -inc +5")))
+  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive) (sam/em-spawn "xbacklight -dec +5")))
+  (exwm-input-set-key (kbd "s-<right>")   (lambda () (interactive) (sam/exwm-spawn "xbacklight -inc +5")))
+  (exwm-input-set-key (kbd "s-<left>") (lambda () (interactive) (sam/exwm-spawn "xbacklight -dec +5")))
 
   ;;screenshot
-  (exwm-input--set-key (kbd "<print>") (lambda () (interactive) (sam/exwm-screenshot nil nil)))
-  (exwm-input--set-key (kbd "S-<print>") (lambda () (interactive) (sam/exwm-screenshot nil t)))
-  (exwm-input--set-key (kbd "s-<print>") (lambda () (interactive) (sam/exwm-screenshot t nil)))
-  (exwm-input--set-key (kbd "s-S-<print>") (lambda () (interactive) (sam/exwm-screenshot t t)))
+  (exwm-input--set-key (kbd "<print>") (lambda () (interactive) (sam/exwm-spawn "flameshot" "flameshot screen -p ~/external/screenshots")))
+  (exwm-input--set-key (kbd "S-<print>") (lambda () (interactive) (sam/exwm-spawn "flameshot" "flameshot fulll -p ~/external/screenshots")))
+  (exwm-input--set-key (kbd "C-S-<print>") (lambda () (interactive) (sam/exwm-spawn "flameshot" "flameshot gui")))
 
   (exwm-enable)
   )

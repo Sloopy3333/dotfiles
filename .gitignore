@@ -146,3 +146,13 @@ dot
 /.config/chromium/
 /.config/stack.yaml
 /.slime/
+/.config/kconf_updaterc
+/.config/kdeconnect/
+/.config/kdeglobals
+/.config/nvim/
+/.config/obs-studio/
+/.config/pcloud/
+/.config/qtile/__pycache__/
+/.config/tlp/
+/.pcloud/
+/.thunderbird/

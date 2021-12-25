@@ -129,9 +129,10 @@ where 1 is the innermost level."
     "j" 'evil-next-visual-line
     "k" 'evil-previous-visual-line
     ;;utils
-    "M-t"  'eshell
-    "M-b"  'eww
-    "M-w"  'webjump
+    "M-t" 'eshell
+    "M-b" 'eww
+    "M-w" 'webjump
+    "M-f" 'treemacs
     "C-=" 'text-scale-increase
     "C--" 'text-scale-decrease
     "C-+" 'text-scale-adjust
@@ -219,6 +220,12 @@ where 1 is the innermost level."
     "o"   '(:ignore o :which-key "org")
     "ol"   '(consult-org-heading :which-key "go to heading")'
     "ot"   '(org-babel-tangle :which-key "tangle current buffer")'
+
+    ;; Org-Roam
+    "r"   '(:ignore r :which-key "org-roam")
+    "rl" '(org-roam-buffer-toggle :which-key "")
+    "rf" '(org-roam-node-find :which-key "")
+    "ri" '(org-roam-node-insert :which-key "")
 
     ;;Project
     "p"   '(:ignore p :which-key "Project")

@@ -37,6 +37,14 @@ import XMonad.Util.SpawnOnce
 -- keys
 import Graphics.X11.ExtraTypes.XF86
 
+-- prompts
+import XMonad.Prompt
+import XMonad.Prompt.RunOrRaise
+import XMonad.Prompt.Window
+import XMonad.Prompt.ConfirmPrompt
+import XMonad.Prompt.Shell
+import XMonad.Prompt.FuzzyMatch
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --colors
 data ColorSchemes = ColorSchemes{black ,white ,gray ,yellow ,orange ,red ,purple ,blue ,cyan ,green :: String}
@@ -77,11 +85,11 @@ myFocusFollowsMouse    = True                                                   
 myClickJustFocuses     = False                                                                    :: Bool
 myBorderWidth          = 2                                                                        :: Dimension
 myWindowGap            = 0                                                                        :: Integer
-myColor                = mySolarized                                                              :: ColorSchemes
+myColor                = myGruvbox                                                                :: ColorSchemes
 myFocusedBorderColor   = white myColor                                                            :: String
 myUnFocusedBorderColor = black myColor                                                            :: String
 myFont                 = "xft:Hack Nerd Font:regular:size=12:antialias=true:hinting=true"         :: String
-myTerminal             = "st"                                                                  :: String
+myTerminal             = "alacritty"                                                              :: String
 myTerminalAlt          = "emacsclient -c -a '' --eval '(eshell nil)'"                             :: String
 myFilemanager          = "emacsclient -c -a '' --eval '(dired nil)'"                              :: String
 myFilemanagerAlt       = "pcmanfm"                                                                :: String
@@ -113,8 +121,8 @@ full =
         Full
 
 myLayout =
-  --avoidStruts $ smartBorders myDefaultLayout
-  smartBorders myDefaultLayout
+  avoidStruts $ smartBorders myDefaultLayout
+  --smartBorders myDefaultLayout
   where
     myDefaultLayout = full ||| tall
 
@@ -125,7 +133,24 @@ myPromptList = [(xK_p, "dmenu_power.sh"),
                 (xK_k, "dmenu_kill.sh"),
                 (xK_m, "dmenu_man.sh")
                   ]
-
+myXPromptConfig :: XPConfig
+myXPromptConfig = def
+    {
+      bgColor = black myColor,
+      fgColor = white myColor,
+      bgHLight = cyan myColor,
+      fgHLight = black myColor,
+      position = CenteredAt 0.3 0.5 ,
+      font = myFont,
+      alwaysHighlight = True,
+      height = 30,
+      historySize = 256,
+      maxComplColumns = Just 1,
+      maxComplRows = Just 15,
+      showCompletionOnTab = False,
+      complCaseSensitivity = CaseInSensitive,
+      searchPredicate = fuzzyMatch
+    }
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Scratchpad
 myScratchPads =
@@ -134,7 +159,7 @@ myScratchPads =
     NS "connman" spawnConnman findConnman manageConnman
   ]
   where
-    spawnHtop = myTerminal ++ " -e htop"
+    spawnHtop = myTerminal ++ " -t 'htop' -e htop"
     findHtop = title =? "htop"
     manageHtop = customFloating $ W.RationalRect l t w h
       where
@@ -142,8 +167,8 @@ myScratchPads =
         w = 0.95
         t = (1 - h) / 2
         l = (1 - w) / 2
-    spawnTerm = "st -T st-nsp"
-    findTerm = title =? "st-nsp"
+    spawnTerm = myTerminal ++ " -t 'term-nsp'"
+    findTerm = title =? "term-nsp"
     manageTerm = customFloating $ W.RationalRect l t w h
       where
         h = 0.90
@@ -171,9 +196,10 @@ myManageHook =
   composeAll
     [ manageDocks,
       className =? "Steam" --> doFloat,
+      className =? "Lutris" --> doFloat,
       className =? "Pavucontrol" --> doFloat,
       className =? "mpv" --> doFloat,
-      title     =? "Picture in Picture" --> doFloat,
+      title     =? "Picture-in-Picture" --> doFloat,
       className =? "Freetube" --> doFloat,
       className =? "VirtualBox Manager" --> doFloat,
       className =? "Steam" --> doShift (myWorkspaces !! 7),
@@ -231,17 +257,17 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm, xK_e),                     spawn myIDE),
 
       -- prompts
-      ((modm, xK_space),                 spawn "rofi -show run"),
-      ((modm, xK_Tab),                   spawn "rofi -show window"),
-      ((modm .|. shiftMask, xK_space),   spawn "rofi -show windowcd"),
-      ((modm, xK_i),                     spawn "~/.config/xmonad/scripts/sysinfo.sh"),
+      ((modm, xK_space),                 shellPrompt myXPromptConfig),
+      ((modm, xK_Tab),                   windowPrompt myXPromptConfig Goto allWindows),
+      ((modm .|. shiftMask, xK_space),   windowPrompt myXPromptConfig Bring allWindows),
+      ((modm .|. controlMask, xK_Tab),   windowPrompt myXPromptConfig Goto wsWindows),
 
 
       -- kill compile exit lock
       ((modm, xK_q),                     kill1),
       ((modm .|. shiftMask, xK_q),       kill),
       ((modm, xK_c),                     spawn "xmonad --recompile; xmonad --restart"),
-      ((modm .|. shiftMask, xK_c),       io exitSuccess),
+      ((modm .|. shiftMask, xK_c),       confirmPrompt myXPromptConfig "Log out of Xmonad " (io exitSuccess)),
 
       -- layout change focus
       ((modm, xK_j),                     windows W.focusDown),
@@ -274,30 +300,26 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((modm .|. controlMask, xK_f),     sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled]),
 
       -- screenshots
-      ((modm, xK_Print),                   spawn "~/scripts/sc -f"),
-      ((modm .|. shiftMask, xK_Print),     spawn "~/scripts/sc -s"),
-      ((modm .|. controlMask, xK_Print),   spawn "~/scripts/sc -cs"),
-      ((mod1Mask, xK_Print),               spawn "~/scripts/sc -f -r"),
-      ((mod1Mask .|. shiftMask, xK_Print), spawn "~/scripts/sc -s -r"),
+      ((modm, xK_Print),                 spawn "flameshot screen -p ~/external/screenshots"),
+      ((modm .|. shiftMask, xK_Print),   spawn "flameshot full -p ~/external/screenshots"),
+      ((modm .|. controlMask, xK_Print), spawn "flameshot gui"),
 
-      ((modm, xK_p),                   spawn "~/scripts/sc -f"),
-      ((modm .|. shiftMask, xK_p),     spawn "~/scripts/sc -s"),
-      ((modm .|. controlMask, xK_p),   spawn "~/scripts/sc -cs"),
-      ((mod1Mask, xK_p),               spawn "~/scripts/sc -f -r"),
-      ((mod1Mask .|. shiftMask, xK_p), spawn "~/scripts/sc -s -r"),
+      ((modm, xK_p),                     spawn "flameshot screen -p ~/external/screenshots"),
+      ((modm .|. shiftMask, xK_p),       spawn "flameshot full -p ~/external/screenshots"),
+      ((modm .|. controlMask, xK_p),     spawn "flameshot gui"),
 
       --volume
       ((0, xF86XK_AudioMute),            spawn "amixer set Master 'toggle'"),
-      ((0, xF86XK_AudioRaiseVolume),     spawn "amixer set Master 5%+"),
-      ((0, xF86XK_AudioLowerVolume),     spawn "amixer set Master 5%-"),
-      ((modm, xK_Up),     spawn "amixer set Master 5%+"),
-      ((modm, xK_Down),     spawn "amixer set Master 5%-"),
+      ((0, xF86XK_AudioRaiseVolume),     spawn "pamixer -i 5"),
+      ((0, xF86XK_AudioLowerVolume),     spawn "pamixer -d 5"),
+      ((modm, xK_Up),                    spawn "pamixer -i 5"),
+      ((modm, xK_Down),                  spawn "pamixer -d 5"),
 
       -- backlight
       ((0, xF86XK_MonBrightnessUp),      spawn "xbacklight -inc 5"),
       ((0, xF86XK_MonBrightnessDown),    spawn "xbacklight -dec 5"),
-      ((modm, xK_Right),      spawn "xbacklight -inc 5"),
-      ((modm, xK_Left),       spawn "xbacklight -dec 5")
+      ((modm, xK_Right),                 spawn "xbacklight -inc 5"),
+      ((modm, xK_Left),                  spawn "xbacklight -dec 5")
 
     ]
       ++
