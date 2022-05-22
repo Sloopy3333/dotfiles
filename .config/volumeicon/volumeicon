@@ -1,5 +1,5 @@
 [Alsa]
-card=HDA Intel PCH
+card=default
 channel=Master
 
 [Notification]

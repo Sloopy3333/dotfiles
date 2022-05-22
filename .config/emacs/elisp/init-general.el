@@ -64,10 +64,12 @@ and `sam/previous-buffer'."
 ;; not usefull anymore
 (defun sam/kill-buffer-or-window ()
   (interactive)
-  (if(> (count-windows) 1)
-      (progn)
-    (kill-buffer-and-window)
-    (kill-this-buffer)))
+  ;; (if(> (count-windows) 1)
+  ;;     (progn)
+  ;;   (kill-buffer-and-window)
+  ;;   (kill-this-buffer))
+  (kill-buffer (current-buffer))
+  (delete-window))
 
 
 (defun sam/toggle-single-window ()
@@ -100,6 +102,7 @@ or restore previous layout if a single window exists"
 	(delete-other-windows)
 	(let ((first-win (selected-window)))
 	  (funcall splitter)
+
 	  (if this-win-2nd (other-window 1))
 	  (set-window-buffer (selected-window) this-win-buffer)
 	  (set-window-buffer (next-window) next-win-buffer)
@@ -139,7 +142,7 @@ where 1 is the innermost level."
     ;; buffers
     "M-<tab>" 'switch-to-buffer
     "M-<iso-lefttab>" 'ibuffer
-    "M-q" 'kill-this-buffer
+    "M-q" 'sam/kill-buffer-or-window
     "M-Q" 'delete-window
     "M-C-b" 'switch-to-buffer-other-window
     "M-C-B" 'switch-to-buffer-other-frame

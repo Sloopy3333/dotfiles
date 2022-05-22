@@ -93,9 +93,9 @@ myTerminal             = "alacritty"                                            
 myTerminalAlt          = "emacsclient -c -a '' --eval '(eshell nil)'"                             :: String
 myFilemanager          = "emacsclient -c -a '' --eval '(dired nil)'"                              :: String
 myFilemanagerAlt       = "pcmanfm"                                                                :: String
-myBrowser              = "firefox" :: String
-myBrowserAlt           = "brave --profile-directory='Profile 1'" :: String
-myMail                 = "emacsclient -c -a '' --eval '(mu4e)'"                                   :: String
+myBrowser              = "firefox"                                                                :: String
+myBrowserAlt           = "brave --profile-directory='Profile 1'"                                  :: String
+myMail                 = "thunderbird"                                                            :: String
 myMusicplayer          = myTerminal ++ " -e ncmpcpp"                                              :: String
 myRssreader            = "emacsclient -c -a '' --eval '(elfeed)'"                                 :: String
 myIDE                  = "emacsclient -c -a emacs"                                                :: String
@@ -129,9 +129,9 @@ myLayout =
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Prompts
 myPromptList :: [(KeySym, String)]
-myPromptList = [(xK_p, "dmenu_power.sh"),
-                (xK_k, "dmenu_kill.sh"),
-                (xK_m, "dmenu_man.sh")
+myPromptList = [(xK_p, "~/scripts/dmenu/power.sh"),
+                (xK_k, "~/scripts/dmenu/kill.sh"),
+                (xK_m, "~/scripts/dmenu/man.sh")
                   ]
 myXPromptConfig :: XPConfig
 myXPromptConfig = def
@@ -312,14 +312,14 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
       ((0, xF86XK_AudioMute),            spawn "amixer set Master 'toggle'"),
       ((0, xF86XK_AudioRaiseVolume),     spawn "pamixer -i 5"),
       ((0, xF86XK_AudioLowerVolume),     spawn "pamixer -d 5"),
-      ((modm, xK_Up),                    spawn "pamixer -i 5"),
-      ((modm, xK_Down),                  spawn "pamixer -d 5"),
+      ((modm, xK_Left),                    spawn "pamixer -i 5"),
+      ((modm, xK_Right),                  spawn "pamixer -d 5"),
 
       -- backlight
       ((0, xF86XK_MonBrightnessUp),      spawn "xbacklight -inc 5"),
       ((0, xF86XK_MonBrightnessDown),    spawn "xbacklight -dec 5"),
-      ((modm, xK_Right),                 spawn "xbacklight -inc 5"),
-      ((modm, xK_Left),                  spawn "xbacklight -dec 5")
+      ((modm, xK_Up),                 spawn "xbacklight -inc 5"),
+      ((modm, xK_Down),                  spawn "xbacklight -dec 5")
 
     ]
       ++

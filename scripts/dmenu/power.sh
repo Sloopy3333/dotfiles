@@ -15,7 +15,7 @@ if [ $confirm = "Yes" ]; then
 	    slock -m "$(date +"%a %b %d %l:%M %p"| sed 's/  / /g')"
 	;;
 	*)
-	    systemctl $selected
+	    sudo systemctl $selected
 	;;
     esac
 fi

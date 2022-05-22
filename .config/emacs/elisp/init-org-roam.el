@@ -12,10 +12,16 @@
       "%?"
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
       :unnarrowed t)
+
      ("f" "How to" plain
       (file "~/external/Org/Roam/Templates/HowTo.org")
       :if-new (file+head "${slug}.org" "#+title: ${title}\n#+filetags: HowTo")
-      :unnarrowed t)))
-  )
+      :unnarrowed t)
+
+     ("c" "Concept" plain
+      "%?"
+      :if-new (file+head "${slug}.org" "#+title: ${title}\n#+filetags: Concepts")
+      :unnarrowed t)
+     )))
 
 (provide 'init-org-roam.el)

@@ -156,3 +156,24 @@ dot
 /.config/tlp/
 /.pcloud/
 /.thunderbird/
+/.ICEauthority
+/.config/Code - OSS/
+/.config/YouTube Music/
+/.config/gnome-boxes/
+/.config/inkscape/
+/.config/kritadisplayrc
+/.config/kritarc
+/.config/xmonad/#xmonad.hs#
+/.eclipse/
+/.fedora-unkno.draft.txt
+/.hplip/
+/package-lock.json
+/.lemminx/
+/.m2/
+/.p2/
+/.redhat/
+/.swt/
+/.var/
+/.vscode-oss/
+/.vscode/
+/Desktop/

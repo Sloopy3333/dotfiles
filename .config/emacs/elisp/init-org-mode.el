@@ -21,7 +21,7 @@
     (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
     (add-to-list 'org-structure-template-alist '("py" . "src python"))
     (add-to-list 'org-structure-template-alist '("un" . "src conf-unix"))
-    (add-to-list 'org-structure-template-alist '("c" . "src C"))))
+    (add-to-list 'org-structure-template-alist '("cc" . "src C"))))
 
 
 (provide 'init-org-mode.el)

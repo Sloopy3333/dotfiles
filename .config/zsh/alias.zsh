@@ -45,11 +45,11 @@ alias pacfind="pacman -Slq | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -F
 alias yayfind="paru -Slq | fzf -m --preview 'cat <(paru -Si {1}) <(paru -Fl {1})' | xargs -ro paru -S"
 
 # fancontrol
-alias fanstart="/opt/nbfc/nbfc.exe start"
-alias fanstop="/opt/nbfc/nbfc.exe stop"
-alias fanauto="nbfc set -f 0 -a && nbfc set -f 1 -a"
-alias fanfull="nbfc set -f 0 -s 100 && nbfc set -f 1 -s 100"
-alias fanstat="nbfc status"
+alias fanstart=sudo "/opt/nbfc/nbfc.exe start"
+alias fanstop="sudo /opt/nbfc/nbfc.exe stop"
+alias fanauto="sudo nbfc set -f 0 -a -f 1 -a"
+alias fanfull="sudo nbfc set -f 0 -s 100 -f 1 -s 100"
+alias fanstat="sudo nbfc status -a"
 
 # emacs
 alias em="emacsclient -c -n"

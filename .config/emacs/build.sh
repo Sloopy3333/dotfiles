@@ -4,7 +4,7 @@
             --enable-link-time-optimization \
             --with-native-compilation \
             --with-pgtk \
-            --with-x-toolkit=gtk3 \
+            # --with-x-toolkit=gtk3 \
             --without-xaw3d \
             --without-compress-install \
             --with-jpeg \

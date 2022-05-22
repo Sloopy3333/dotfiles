@@ -52,7 +52,7 @@
 ;;;; completions
 (load-library "init-company")
 (load-library "init-company-box")
-;;(load-library "init-eglot")
+;; (load-library "init-eglot")
 (load-library "init-elec-pair")
 (load-library "init-lsp-mode")
 (load-library "init-lsp-ui")

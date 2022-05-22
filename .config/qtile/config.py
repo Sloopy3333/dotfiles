@@ -1,13 +1,15 @@
 # imports
+import re
 from libqtile import qtile
 from os.path import expanduser
 from libqtile import layout
 from libqtile.bar import Bar
 from libqtile.lazy import lazy
-from libqtile import hook
+#from libqtile import hook
 from libqtile.layout import MonadTall, MonadWide, Max, Floating
 from libqtile.config import Click, Drag, Group, Key, Screen, Match, Rule, KeyChord, ScratchPad, DropDown
 from libqtile import widget
+import libqtile
 
 # color schemes
 my_gruvbox_dark = {
@@ -133,7 +135,7 @@ keys = [
 
     # screenshots
     Key([],                            "Print",                    lazy.spawn("flameshot gui")),
-    Key([my_mod],                      "Print",                    lazy.spawn("flameshot screen -p ~/external/screenshots")),
+    Key([my_mod],                      "Print",                    lazy.spawn("flameshot screen")),
 
     # run prompts and menu
     Key([my_mod],                      "space",                    lazy.spawn("rofi -show run")),
@@ -155,9 +157,9 @@ keys = [
 
     # prompt submaps
     KeyChord([my_mod], "s", [
-        Key([], "p", lazy.spawn("dmenu_power.sh")),
-        Key([], "k", lazy.spawn("dmenu_kill.sh")),
-        Key([], "m", lazy.spawn("dmenu_man.sh"))
+        Key([], "p", lazy.spawn("/home/sam/scripts/dmenu/power.sh")),
+        Key([], "k", lazy.spawn("/home/sam/scripts/dmenu/kill.sh")),
+        Key([], "m", lazy.spawn("/home/sam/scripts/dmenu/man.sh"))
     ]),
 
     # scratchpad submaps
@@ -205,7 +207,6 @@ floating_layout = Floating(**my_layout, name = "Float",
                                                         'Gimp',
                                                         'Virt-manager',
                                                         'Pavucontrol',
-                                                        'Steam'
                                                         ])])
 # scratchpads
 my_sctarchpads = ScratchPad("scratchpad", [
@@ -217,6 +218,7 @@ my_sctarchpads = ScratchPad("scratchpad", [
              on_focus_lost_hide=True),
 ])
 
+
 # groups
 groups = [
     my_sctarchpads,
@@ -227,8 +229,8 @@ groups = [
     Group("5"),
     Group("6"),
     Group("7"),
-    Group("8", matches=[Match(wm_class=['Steam'])]),
-    Group("9", matches=[Match(wm_class=['csgo_linux64'])])
+    Group("8", matches=[Match(wm_class=['Steam', 'heroic'])]),
+    Group("9", matches=[Match(wm_class=['steam_proton'])])
 ]
 
 #widgets
@@ -251,8 +253,7 @@ screens = [
                     block_highlight_text_color=my_colors["green"],
                     highlight_color=my_colors["background"],
                     this_current_screen_border=my_colors["foreground"],
-                    active=my_colors["yellow"],
-                    inactive=my_colors["foreground"],
+                    active=my_colors["yellow"], inactive=my_colors["foreground"],
                     disable_drag=True,
                 ),
                 widget.TextBox(text="|",),
@@ -261,7 +262,7 @@ screens = [
                 widget.WindowName(),
                 widget.TextBox(text="|",),
                 widget.CPU(format = 'CPU: {load_percent}% {freq_current}GHz'),
-                widget.ThermalSensor(tag_sensor="temp1", threshold=70, foreground_alert=my_colors["red"],foreground=my_colors["foreground"]),
+                widget.ThermalSensor(threshold=70, foreground_alert=my_colors["red"],foreground=my_colors["foreground"]),
                 widget.TextBox(text="|",),
                 widget.Memory(format = 'MEM: {MemUsed:.0f}{mm}', measure_mem = 'M'),
                 widget.TextBox(text="|",),
@@ -280,7 +281,7 @@ screens = [
                 widget.TextBox(text="|",),
                 widget.Systray()
             ],
-            size=24,
+            size=20,
             opacity=1.0,
             margin=[0,0,0,0]
         ),
