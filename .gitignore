@@ -177,3 +177,9 @@ dot
 /.vscode-oss/
 /.vscode/
 /Desktop/
+/.config/JetBrains/
+/.config/emacs/elisp/init-straight.el~
+/.config/pat
+/.config/transmission/
+/.java/
+/.jenkins/

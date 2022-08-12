@@ -9,11 +9,11 @@ configuration {
               sort: true;
               method: "fzf";
      	      case-sensitive: false;
-              matching: "fuzzy";
+              matching: "regex";
      	      window-thumbnail: true;
 }
 
-@theme "gruvbox-dark"
+@theme "solarized_alternate"
 
 window {
        width: 100%;

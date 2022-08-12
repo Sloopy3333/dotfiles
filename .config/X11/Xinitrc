@@ -7,7 +7,7 @@ usermodmap=$HOME/.config/X11/Xmodmap
 #wm="dbus-launch emacs -mm -l ~/.config/emacs/elisp/init-exwm.el --debug-init"
 #wm="xmonad"
 wm="qtile start"
-#wm="awesome"
+#wm=awesome
 
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
@@ -26,7 +26,7 @@ xbacklight -set 15 &
 #sudo $HOME/scripts/powertop-fix.sh &
 #$HOME/scripts/walli -r &
 nitrogen --restore
-/usr/local/bin/emacs --daemon --no-x-resources &
+/usr/bin/emacs --daemon --no-x-resources &
 volumeicon &
 nm-applet &
 blueman-applet &

@@ -13,7 +13,7 @@ export XDG_RUNTIME_DIR=/run/user/$(id -u)
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/scripts:$PATH"
 export EDITOR="emacsclient -c -n"
-export BROWSER="librewolf"
+export BROWSER="firefox"
 export PAGER=less
 
 # History in cache directory:

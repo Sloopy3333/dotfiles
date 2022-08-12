@@ -7,7 +7,7 @@
  ;; don't check packages during init
  straight-check-for-modifications nil
  ;; always compile packages natively
- straight-disable-native-compile nil
+ straight-disable-native-compile t
  ;; tell straight to use use-package
  straight-use-package-by-default t
  ;; install packages in use-package format
@@ -35,6 +35,5 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
 
 (provide 'init-straight.el)

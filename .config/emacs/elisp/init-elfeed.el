@@ -31,6 +31,7 @@
   (evil-define-key 'normal elfeed-search-mode-map (kbd "O") 'sam/elfeed-browse-url-external)
   (evil-define-key 'normal elfeed-show-mode-map (kbd "O") 'sam/elfeed-browse-url-external)
   (evil-define-key 'normal elfeed-search-mode-map (kbd "r") 'elfeed-search-untag-all-unread)
+  (evil-define-key 'normal elfeed-search-mode-map (kbd "l") 'elfeed-search-show-entry)
   (setq elfeed-feeds
         '(("https://archlinux.org/feeds/news/" Arch Linux)
           ("https://karthinks.com/index.xml" Emacs)
@@ -39,6 +40,7 @@
           ("https://ambrevar.xyz/atom.xml" Emacs)
           ("https://sachachua.com/blog/feed/" Emacs)
           ("https://www.gamingonlinux.com/article_rss.php?mini" Gaming Linux)
+          ("http://makeseleniumeasy.com/feed/" Testing)
           )))
 
 (provide 'init-elfeed.el)

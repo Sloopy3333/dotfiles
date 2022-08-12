@@ -62,7 +62,7 @@
 
 ;;;; org
 (load-library "init-org-mode")
-(load-library "init-org-roam")
+;;(load-library "init-org-roam")
 (load-library "init-org-bullets")
 
 ;;;; version control

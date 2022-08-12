@@ -268,7 +268,7 @@ when seelct is non-nil does a screenshot of selected part"
   (exwm-input-set-key (kbd "s-i") #'sam/exwm-sysinfo)
 
   ;; delete, burry buffer and window
-  (exwm-input-set-key (kbd "s-q") #'kill-this-buffer)
+  (exwm-input-set-key (kbd "s-q") #'sam/kill-buffer-or-window)
   (exwm-input-set-key (kbd "s-Q") #'delete-window)
   (exwm-input-set-key (kbd "s-C-q") #'bury-buffer)
   (exwm-input-set-key (kbd "s-d") (lambda () (interactive) (kill-matching-buffers "\\*.*\\*" t t)))
@@ -350,13 +350,15 @@ when seelct is non-nil does a screenshot of selected part"
   ;; volume control
   (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (sam/exwm-spawn "pamixer -i 5")))
   (exwm-input-set-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (sam/exwm-spawn "pamixer -d 5")))
+  (exwm-input-set-key (kbd "s-<right>") (lambda () (interactive) (sam/exwm-spawn "pamixer -i 5")))
+  (exwm-input-set-key (kbd "s-<left>") (lambda () (interactive) (sam/exwm-spawn "pamixer -d 5")))
   (exwm-input-set-key (kbd "<XF86AudioMute>")        (lambda () (interactive) (sam/exwm-spawn "pamixer -t")))
 
   ;; backlight control
   (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")   (lambda () (interactive) (sam/exwm-spawn "xbacklight -inc +5")))
   (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive) (sam/em-spawn "xbacklight -dec +5")))
-  (exwm-input-set-key (kbd "s-<right>")   (lambda () (interactive) (sam/exwm-spawn "xbacklight -inc +5")))
-  (exwm-input-set-key (kbd "s-<left>") (lambda () (interactive) (sam/exwm-spawn "xbacklight -dec +5")))
+  (exwm-input-set-key (kbd "s-<up>")   (lambda () (interactive) (sam/exwm-spawn "xbacklight -inc +5")))
+  (exwm-input-set-key (kbd "s-<down>") (lambda () (interactive) (sam/exwm-spawn "xbacklight -dec +5")))
 
   ;;screenshot
   (exwm-input--set-key (kbd "<print>") (lambda () (interactive) (sam/exwm-spawn "flameshot" "flameshot screen -p ~/external/screenshots")))

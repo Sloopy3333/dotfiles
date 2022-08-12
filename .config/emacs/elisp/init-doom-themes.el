@@ -4,8 +4,8 @@
   (interactive)
   (let ((current-theme (car custom-enabled-themes)))
   (pcase current-theme
-    ('doom-gruvbox-light (load-theme 'doom-gruvbox t))
-    ('doom-gruvbox (load-theme 'doom-gruvbox-light t))
+    ('doom-solarized-light (load-theme 'doom-solarized-dark t))
+    ('doom-solarized-dark (load-theme 'doom-solarized-light t))
     (_ (error "doom-theme not found")))))
 
 (use-package doom-themes
@@ -18,4 +18,4 @@
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config)
-  (load-theme 'doom-gruvbox t))
+  (load-theme 'doom-solarized-dark t))

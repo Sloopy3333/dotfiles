@@ -66,7 +66,7 @@ my_solarized_light = {
 
 # user variables
 my_mod            = "mod4"
-my_colors         = my_gruvbox_dark
+my_colors         = my_solarized_dark
 my_terminal       = "alacritty"
 my_terminalalt    = "emacsclient -c -a '' --eval '(eshell)'"
 my_browser        = "firefox"
@@ -74,8 +74,9 @@ my_browseralt     = "chromium --profile-directory='Profile 2'"
 my_filemanager    = "emacsclient -c -a '' --eval '(dired nil)'"
 my_filemanageralt = "pcmanfm"
 my_editor         = "emacsclient -c -a emacs"
+my_ide         = "idea"
 #my_email          = "emacsclient -c -a '' --eval '(mu4e)'"
-my_email          = "thunderbird"
+my_email          = "geary"
 my_rss            = "emacsclient -c -a '' --eval '(elfeed)'"
 
 # prefrences
@@ -99,6 +100,7 @@ keys = [
     Key([my_mod,"shift"],              "b",                        lazy.spawn(my_browseralt)),
     Key([my_mod,],                     "m",                        lazy.spawn(my_email)),
     Key([my_mod],                      "e",                        lazy.spawn(my_editor)),
+    Key([my_mod, "shift"],             "e",                        lazy.spawn(my_ide)),
     Key([my_mod],                      "r",                        lazy.spawn(my_rss)),
     Key([my_mod],                      "v",                        lazy.spawn("virt-manager")),
 
@@ -138,15 +140,15 @@ keys = [
     Key([my_mod],                      "Print",                    lazy.spawn("flameshot screen")),
 
     # run prompts and menu
-    Key([my_mod],                      "space",                    lazy.spawn("rofi -show run")),
+    Key([my_mod],                      "space",                    lazy.spawn("rofi -show drun")),
     Key([my_mod],                      "Tab",                      lazy.spawn("rofi -show window")),
     Key([my_mod, "shift"],             "Tab",                      lazy.spawn("rofi -show windowcd")),
 
     # brightness
-    Key([],                         "XF86MonBrightnessUp",        lazy.spawn("xbacklight -inc 5")),
-    Key([],                         "XF86MonBrightnessDown",      lazy.spawn("xbacklight -dec 5")),
-    Key([my_mod],                   "Up",                         lazy.spawn("xbacklight -inc 5")),
-    Key([my_mod],                   "Down",                       lazy.spawn("xbacklight -dec 5")),
+    Key([],                         "XF86MonBrightnessUp",        lazy.spawn("light -A 5")),
+    Key([],                         "XF86MonBrightnessDown",      lazy.spawn("light -U 5")),
+    Key([my_mod],                   "Up",                         lazy.spawn("light -A 5")),
+    Key([my_mod],                   "Down",                       lazy.spawn("light -U 5")),
 
     # Volume
     Key([],                         "XF86AudioMute",              lazy.spawn("pamixer -t")),
@@ -204,8 +206,8 @@ layouts = [
 floating_layout = Floating(**my_layout, name = "Float",
                            float_rules=[*layout.Floating.default_float_rules,
                                         Match(wm_class=['Mpv',
-                                                        'Gimp',
-                                                        'Virt-manager',
+                                                        # 'Gimp',
+                                                        # 'Virt-manager',
                                                         'Pavucontrol',
                                                         ])])
 # scratchpads
@@ -230,7 +232,7 @@ groups = [
     Group("6"),
     Group("7"),
     Group("8", matches=[Match(wm_class=['Steam', 'heroic'])]),
-    Group("9", matches=[Match(wm_class=['steam_proton'])])
+    Group("9", matches=[Match(wm_class=['steam_proton', 'steam_app_0'])])
 ]
 
 #widgets

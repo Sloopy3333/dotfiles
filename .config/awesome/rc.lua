@@ -66,7 +66,6 @@ editor_cmd = "emacsclient -c -a emacs"
 awful.layout.layouts = {
     awful.layout.suit.max,
     awful.layout.suit.tile,
-    awful.layout.suit.max.fullscreen
 }
 
 -- Menu
@@ -259,7 +258,7 @@ globalkeys = gears.table.join(
     awful.key({ modkey,          }, "p", function () awful.spawn("bash -c '~/scripts/dmenu/power.sh'") end, {description = "open elfeed", group = "launcher"}),
 
     -- prompts
-    awful.key({ modkey,          }, "space", function () awful.spawn("rofi -show run") end, {description = "open rofi run", group = "launcher"}),
+    awful.key({ modkey,          }, "space", function () awful.spawn("rofi -show drun") end, {description = "open rofi run", group = "launcher"}),
     awful.key({ modkey,          }, "Tab", function () awful.spawn("rofi -show window") end, {description = "open rofi run", group = "launcher"}),
     awful.key({ modkey, "Shift"  }, "Tab", function () awful.spawn("rofi -show windowcd") end, {description = "open rofi run", group = "launcher"}),
 
@@ -289,19 +288,6 @@ globalkeys = gears.table.join(
     awful.key({modkey,           }, "Left", function() os.execute("xbacklight -dec 5") end)
 )
 
-awful.keygrabber {
-    keybindings = {
-        {{modkey, s}, 'p', function () awful.spawn("~/scripts/dmenu/power.sh") end,},
-        {{modkey, s}, 'k', function () awful.spawn("~/scripts/dmenu/kill.sh") end,},
-        {{modkey, s}, 'm', function () awful.spawn("~/scripts/dmenu/man.sh") end,},
-    },
-    -- Note that it is using the key name and not the modifier name.
-    stop_key           = modkey,
-    stop_event         = 'release',
-    start_callback     = awful.client.focus.history.disable_tracking,
-    stop_callback      = awful.client.focus.history.enable_tracking,
-    export_keybindings = true,
-}
 
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it work on any keyboard layout.
