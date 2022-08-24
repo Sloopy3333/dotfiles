@@ -275,17 +275,17 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"  }, "n", function () awful.layout.inc(-1) end, {description = "select previous", group = "layout"}),
 
     -- Volume keys
-    awful.key({                  }, "XF86AudioRaiseVolume", function() os.execute("pamixer -i 5") end),
-    awful.key({                  }, "XF86AudioLowerVolume", function() os.execute("pamixer -d 5") end),
-    awful.key({                  }, "XF86AudioMute", function() os.execute("pamixer -t") end),
-    awful.key({modkey,           }, "Up", function() os.execute("pamixer -i 5") end),
-    awful.key({modkey,           }, "Down", function() os.execute("pamixer -d 5") end),
+    awful.key({                  }, "XF86AudioRaiseVolume", function() os.execute("amixer sset Master 10%+") end),
+    awful.key({                  }, "XF86AudioLowerVolume", function() os.execute("amixer sset Master 10%-") end),
+    awful.key({                  }, "XF86AudioMute", function() os.execute("amixer sset Master toggle") end),
+    awful.key({modkey,           }, "Up", function() os.execute("amixer sset Master 10%+") end),
+    awful.key({modkey,           }, "Down", function() os.execute("amixer sset Master 10%-") end),
 
     -- Backlight keys
-    awful.key({                  }, "XF86MonBrightnessUp", function () awful.util.spawn("xbacklight -inc 5") end),
-    awful.key({                  }, "XF86MonBrightnessDown", function () awful.util.spawn("xbacklight -dec 5") end),
-    awful.key({modkey,           }, "Right", function() os.execute("xbacklight -inc 5") end),
-    awful.key({modkey,           }, "Left", function() os.execute("xbacklight -dec 5") end)
+    awful.key({                  }, "XF86MonBrightnessUp", function () awful.util.spawn("light -A 5") end),
+    awful.key({                  }, "XF86MonBrightnessDown", function () awful.util.spawn("light -U 5") end),
+    awful.key({modkey,           }, "Right", function() os.execute("light -A 5") end),
+    awful.key({modkey,           }, "Left", function() os.execute("light -U 5") end)
 )
 
 

@@ -4,8 +4,8 @@
   (interactive)
   (let ((current-theme (car custom-enabled-themes)))
   (pcase current-theme
-    ('base16-gruvbox-light-soft (load-theme 'base16-gruvbox-dark-soft t))
-    ('base16-gruvbox-dark-soft (load-theme 'base16-gruvbox-light-soft t))
+    ('base16-gruvbox-light-soft (load-theme 'base16-gruvbox-dark-medium t))
+    ('base16-gruvbox-dark-soft (load-theme 'base16-gruvbox-light-medium t))
     (_ (error "base16-theme not found")))))
 
 (use-package base16-theme

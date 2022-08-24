@@ -8,6 +8,7 @@ export XDG_RUNTIME_DIR=/run/user/$(id -u)
 # applications
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/scripts:$PATH"
+export PATH="/opt/idea-IC-222.3739.54/bin/"
 export EDITOR="emacsclient -c -n"
 export BROWSER="chromium"
 export PAGER=less
