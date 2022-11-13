@@ -232,8 +232,8 @@ clientkeys = gears.table.join(
     awful.key({ modkey, "Control"}, "t",  awful.client.floating.toggle, {description = "toggle floating", group = "client"}),
 
     -- switch client focus
-    awful.key({ modkey,          }, "j", function (c) awful.client.focus.global_bydirection("down") c:lower() end, {description = "focus next window up", group = "client"}),
-    awful.key({ modkey,          }, "k", function (c) awful.client.focus.global_bydirection("up") c:lower() end, {description = "focus next window down", group = "client"}),
+    awful.key({ modkey,          }, "j", function (c) awful.client.focus.byidx(1) end, {description = "focus next window up", group = "client"}),
+    awful.key({ modkey,          }, "k", function (c) awful.client.focus.byidx(-1) end, {description = "focus next window up", group = "client"}),
     awful.key({ modkey,          }, "l", function (c) awful.client.focus.global_bydirection("right") c:lower() end, {description = "focus next window right", group = "client"}),
     awful.key({ modkey,          }, "h", function (c) awful.client.focus.global_bydirection("left") c:lower() end, {description = "focus next window left", group = "client"}),
 
@@ -275,17 +275,19 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"  }, "n", function () awful.layout.inc(-1) end, {description = "select previous", group = "layout"}),
 
     -- Volume keys
-    awful.key({                  }, "XF86AudioRaiseVolume", function() os.execute("amixer sset Master 10%+") end),
-    awful.key({                  }, "XF86AudioLowerVolume", function() os.execute("amixer sset Master 10%-") end),
+    awful.key({                  }, "XF86AudioRaiseVolume", function() os.execute("amixer sset Master 5%+") end),
+    awful.key({                  }, "XF86AudioLowerVolume", function() os.execute("amixer sset Master 5%-") end),
     awful.key({                  }, "XF86AudioMute", function() os.execute("amixer sset Master toggle") end),
-    awful.key({modkey,           }, "Up", function() os.execute("amixer sset Master 10%+") end),
-    awful.key({modkey,           }, "Down", function() os.execute("amixer sset Master 10%-") end),
+    awful.key({modkey,           }, "Right", function() os.execute("amixer sset Master 5%+") end),
+    awful.key({modkey,           }, "Left", function() os.execute("amixer sset Master 5%-") end),
 
     -- Backlight keys
     awful.key({                  }, "XF86MonBrightnessUp", function () awful.util.spawn("light -A 5") end),
     awful.key({                  }, "XF86MonBrightnessDown", function () awful.util.spawn("light -U 5") end),
-    awful.key({modkey,           }, "Right", function() os.execute("light -A 5") end),
-    awful.key({modkey,           }, "Left", function() os.execute("light -U 5") end)
+    awful.key({modkey,           }, "Up", function() os.execute("light -A 5") end),
+    awful.key({modkey,           }, "Down", function() os.execute("light -U 5") end)
+
+
 )
 
 

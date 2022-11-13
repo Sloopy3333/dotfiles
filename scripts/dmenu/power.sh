@@ -7,7 +7,7 @@ reboot '
 
 selected="$(printf  "$opt" | rofi -dmenu -p "power options:")"
 [ -z $selected ] && exit
-confirm="$(echo 'Yes\nNo' | rofi -dmenu -p "$selected ?")"
+confirm="$(printf 'Yes\nNo' | rofi -dmenu -p "$selected ?")"
 [ -z $confirm ] && exit
 if [ $confirm = "Yes" ]; then
     case $selected in
@@ -15,7 +15,7 @@ if [ $confirm = "Yes" ]; then
 	    slock -m "$(date +"%a %b %d %l:%M %p"| sed 's/  / /g')"
 	;;
 	*)
-	    sudo systemctl $selected
+	    systemctl $selected
 	;;
     esac
 fi

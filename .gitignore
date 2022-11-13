@@ -183,3 +183,5 @@ dot
 /.config/transmission/
 /.java/
 /.jenkins/
+/.serverauth.16127
+/.wget-hsts
