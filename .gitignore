@@ -185,3 +185,5 @@ dot
 /.jenkins/
 /.serverauth.16127
 /.wget-hsts
+/.serverauth.36694
+/.wine/

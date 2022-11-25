@@ -16,7 +16,7 @@
 ;;(load-library "init-solarized")
 ;;(load-library "init-base16-theme")
 ;;(load-library "init-modus-theme")
-(load-library "init-doom-themes")
+ (load-library "init-doom-themes")
 (load-library "init-modeline")
 (load-library "init-all-the-icons")
 
@@ -72,6 +72,7 @@
 (load-library "init-haskell-mode")
 (load-library "init-lua-mode")
 (load-library "init-web-mode")
+(load-library "init-yaml-mode")
 
 ;;;; shells
 (load-library "init-eshell")

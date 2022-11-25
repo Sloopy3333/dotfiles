@@ -45,7 +45,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_configuration_dir() .. "/themes/gruvbox.lua")
+beautiful.init(gears.filesystem.get_configuration_dir() .. "/themes/solarized.lua")
 
 
 -- User variables
@@ -198,11 +198,14 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             s.mytaglist,
+            wibox.widget.textbox(" | "),
             s.mylayoutbox,
+            wibox.widget.textbox(" | "),
         },
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            wibox.widget.textbox(" | "),
             awful.widget.watch('bash -c "~/scripts/bar/cpu.sh"', 10),
             wibox.widget.textbox(" | "),
             awful.widget.watch('bash -c "~/scripts/bar/memory.sh"', 10),

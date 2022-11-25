@@ -132,7 +132,7 @@ where 1 is the innermost level."
     "j" 'evil-next-visual-line
     "k" 'evil-previous-visual-line
     ;;utils
-    "M-t" 'eshell
+    "M-t" 'term
     "M-b" 'eww
     "M-w" 'webjump
     "M-f" 'treemacs

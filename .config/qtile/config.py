@@ -190,15 +190,15 @@ mouse = [
 ]
 
 # layouts
-my_layout = {"border_focus" : my_colors["yellow"],
+my_layout = {"border_focus" : my_colors["cyan"],
+             "single_border_width" : 0,
+             "single_margin" : 0,
              "border_width" : 2,
              "margin" : 0,
-             "single_border_width" : 0,
-             "single_margin" : 0
              }
 
 layouts = [
-    Max(**my_layout, name="Full"),
+    Max(border_width=0, name="Full"),
     MonadTall(**my_layout, name="Tall",),
 ]
 
@@ -231,13 +231,13 @@ groups = [
     Group("5"),
     Group("6"),
     Group("7"),
-    Group("8", matches=[Match(wm_class=['Steam', 'heroic'])]),
-    Group("9", matches=[Match(wm_class=['steam_proton', 'steam_app_0'])])
+    Group("8", matches=[Match(wm_class=['Steam', 'heroic', 'Lutris'])]),
+    Group("9", matches=[Match(wm_class=re.compile("^steam_.*|.*\.exe$"))])
 ]
 
 #widgets
 widget_defaults = dict(
-    font="IBM Plex Mono semibold",
+    font="IBM Plex Mono Medium",
     fontsize=14,
     padding=2,
     foreground=my_colors["foreground"],

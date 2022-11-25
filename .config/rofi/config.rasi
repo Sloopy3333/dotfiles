@@ -13,7 +13,7 @@ configuration {
      	      window-thumbnail: true;
 }
 
-@theme "solarized_alternate"
+@theme "solarized"
 
 window {
        width: 100%;

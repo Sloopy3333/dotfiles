@@ -20,4 +20,4 @@
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config)
-  (load-theme 'doom-gruvbox t))
+  (load-theme 'doom-solarized-dark t))
