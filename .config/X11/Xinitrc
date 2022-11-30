@@ -6,9 +6,10 @@ usermodmap=$HOME/.config/X11/Xmodmap
 # sysmodmap=/etc/X11/xinit/.Xmodmap
 #wm="dbus-launch emacs -mm -l ~/.config/emacs/elisp/init-exwm.el --debug-init"
 #wm="xmonad"
-wm="qtile start"
-#wm=awesome
-
+#wm="qtile start"
+wm=awesome
+#
+#./dual.sh  &
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
  [ -x "$f" ] && . "$f"

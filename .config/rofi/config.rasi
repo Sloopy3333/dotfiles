@@ -11,6 +11,7 @@ configuration {
      	      case-sensitive: false;
               matching: "regex";
      	      window-thumbnail: true;
+              monitor: -1;
 }
 
 @theme "solarized"

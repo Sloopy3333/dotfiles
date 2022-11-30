@@ -87,6 +87,17 @@ wmname = "LG3D"
 auto_fullscreen = True
 #focus_on_window_activation = "smart"
 
+def window_to_next_screen(qtile, switch_group=False, switch_screen=False):
+    i = qtile.screens.index(qtile.current_screen)
+    group = qtile.screens[i - 1].group.name
+    qtile.current_window.togroup(group, switch_group=switch_group)
+    if switch_screen == True:
+        qtile.cmd_to_screen(i - 1)
+
+def focus_next_screen(qtile):
+    i = qtile.screens.index(qtile.current_screen)
+    qtile.cmd_to_screen(i - 1)
+
 
 # keybidings
 keys = [
@@ -134,6 +145,10 @@ keys = [
     Key([my_mod],                      "p",                        lazy.prev_layout()),
     Key([my_mod, "control"],           "f",                        lazy.hide_show_bar("all")),
     Key([my_mod, "control"],           "t",                        lazy.window.toggle_floating()),
+
+   Key([my_mod],                          "m",                        lazy.function(focus_next_screen)),
+   Key([my_mod, "shift"],                 "m",                        lazy.function(window_to_next_screen)),
+   Key([my_mod,"control"],                "m",                        lazy.function(window_to_next_screen, switch_screen=True)),
 
     # screenshots
     Key([],                            "Print",                    lazy.spawn("flameshot gui")),
@@ -246,6 +261,49 @@ widget_defaults = dict(
 )
 
 screens = [
+    Screen(
+        bottom=Bar(
+            [
+                widget.GroupBox(
+                    borderwidth=3,
+                    highlight_method="line",
+                    block_highlight_text_color=my_colors["green"],
+                    highlight_color=my_colors["background"],
+                    this_current_screen_border=my_colors["foreground"],
+                    active=my_colors["yellow"], inactive=my_colors["foreground"],
+                    disable_drag=True,
+                ),
+                widget.TextBox(text="|",),
+                widget.CurrentLayout(),
+                widget.TextBox(text="|",),
+                widget.WindowName(),
+                widget.TextBox(text="|",),
+                widget.CPU(format = 'CPU: {load_percent}% {freq_current}GHz'),
+                widget.ThermalSensor(threshold=70, foreground_alert=my_colors["red"],foreground=my_colors["foreground"]),
+                widget.TextBox(text="|",),
+                widget.Memory(format = 'MEM: {MemUsed:.0f}{mm}', measure_mem = 'M'),
+                widget.TextBox(text="|",),
+                widget.Battery(
+                    format = '{char} {percent:2.0%} ({hour:d}:{min:02d} {watt:.2f} W)',
+                    charge_char = 'AC',
+                    discharge_char = 'BAT',
+                    low_percentage = 0.4,
+                    low_foreground = my_colors["red"]
+                ),
+                widget.TextBox(text="|",),
+                widget.Clock(
+                    format = '%a %b %d %l:%M %p',
+                    update_interval=60,
+                ),
+                widget.TextBox(text="|",),
+                widget.Systray()
+            ],
+            size=20,
+            opacity=1.0,
+            margin=[0,0,0,0]
+        ),
+    ),
+
     Screen(
         bottom=Bar(
             [
