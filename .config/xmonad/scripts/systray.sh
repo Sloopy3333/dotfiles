@@ -14,4 +14,5 @@ trayer --edge bottom\
        --tint 0x282828\
        --widthtype request\
        --monitor 0\
+       --monitor 1\
        --margin 0\

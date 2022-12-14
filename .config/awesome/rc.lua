@@ -66,6 +66,8 @@ editor_cmd = "emacsclient -c -a emacs"
 awful.layout.layouts = {
     awful.layout.suit.max,
     awful.layout.suit.tile,
+    awful.layout.suit.tile.bottom,
+    awful.layout.suit.floating
 }
 
 -- Menu
@@ -245,7 +247,9 @@ clientkeys = gears.table.join(
     awful.key({ modkey, "Shift"  }, "l", function (c) awful.client.swap.global_bydirection("right") c:raise() end, {description = "swap with right client", group = "client"}),
     awful.key({ modkey, "Shift"  }, "j", function (c) awful.client.swap.global_bydirection("down") c:raise() end, {description = "swap with down client", group = "client"}),
     awful.key({ modkey, "Shift"  }, "k", function (c) awful.client.swap.global_bydirection("up") c:raise() end, {description = "swap with up client", group = "client"}),
-    awful.key({ modkey, "Control"}, "Return", function (c) c:swap(awful.client.getmaster()) end, {description = "move to master", group = "client"})
+    awful.key({ modkey, "Control"}, "Return", function (c) c:swap(awful.client.getmaster()) end, {description = "move to master", group = "client"}),
+    awful.key({ modkey, "Shift"  }, "m",      function (c) c:move_to_screen() end, {description = "move to screen", group = "client"}),
+    awful.key({ modkey, "Control"}, "m", function (c) c.maximized = not c.maximized c:raise() end , {description = "(un)maximize", group = "client"})
 )
 
 globalkeys = gears.table.join(
@@ -277,18 +281,21 @@ globalkeys = gears.table.join(
     awful.key({ modkey,          }, "n", function () awful.layout.inc( 1) end, {description = "select next", group = "layout"}),
     awful.key({ modkey, "Shift"  }, "n", function () awful.layout.inc(-1) end, {description = "select previous", group = "layout"}),
 
-    -- Volume keys
-    awful.key({                  }, "XF86AudioRaiseVolume", function() os.execute("amixer sset Master 5%+") end),
-    awful.key({                  }, "XF86AudioLowerVolume", function() os.execute("amixer sset Master 5%-") end),
-    awful.key({                  }, "XF86AudioMute", function() os.execute("amixer sset Master toggle") end),
-    awful.key({modkey,           }, "Right", function() os.execute("amixer sset Master 5%+") end),
-    awful.key({modkey,           }, "Left", function() os.execute("amixer sset Master 5%-") end),
+    --screens
+    awful.key({ modkey,}, "m", function () awful.screen.focus_relative(1) end, {description = "focus the next screen", group = "screen"}),
 
     -- Backlight keys
     awful.key({                  }, "XF86MonBrightnessUp", function () awful.util.spawn("light -A 5") end),
     awful.key({                  }, "XF86MonBrightnessDown", function () awful.util.spawn("light -U 5") end),
     awful.key({modkey,           }, "Up", function() os.execute("light -A 5") end),
-    awful.key({modkey,           }, "Down", function() os.execute("light -U 5") end)
+    awful.key({modkey,           }, "Down", function() os.execute("light -U 5") end),
+
+    -- Volume
+    awful.key({                  }, "XF86AudioMute", function () awful.util.spawn("pamixer -t") end),
+    awful.key({                  }, "XF86AudioRaiseVolume", function () awful.util.spawn("pamixer -i 5") end),
+    awful.key({                  }, "XF86AudioLowerVolume", function () awful.util.spawn("pamixer -d 5") end),
+    awful.key({modkey,           }, "Right", function() os.execute("pamixer -i 5") end),
+    awful.key({modkey,           }, "Left", function() os.execute("pamixer -d 5") end)
 
 
 )
@@ -398,7 +405,7 @@ awful.rules.rules = {
             "ConfigManager",
             "pop-up",
          }
-    }, properties = { floating = true }},
+    }, properties = { floating = true, optop = true}},
 
     -- Add titlebars to  dialogs
     { rule_any = {type = { "dialog" }
@@ -410,15 +417,19 @@ awful.rules.rules = {
          class = {
             "Steam",
             "Bottles",
-            "heroic"
+            "heroic",
+            "Lutris",
+            "epicgameslauncher.exe"
+
          }
-    }, properties = { screen = 1, tag = "8" }},
+    }, properties = {tag = "8"}},
+    ---}, properties = {tag = "8", fullscreen = false, ontop = true, floating = false,  titlebars_enabled = flase }},
     { rule_any = {
          class = {
             "steam_.*",
+            "*.exe$",
          }
-    }, properties = { screen = 1, tag = "9" }, { fullscreen     = true }, {ontop = true }
-    }
+    }, properties = {tag = "9", fullscreen = true, ontop = true, floating = true,  titlebars_enabled = flase }}
 }
 -- }}}
 

@@ -85,7 +85,7 @@ myFocusFollowsMouse    = True                                                   
 myClickJustFocuses     = False                                                                    :: Bool
 myBorderWidth          = 2                                                                        :: Dimension
 myWindowGap            = 0                                                                        :: Integer
-myColor                = myGruvbox                                                                :: ColorSchemes
+myColor                = mySolarized                                                              :: ColorSchemes
 myFocusedBorderColor   = white myColor                                                            :: String
 myUnFocusedBorderColor = black myColor                                                            :: String
 myFont                 = "xft:Hack Nerd Font:regular:size=12:antialias=true:hinting=true"         :: String
@@ -225,7 +225,7 @@ myXmobarPP h =
       ppSep             = " | ",
       ppTitle           = xmobarColor (white myColor) "" . shorten 60,
       ppLayout          = xmobarColor  (white myColor) "",
-      ppOutput          = hPutStrLn h,
+      -- ppOutput          = \x -> hPutStrLn xmproc0 x >> hPutStrLn xmproc1 x,
       --ppExtras          = [windowCount],
       ppOrder           = \(ws : l : t : ex) -> [ws, l, t]
     }
@@ -361,7 +361,8 @@ clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>
 --Main
 main :: IO ()
 main = do
-  myXmobar <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
+  xmproc0 <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.config"
+  xmproc1 <- spawnPipe "xmobar -x 1 ~/.config/xmonad/xmobar.config"
   xmonad $ docks $ ewmh def
         { terminal           = myTerminal,
           focusFollowsMouse  = myFocusFollowsMouse,
@@ -375,6 +376,17 @@ main = do
           layoutHook         = myLayout,
           manageHook         = myManageHook,
           handleEventHook    = myEventHook,
-          logHook            = dynamicLogWithPP $ myXmobarPP myXmobar,
-          startupHook        = myStartupHook
+          startupHook        = myStartupHook,
+          logHook            = dynamicLogWithPP $ xmobarPP
+                                                  { ppCurrent         = xmobarColor (green myColor) "" . wrap "[" "]",
+                                                    ppVisible         = xmobarColor (white myColor) "" . wrap "" "" . clickable,
+                                                    ppHidden          = xmobarColor (yellow myColor) "" . wrap "" "" . clickable,
+                                                    ppHiddenNoWindows = xmobarColor (white myColor) "" . clickable,
+                                                    ppSep             = " | ",
+                                                    ppTitle           = xmobarColor (white myColor) "" . shorten 60,
+                                                    ppLayout          = xmobarColor  (white myColor) "",
+                                                    ppOutput          = \x -> hPutStrLn xmproc0 x >> hPutStrLn xmproc1 x,
+                                                    --ppExtras          = [windowCount],
+                                                    ppOrder           = \(ws : l : t : ex) -> [ws, l, t]
+                                            }
         }

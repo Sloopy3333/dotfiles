@@ -339,7 +339,7 @@ screens = [
                     update_interval=60,
                 ),
                 widget.TextBox(text="|",),
-                widget.Systray()
+                # widget.Systray()
             ],
             size=20,
             opacity=1.0,

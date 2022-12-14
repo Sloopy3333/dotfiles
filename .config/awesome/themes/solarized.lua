@@ -65,6 +65,7 @@ theme.menu_width  = 100
 theme.layout_max = themes_path.."default/layouts/maxw.png"
 theme.layout_tile = themes_path.."default/layouts/tilew.png"
 theme.layout_floating  = themes_path.."default/layouts/floatingw.png"
+theme.layout_tilebottom  = themes_path.."default/layouts/tilebottomw.png"
 
 -- You can use your own layout icons like this:
 
