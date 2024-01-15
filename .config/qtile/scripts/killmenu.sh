@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 selected="$(ps -a -u $USER | rofi -dmenu -p "select process to kill:" | awk '{print $1" "$4}')"
 [ ! -z "$selected" ] && ans="$(printf "Yes\nNO" | rofi -dmenu -p "kill $selected ?")"

@@ -1,0 +1,23 @@
+#History lists
+
+[image_list]
+"/home/shn/external/wallpapers/wallhaven-3lgrr3.jpg"
+
+[shortcuts]
+"Home[path]/home/shn"
+"Desktop[path]/home/shn/Desktop"
+"Collections[path]/home/shn/.local/share/geeqie/collections"
+
+[path_list]
+"/home/shn/external/Heroic"
+"/home/shn/external"
+"/home/shn/external/wallpapers"
+"/home/shn"
+
+[bookmarks]
+".[path]/home/shn/external/wallpapers"
+"Home[path]/home/shn"
+"Desktop[path]/home/shn/Desktop"
+"Collections[path]/home/shn/.local/share/geeqie/collections"
+
+#end

@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; Fonts
+
 ;; set various face attributes
 (defun sam/set-font ()
   (set-face-attribute 'default nil :inherit nil :family "IBM Plex Mono Text" :foundry "IBM" :weight 'normal :height 130)

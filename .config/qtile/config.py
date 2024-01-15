@@ -1,5 +1,7 @@
 # imports
 import re
+import os
+import subprocess
 from libqtile import qtile
 from os.path import expanduser
 from libqtile import layout
@@ -9,6 +11,7 @@ from libqtile.lazy import lazy
 from libqtile.layout import MonadTall, MonadWide, Max, Floating
 from libqtile.config import Click, Drag, Group, Key, Screen, Match, Rule, KeyChord, ScratchPad, DropDown
 from libqtile import widget
+from libqtile import hook
 import libqtile
 
 # color schemes
@@ -72,12 +75,12 @@ my_terminalalt    = "emacsclient -c -a '' --eval '(eshell)'"
 my_browser        = "firefox"
 my_browseralt     = "chromium --profile-directory='Profile 2'"
 my_filemanager    = "emacsclient -c -a '' --eval '(dired nil)'"
-my_filemanageralt = "pcmanfm"
+my_filemanageralt = "thunar"
 my_editor         = "emacsclient -c -a emacs"
-my_ide         = "idea"
 #my_email          = "emacsclient -c -a '' --eval '(mu4e)'"
 my_email          = "geary"
 my_rss            = "emacsclient -c -a '' --eval '(elfeed)'"
+my_home           = os.path.expanduser("~")
 
 # prefrences
 follow_mouse_focus = True
@@ -86,6 +89,10 @@ cursor_warp = False
 wmname = "LG3D"
 auto_fullscreen = True
 #focus_on_window_activation = "smart"
+
+@hook.subscribe.startup_once
+def autostart():
+    subprocess.Popen([my_home + "/.config/qtile/scripts/autostart.sh"])
 
 def window_to_next_screen(qtile, switch_group=False, switch_screen=False):
     i = qtile.screens.index(qtile.current_screen)
@@ -111,7 +118,6 @@ keys = [
     Key([my_mod,"shift"],              "b",                        lazy.spawn(my_browseralt)),
     Key([my_mod,],                     "m",                        lazy.spawn(my_email)),
     Key([my_mod],                      "e",                        lazy.spawn(my_editor)),
-    Key([my_mod, "shift"],             "e",                        lazy.spawn(my_ide)),
     Key([my_mod],                      "r",                        lazy.spawn(my_rss)),
     Key([my_mod],                      "v",                        lazy.spawn("virt-manager")),
 
@@ -153,17 +159,13 @@ keys = [
     # screenshots
     Key([],                            "Print",                    lazy.spawn("flameshot gui")),
     Key([my_mod],                      "Print",                    lazy.spawn("flameshot screen")),
+    Key([my_mod, "shift"],             "Print",                    lazy.spawn("flameshot full")),
+    Key([my_mod, "control"],           "Print",                    lazy.spawn("flameshot launcher")),
 
     # run prompts and menu
     Key([my_mod],                      "space",                    lazy.spawn("rofi -show drun")),
     Key([my_mod],                      "Tab",                      lazy.spawn("rofi -show window")),
     Key([my_mod, "shift"],             "Tab",                      lazy.spawn("rofi -show windowcd")),
-
-    # brightness
-    Key([],                         "XF86MonBrightnessUp",        lazy.spawn("light -A 5")),
-    Key([],                         "XF86MonBrightnessDown",      lazy.spawn("light -U 5")),
-    Key([my_mod],                   "Up",                         lazy.spawn("light -A 5")),
-    Key([my_mod],                   "Down",                       lazy.spawn("light -U 5")),
 
     # Volume
     Key([],                         "XF86AudioMute",              lazy.spawn("pamixer -t")),
@@ -174,9 +176,9 @@ keys = [
 
     # prompt submaps
     KeyChord([my_mod], "s", [
-        Key([], "p", lazy.spawn("/home/sam/scripts/dmenu/power.sh")),
-        Key([], "k", lazy.spawn("/home/sam/scripts/dmenu/kill.sh")),
-        Key([], "m", lazy.spawn("/home/sam/scripts/dmenu/man.sh"))
+        Key([], "p", lazy.spawn(my_home + "/.config/qtile/scripts/powermenu.sh")),
+        Key([], "k", lazy.spawn(my_home + "/.config/qtile/scripts/killmenu.sh")),
+        Key([], "m", lazy.spawn(my_home + "/.config/qtile/scripts/manmenu.sh")),
     ]),
 
     # scratchpad submaps
@@ -205,7 +207,7 @@ mouse = [
 ]
 
 # layouts
-my_layout = {"border_focus" : my_colors["cyan"],
+my_layout = {"border_focus" : my_colors["foreground"],
              "single_border_width" : 0,
              "single_margin" : 0,
              "border_width" : 2,
@@ -221,8 +223,6 @@ layouts = [
 floating_layout = Floating(**my_layout, name = "Float",
                            float_rules=[*layout.Floating.default_float_rules,
                                         Match(wm_class=['Mpv',
-                                                        # 'Gimp',
-                                                        # 'Virt-manager',
                                                         'Pavucontrol',
                                                         ])])
 # scratchpads
@@ -245,8 +245,8 @@ groups = [
     Group("4"),
     Group("5"),
     Group("6"),
-    Group("7"),
-    Group("8", matches=[Match(wm_class=['Steam', 'heroic', 'Lutris'])]),
+    Group("7", matches=[Match(wm_class=['discord'])], screen_affinity = 2),
+    Group("8", matches=[Match(wm_class=['steam', 'steamwebhelper', 'heroic', 'lutris'])]),
     Group("9", matches=[Match(wm_class=re.compile("^steam_.*|.*\.exe$"))])
 ]
 
@@ -262,6 +262,8 @@ widget_defaults = dict(
 
 screens = [
     Screen(
+        wallpaper=my_home + "/.config/qtile/wallpapers/simple1.jpg",
+        wallpaper_mode='fill',
         bottom=Bar(
             [
                 widget.GroupBox(
@@ -282,14 +284,6 @@ screens = [
                 widget.ThermalSensor(threshold=70, foreground_alert=my_colors["red"],foreground=my_colors["foreground"]),
                 widget.TextBox(text="|",),
                 widget.Memory(format = 'MEM: {MemUsed:.0f}{mm}', measure_mem = 'M'),
-                widget.TextBox(text="|",),
-                widget.Battery(
-                    format = '{char} {percent:2.0%} ({hour:d}:{min:02d} {watt:.2f} W)',
-                    charge_char = 'AC',
-                    discharge_char = 'BAT',
-                    low_percentage = 0.4,
-                    low_foreground = my_colors["red"]
-                ),
                 widget.TextBox(text="|",),
                 widget.Clock(
                     format = '%a %b %d %l:%M %p',
@@ -305,6 +299,8 @@ screens = [
     ),
 
     Screen(
+        wallpaper=my_home + "/.config/qtile/wallpapers/simple1.jpg",
+        wallpaper_mode='fit',
         bottom=Bar(
             [
                 widget.GroupBox(
@@ -326,20 +322,11 @@ screens = [
                 widget.TextBox(text="|",),
                 widget.Memory(format = 'MEM: {MemUsed:.0f}{mm}', measure_mem = 'M'),
                 widget.TextBox(text="|",),
-                widget.Battery(
-                    format = '{char} {percent:2.0%} ({hour:d}:{min:02d} {watt:.2f} W)',
-                    charge_char = 'AC',
-                    discharge_char = 'BAT',
-                    low_percentage = 0.4,
-                    low_foreground = my_colors["red"]
-                ),
-                widget.TextBox(text="|",),
                 widget.Clock(
                     format = '%a %b %d %l:%M %p',
                     update_interval=60,
                 ),
                 widget.TextBox(text="|",),
-                # widget.Systray()
             ],
             size=20,
             opacity=1.0,
