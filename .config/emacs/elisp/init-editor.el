@@ -39,8 +39,8 @@
 (setq kept-old-versions 5)
 ;; number of new backup to keep
 (setq kept-new-versions 5)
-;; backup directory
-(setq backup-directory-alist '(("." . "~/.local/share/emacs/var/backup")))
+;; back file directory
+ (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backup-files"))))
 ;; backup directory fir tramp files
 (setq tramp-backup-directory-alist backup-directory-alist)
 
@@ -53,6 +53,13 @@
 (setq auto-save-default t)
 ;; don't auto-disable auto-save after deleting big chunks
 (setq auto-save-include-big-deletions t)
+
+;; Undo-tree
+(use-package undo-tree
+  :after evil
+  :config
+  (global-undo-tree-mode)
+  (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undotree-files")))))
 
 ;; Text formating
 ;; don't insert tabs for indentation

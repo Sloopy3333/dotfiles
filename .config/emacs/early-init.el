@@ -37,7 +37,7 @@
 
 
 ;; user emacs dir
-(setq user-emacs-directory "~/.local/share/emacs")
+(setq user-emacs-directory "~/.local/share/emacs/")
 ;; move custom file to tmp
 (setq custom-file
       (if (boundp 'server-socket-dir)
