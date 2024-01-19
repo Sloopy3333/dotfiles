@@ -16,4 +16,4 @@ alias push="dot push origin master"
 # fzf
 # run sudo pacman -Fy once before running
 alias pacfind="pacman -Slq | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -Fl {1})' | xargs -ro sudo pacman -S"
-alias yayfind="yay -Slq | fzf -m --preview 'cat <(paru -Si {1}) <(paru -Fl {1})' | xargs -ro paru -S" # avoid using since it pings aur on every keystroke
+alias yayfind="yay -Slq | fzf -m --preview 'cat <(yay -Si {1}) <(yay -Fl {1})' | xargs -ro yay -S" # avoid using since it pings aur on every keystroke

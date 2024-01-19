@@ -156,8 +156,16 @@
         "discord",
         "lxappearance-gtk3",
         "python-psutil",
-        "man-db"
-
+        "man-db",
+        "mangohud",
+        "goverlay",
+        "flameshot",
+        "mpv",
+        "pamixer",
+        "gvfs-mtp",
+        "network-manager-applet",
+        "pavucontrol",
+        "volumeicon"
     ],
     "parallel downloads": 5,
     "profile_config": {

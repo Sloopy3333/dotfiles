@@ -1,5 +1,5 @@
 [Alsa]
-card=HDA Intel PCH
+card=default
 channel=Master
 
 [Notification]
@@ -9,7 +9,7 @@ notification_type=1
 [StatusIcon]
 stepsize=5
 onclick=pavucontrol
-theme=Default
+theme=White Gnome
 use_panel_specific_icons=false
 lmb_slider=true
 mmb_mute=true

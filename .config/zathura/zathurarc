@@ -51,7 +51,7 @@ set recolor-darkcolor           "#f8f8f2" # Foreground
 #
 set adjust-open width
 set recolor true
-set font "Hack Nerd Font 12"
+set font "IBM Plex 12"
 set page-pading 5
 set pages-per-row 1
 set guioptions none

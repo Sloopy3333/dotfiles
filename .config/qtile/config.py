@@ -222,9 +222,7 @@ layouts = [
 # floating windows
 floating_layout = Floating(**my_layout, name = "Float",
                            float_rules=[*layout.Floating.default_float_rules,
-                                        Match(wm_class=['Mpv',
-                                                        'Pavucontrol',
-                                                        ])])
+                                        Match(wm_class=['Mpv', 'Pavucontrol'], title=['Friends List'])])
 # scratchpads
 my_sctarchpads = ScratchPad("scratchpad", [
     DropDown("term", my_terminal,
@@ -246,7 +244,7 @@ groups = [
     Group("5"),
     Group("6"),
     Group("7", matches=[Match(wm_class=['discord'])], screen_affinity = 2),
-    Group("8", matches=[Match(wm_class=['steam', 'steamwebhelper', 'heroic', 'lutris'])]),
+    Group("8", matches=[Match(wm_class=['steam', 'steamwebhelper', 'heroic', 'lutris'])], screen_affinity = 2),
     Group("9", matches=[Match(wm_class=re.compile("^steam_.*|.*\.exe$"))])
 ]
 
