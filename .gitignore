@@ -41,7 +41,6 @@
 .config/startpage/icons/red.png
 .config/systemd/
 .config/tlpui/
-.config/user-dirs.dirs
 .config/vifm/vifm-help.txt
 .config/vifm/vifminfo.json
 .config/vimb/bookmark
@@ -73,6 +72,7 @@
 .vim/
 .dotfiles/
 Downloads/
+Public/
 VirtualBox VMs/
 hdd/
 scripts/history.sh
@@ -191,3 +191,6 @@ dot
 /.serverauth.978
 /.aws/
 /*.iso
+/^#
+/.bash_logout
+/.bashrc

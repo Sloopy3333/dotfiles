@@ -53,7 +53,8 @@
 (setq auto-save-default t)
 ;; don't auto-disable auto-save after deleting big chunks
 (setq auto-save-include-big-deletions t)
-
+;;
+(setq auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory "autosave-files") t)))
 ;; Undo-tree
 (use-package undo-tree
   :after evil

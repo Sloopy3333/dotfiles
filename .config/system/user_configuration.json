@@ -152,9 +152,11 @@
         "qtile",
         "alacritty",
         "ttf-ibm-plex",
+        "ttf-nerd-fonts-symbols",
         "discord",
         "lxappearance-gtk3",
-        "python-psutil"
+        "python-psutil",
+        "man-db"
 
     ],
     "parallel downloads": 5,
