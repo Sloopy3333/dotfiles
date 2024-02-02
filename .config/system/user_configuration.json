@@ -165,7 +165,8 @@
         "gvfs-mtp",
         "network-manager-applet",
         "pavucontrol",
-        "volumeicon"
+        "volumeicon",
+        "cmake"
     ],
     "parallel downloads": 5,
     "profile_config": {

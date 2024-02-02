@@ -1,0 +1,30 @@
+game:
+  args: -opengl -SkipBuildPatchPrereq -com.epicgames.launcher://apps/bc2c95c6ff564a16b26644f1d3ac3c55?action=launch
+  exe: drive_c/Program Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe
+  prefix: /home/shn/Public/Local/Lutris/Prefixes/epic-games-store
+game_slug: bioshock-remastered
+name: BioShock Remastered
+requires: epic-games-store
+script:
+  game:
+    args: -opengl -SkipBuildPatchPrereq -com.epicgames.launcher://apps/bc2c95c6ff564a16b26644f1d3ac3c55?action=launch
+  installer:
+  - task:
+      arch: win64
+      args: -opengl -SkipBuildPatchPrereq -com.epicgames.launcher://apps/bc2c95c6ff564a16b26644f1d3ac3c55?action=install
+      env: {}
+      executable: /home/shn/Public/Local/Lutris/Prefixes/epic-games-store/drive_c/Program
+        Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe
+      prefix: /home/shn/Public/Local/Lutris/Prefixes/epic-games-store
+      wine_path: /home/shn/.local/share/lutris/runners/wine/wine-ge-8-25-x86_64/bin/wine
+  requires: epic-games-store
+service: egs
+service_id: bc2c95c6ff564a16b26644f1d3ac3c55
+slug: bioshock-remastered-egs
+system:
+  env:
+    DXVK_HUD: compiler
+    MESA_GL_VERSION_OVERRIDE: 4.4COMPAT
+    __GL_SHADER_DISK_CACHE: '1'
+    __GL_SHADER_DISK_CACHE_PATH: /home/shn/Public/Local/Lutris/Prefixes/epic-games-store
+version: Epic Games Store

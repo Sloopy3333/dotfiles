@@ -13,10 +13,10 @@
 
 ;;;; ui and themes
 (load-library "init-ui")
-;;(load-library "init-solarized")
+(load-library "init-solarized")
 ;;(load-library "init-base16-theme")
 ;;(load-library "init-modus-theme")
- (load-library "init-doom-themes")
+;;(load-library "init-doom-themes")
 (load-library "init-modeline")
 (load-library "init-all-the-icons")
 

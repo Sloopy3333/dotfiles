@@ -194,3 +194,5 @@ dot
 /.bash_logout
 /.bashrc
 /discord
+/.config/qBittorrent/lockfile
+/.config/qBittorrent/rss/storage.lock

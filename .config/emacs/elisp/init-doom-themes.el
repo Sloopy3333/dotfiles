@@ -4,10 +4,8 @@
   (interactive)
   (let ((current-theme (car custom-enabled-themes)))
   (pcase current-theme
-    ('doom-solarized-light (load-theme 'doom-solarized-dark t))
+    ('doom-solarized-light (load-theme 'doom-solarized-dark))
     ('doom-solarized-dark (load-theme 'doom-solarized-light t))
-    ('doom-gruvbox-light (load-theme 'doom-gruvbox t))
-    ('doom-gruvbox (load-theme 'doom-gruvbox-light t))
     (_ (error "doom-theme not found")))))
 
 (use-package doom-themes

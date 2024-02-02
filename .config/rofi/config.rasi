@@ -14,7 +14,7 @@ configuration {
               monitor: -1;
 }
 
-@theme "solarized"
+@theme "solarized_alternate"
 
 window {
        width: 100%;

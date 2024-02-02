@@ -6,7 +6,7 @@
   (pcase current-theme
     ('solarized-light (load-theme 'solarized-dark t))
     ('solarized-dark (load-theme 'solarized-light t))
-    (_ (error "base16-theme not found")))))
+    (_ (error "theme not found")))))
 
 (use-package solarized-theme
   :bind ("M-<f5>" . 'sam/toggle-themes)

@@ -4,7 +4,7 @@
 
 ;; set various face attributes
 (defun sam/set-font ()
-  (set-face-attribute 'default nil :inherit nil :family "IBM Plex Mono Text" :foundry "IBM" :weight 'normal :height 130)
+  (set-face-attribute 'default nil :inherit nil :family "IBM Plex Mono Text" :foundry "IBM" :weight 'normal :height 140)
   (set-face-attribute 'fixed-pitch nil :inherit 'default)
   (set-face-attribute 'font-lock-comment-face nil :inherit 'default :slant 'italic)
   (set-face-attribute 'font-lock-keyword-face nil :inherit 'default :slant 'italic))
